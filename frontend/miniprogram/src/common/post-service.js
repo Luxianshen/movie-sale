@@ -36,17 +36,17 @@ export default class PostService extends BaseService {
      * type: 0:推荐,1:动弹,2:文章,3:问答
      */
     async recommend(options) {
-        return await this._list('/api/post/recommend', options)
+        return await this._list('api/community/posts/recommend', options)
     }
     async listForTopic(options) {
-        return await this._list('/api/topic/post/list', options)
+        return await this._list('api/topic/post/page', options)
     }
     async listForUser(options) {
-        return await this._list('/api/post/list/user', options)
+        return await this._list('api/post/list/user', options)
     }
     async listForSchool(options) {
         options.school = this.getSchool()
-        return await this._list('/api/post/list/school', options)
+        return await this._list('api/post/list/school', options)
     }
     /**
      * 关注动态

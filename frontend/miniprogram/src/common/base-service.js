@@ -1,6 +1,6 @@
 import wepy from '@wepy/core'
-const prefix = '/ybs89231'
-export const baseUrl = 'https://www.wutuobangxinyougou.com' + prefix
+const prefix = '/'
+export const baseUrl = 'http://127.0.0.1:8088' + prefix
 export const baseImgUrl = 'https://www.wutuobangxinyougou.com'
 // export const baseUrl = 'http://127.0.0.1:7001' + prefix
 export const qiniuUrl = 'http://img.wutuobangxinyougou.com/' // 七牛存储自定义图片域名根据自己的配置

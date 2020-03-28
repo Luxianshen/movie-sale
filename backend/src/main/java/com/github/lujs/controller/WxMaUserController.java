@@ -1,5 +1,10 @@
 package com.github.lujs.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.lujs.commmon.controller.BaseController;
+import com.github.lujs.commmon.model.vo.BaseResponse;
+import com.github.lujs.community.api.model.pojo.Users;
+import com.github.lujs.community.api.service.IUsersService;
 import com.github.lujs.config.WxMaConfiguration;
 import com.github.lujs.utils.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +21,10 @@ import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import me.chanjar.weixin.common.error.WxErrorException;
 
+import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 微信小程序用户接口
  *
@@ -23,16 +32,20 @@ import me.chanjar.weixin.common.error.WxErrorException;
  */
 @RestController
 @RequestMapping("/wx/user/{appid}")
-public class WxMaUserController {
+public class WxMaUserController extends BaseController {
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Resource
+    private IUsersService usersService;
 
     /**
      * 登陆接口
      */
     @GetMapping("/login")
-    public String login(@PathVariable String appid, String code) {
+    public BaseResponse login(@PathVariable String appid, String code) {
         if (StringUtils.isBlank(code)) {
-            return "empty jscode";
+            return failedResponse("empty jscode");
         }
 
         final WxMaService wxService = WxMaConfiguration.getMaService(appid);
@@ -41,11 +54,23 @@ public class WxMaUserController {
             WxMaJscode2SessionResult session = wxService.getUserService().getSessionInfo(code);
             this.logger.info(session.getSessionKey());
             this.logger.info(session.getOpenid());
+            Map<String, Object> result = new HashMap<>();
+            QueryWrapper<Users> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("openId", session.getOpenid());
+            Users users = usersService.getOne(queryWrapper);
+            if (users == null) {
+                users = new Users();
+                users.init();
+                users.setOpenId(session.getOpenid());
+                usersService.save(users);
+            }
             //TODO 可以增加自己的逻辑，关联业务相关数据
-            return JsonUtils.toJson(session);
+            result.put("user",users);
+            result.put("token","null");
+            return successResponse(result);
         } catch (WxErrorException e) {
             this.logger.error(e.getMessage(), e);
-            return e.toString();
+            return failedResponse(e.toString());
         }
     }
 

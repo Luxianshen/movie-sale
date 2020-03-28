@@ -11,6 +11,7 @@ import com.github.lujs.community.api.model.query.MessagesQuery;
 import com.github.lujs.community.api.service.IMessagesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -84,7 +85,7 @@ public class MessagesController extends BaseController {
     * @param request
     * @return
     */
-    @RequestMapping("/page")
+    @PostMapping("/page")
     public BaseResponse page(@RequestBody BaseRequest<PageQuery<Messages, MessagesQuery>> request) {
         PageQuery<Messages, MessagesQuery> page = request.getData();
         MessagesQuery query = page.getParams();

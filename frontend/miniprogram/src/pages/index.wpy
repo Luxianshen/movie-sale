@@ -62,7 +62,7 @@ wepy.page({
     btntext: '开始体验',
     items: [
       {
-        title: '记录校园',
+        title: '记录他/她',
         des: '记录校园生活，分享大学故事',
         icon: 'http://img.wutuobangxinyougou.com/guide_1.svg'
       },
@@ -111,7 +111,7 @@ wepy.page({
       wx.setStorageSync('user', {
         userId: 14614,
         subscribe: 1,
-        nick: '玉帛书',
+        nick: '分享空间',
         avtater: 'http://img.wutuobangxinyougou.com/u_14614_1582983801804.jpge',
         isBinding: 1,
         isAuth: 1,
@@ -146,7 +146,7 @@ wepy.page({
 </script>
 <config>
 {
-    navigationBarTitleText: '玉帛书',
+    navigationBarTitleText: '分享空间',
     navigationBarBackgroundColor: '#ffffff',
     usingComponents: {
       

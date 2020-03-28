@@ -113,7 +113,7 @@ wepy.app({
       backgroundTextStyle: 'dark',
       navigationBarBackgroundColor: '#f8f8f8',
       backgroundColor: '#f8f8f8',
-      navigationBarTitleText: '玉帛书',
+      navigationBarTitleText: '分享空间',
       navigationBarTextStyle: 'black'
     }
 }

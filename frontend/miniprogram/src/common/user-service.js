@@ -9,7 +9,7 @@ export default class UserService extends BaseService {
         let data = null
         if (userId) {
             data = {
-                userId
+                code
             }
         } else {
             const sys = wx.getSystemInfoSync()
@@ -22,7 +22,7 @@ export default class UserService extends BaseService {
                 data.code = res.code
             }
         }
-        const res = await this.request('/api/login', data, 'POST')
+        const res = await this.request('api/wx/user/wxc881e493f40bedca/login', data, 'GET')
         if (res.code === 0) {
             const {
                 user,

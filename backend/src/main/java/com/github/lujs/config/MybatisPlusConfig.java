@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * @author binchao
  */
 @Configuration
-@MapperScan({"com.github.lujs.community.service.mapper", "com.github.lujs.*.mapper"})
+@MapperScan({"com.github.lujs.community.service.mapper"})
 public class MybatisPlusConfig {
 
 

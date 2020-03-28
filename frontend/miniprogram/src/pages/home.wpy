@@ -141,7 +141,7 @@ wepy.page({
 </script>
 <config>
 {
-    navigationBarTitleText: '玉帛书',
+    navigationBarTitleText: '分享空间',
     navigationStyle: 'custom',
     usingComponents: {
       "tabs": "../components/tab-bar",
