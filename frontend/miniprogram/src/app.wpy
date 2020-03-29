@@ -91,7 +91,7 @@ wepy.app({
       list: [
 				{
           pagePath: 'pages/home',
-          text: '社区',
+          text: '花园',
           iconPath: 'images/ic_community_line.png',
           selectedIconPath: 'images/ic_community_full.png'
         }, 

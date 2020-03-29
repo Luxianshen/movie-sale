@@ -87,7 +87,7 @@
       <div class="page-state-4 page" v-else>
         <div class="page-error">
           <img src="../images/ic_empty.svg" alt srcset />
-          <div class="error">网络一线牵，主动才有缘～</div>
+          <div class="error">网络一线牵，一直很有缘～</div>
           <button class="btn" hover-class="btn-hover" v-if="emptyBtnTxt" @tap="onEmptyBtnTap">{{emptyBtnTxt}}</button>
         </div>
       </div>

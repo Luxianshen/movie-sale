@@ -106,7 +106,7 @@ page {
         <img v-else src="../images/boy.svg" alt />
         <div class="radio">
           <div class="icon {{gender === 1 ? 'icon-radio-select' : 'icon-radio'}}"></div>
-          <div class="radio-txt">大帅哥</div>
+          <div class="radio-txt">大哥哥</div>
         </div>
       </div>
       <div class="gender-item {{gender === 2 ? 'action' : ''}}" @tap="choice(2)">
@@ -114,7 +114,7 @@ page {
         <img v-else src="../images/girl.svg" alt />
         <div class="radio">
           <div class="icon {{gender === 2 ? 'icon-radio-select' : 'icon-radio'}}"></div>
-          <div class="radio-txt">小仙女</div>
+          <div class="radio-txt">小姐姐</div>
         </div>
       </div>
     </div>
@@ -128,7 +128,7 @@ page {
         lang="zh_CN"
         open-type="getUserInfo"
       >{{btntext}}</button>
-      <div class="des" @tap.stop="desTap">此刻开启不一样的校园生活吧</div>
+      <div class="des" @tap.stop="desTap">此刻开启不一样的恋爱生活吧</div>
     </div>
   </div>
 </template>
@@ -143,7 +143,7 @@ wepy.page({
     disabled: false
   },
   onLoad() {
-    this.btntext = true ? 'QQ授权' : '微信授权';
+    this.btntext = '微信授权';
   },
   methods: {
     choice(gender) {

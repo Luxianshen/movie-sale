@@ -497,7 +497,7 @@ page {
         </div>
       </block>
       <block v-else>
-        <div class="item icon icon-help" style="font-size: 26rpx;color: #b2b2b2;">学生认证后才可以发布动态</div>
+        <div class="item icon icon-help" style="font-size: 26rpx;color: #b2b2b2;">情侣绑定后才可以发布动态</div>
         <div class="btn">
           <button class="btn-send" @tap="goAuth">去认证</button>
         </div>

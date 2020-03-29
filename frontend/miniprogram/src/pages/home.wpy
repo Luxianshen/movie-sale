@@ -56,7 +56,7 @@ wepy.page({
   data: {
     labels: [
       {
-        title: '关注',
+        title: '纪念',
         showDot: false
       },
       {
@@ -64,11 +64,11 @@ wepy.page({
         showDot: false
       },
       {
-        title: '推荐',
+        title: '今日',
         showDot: false
       },
       {
-        title: '同校',
+        title: '计划',
         showDot: false
       },
       {

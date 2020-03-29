@@ -160,7 +160,7 @@
     <div class="cell-title">创建话题条件</div>
     <div class="cell">
       <icon type="success" size="16" color="#{{isAuth ? 'ffd100' : '7a8299'}}" />
-      <div>完成学生认证</div>
+      <div>完成情侣绑定</div>
     </div>
     <div class="cell">
       <icon type="success" size="16" color="#{{isVip ? 'ffd100' : '7a8299'}}" />

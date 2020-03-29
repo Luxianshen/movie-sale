@@ -62,23 +62,23 @@ wepy.page({
     btntext: '开始体验',
     items: [
       {
-        title: '记录他/她',
-        des: '记录校园生活，分享大学故事',
+        title: '记录TA',
+        des: '记录日常生活，分享我们的故事',
         icon: 'http://img.wutuobangxinyougou.com/guide_1.svg'
       },
       {
         title: '真实的TA',
-        des: '全国各高校真实学生，学生实名认证',
+        des: 'TA的喜欢，TA的不喜欢',
         icon: 'http://img.wutuobangxinyougou.com/guide_2.svg'
       },
       {
-        title: '拓展圈子',
-        des: '认识志趣相同的同学,拓展人脉',
+        title: '我们的向往',
+        des: '一起期待的一些事情',
         icon: 'http://img.wutuobangxinyougou.com/guide_3.svg'
       },
       {
-        title: '校园网红',
-        des: '施展你的才华,成为校园里耀眼的星',
+        title: '重要的日期',
+        des: '在我们心中重要的日子，你我的仪式感',
         icon: 'http://img.wutuobangxinyougou.com/guide_4.svg'
       }
     ],

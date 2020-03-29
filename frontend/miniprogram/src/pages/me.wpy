@@ -243,7 +243,7 @@ swiper {
         <div class="des">登录后可编辑个人资料</div>
       </div>
       <div class="right">
-        <div class="login-txt">{{isqq ? '点击QQ授权' : '点击微信授权'}}</div>
+        <div class="login-txt">{{'点击微信授权'}}</div>
         <div class="icon icon-arrow-right"></div>
       </div>
     </button>
@@ -295,8 +295,8 @@ swiper {
       </button>
       <button class="cell" @tap="goAuth" v-if="!user.isAuth">
         <div class="left">
-          <div class="title">学生认证</div>
-          <div class="des">学生认证后可解锁更多特权</div>
+          <div class="title">情侣绑定</div>
+          <div class="des">情侣绑定后可解锁更多特权</div>
         </div>
         <div class="right">
           <div class="auth">未认证</div>

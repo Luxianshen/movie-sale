@@ -1,5 +1,9 @@
-import BaseService from "./base-service";
+import BaseService from './base-service'
 import wepy from '@wepy/core'
+
+const baseUrl = 'api/wx/user/wxc881e493f40bedca/'
+const baseUserUrl = 'api/community/users/'
+
 export default class UserService extends BaseService {
     constructor() {
         super()
@@ -22,7 +26,7 @@ export default class UserService extends BaseService {
                 data.code = res.code
             }
         }
-        const res = await this.request('api/wx/user/wxc881e493f40bedca/login', data, 'GET')
+        const res = await this.request(baseUrl + 'login', data, 'GET')
         if (res.code === 0) {
             const {
                 user,
@@ -36,7 +40,8 @@ export default class UserService extends BaseService {
         return false
     }
     async bindInfo({ nickName, avatarUrl, gender, province, city }) {
-        const res = await this.request('/api/user/binding', { nick: nickName, avtater: avatarUrl, gender, province, city }, 'POST')
+        const id = wx.getStorageSync('user').id
+        const res = await this.request(baseUserUrl + 'binding', {'sign': '12345', 'timestamp': '12345', 'data': { id: id, nick: nickName, avtater: avatarUrl, gender, province, city }}, 'POST')
         if (res.code === 0) {
             this.showToast('绑定成功', 'success')
             let user = this.getUser()
@@ -55,7 +60,7 @@ export default class UserService extends BaseService {
         if (!id) {
             id = this.getUserId()
         }
-        const res = await this.request(`/api/user/details/${id}`, null, 'GET')
+        const res = await await this.request(baseUserUrl + 'refresh', {'sign': '12345', 'timestamp': '12345', 'data': {id: wx.getStorageSync('user').id}}, 'POST')
         if (res.code === 0) {
             return this.parseUser(res.data)
         }
@@ -86,7 +91,7 @@ export default class UserService extends BaseService {
         return false
     }
     async newData() {
-        const res = await this.request('/api/user/refresh', null, 'GET')
+        const res = await this.request(baseUserUrl + 'refresh', {'sign': '12345', 'timestamp': '12345', 'data': {id: wx.getStorageSync('user').id}}, 'POST')
         if (res.code === 0) {
             return res.data
         }

@@ -11,6 +11,7 @@ import com.github.lujs.community.api.model.query.UsersQuery;
 import com.github.lujs.community.api.service.IUsersService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,10 +38,10 @@ public class UsersController extends BaseController {
      * @param request
      * @return
      */
-    @RequestMapping("/get")
+    @RequestMapping("/refresh")
     public BaseResponse get(@Valid @RequestBody BaseRequest<PrimaryKeyRequest> request) {
         Users users = targetService.getById(request.getData().getId());
-            return successResponse(users);
+        return successResponse(users);
     }
 
     /**
@@ -99,6 +100,20 @@ public class UsersController extends BaseController {
         */
         targetService.page(page, wrapper);
         return successResponse(page);
+    }
+
+    /**
+     * 绑定用户
+     * @param request
+     * @return
+     */
+    @PostMapping("/binding")
+    public BaseResponse binding(@Valid @RequestBody BaseRequest<Users> request) {
+        request.getData().setIsBinding(true);
+        if(targetService.updateById(request.getData())){
+            return successResponse(true);
+        }
+        return failedResponse(false);
     }
 }
 

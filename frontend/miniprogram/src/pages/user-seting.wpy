@@ -143,7 +143,7 @@
     <div class="cells" v-if="!user.isAuth">
       <div class="cell btn-cell" hover-class="cell-hover" @tap="goAuth">
         <div class="icon icon-auth-1"></div>
-        <div>去学生认证</div>
+        <div>去情侣绑定</div>
       </div>
     </div>
     <dialog

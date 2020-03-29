@@ -80,15 +80,14 @@ public class WxMaUserController extends BaseController {
      * </pre>
      */
     @GetMapping("/info")
-    public String info(@PathVariable String appid, String sessionKey,
+    public String info(@PathVariable String appId, String sessionKey,
                        String signature, String rawData, String encryptedData, String iv) {
-        final WxMaService wxService = WxMaConfiguration.getMaService(appid);
+        final WxMaService wxService = WxMaConfiguration.getMaService(appId);
 
         // 用户信息校验
         if (!wxService.getUserService().checkUserInfo(sessionKey, rawData, signature)) {
             return "user check failed";
         }
-
         // 解密用户信息
         WxMaUserInfo userInfo = wxService.getUserService().getUserInfo(sessionKey, encryptedData, iv);
 
