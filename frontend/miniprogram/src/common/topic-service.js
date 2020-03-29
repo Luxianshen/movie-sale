@@ -1,5 +1,6 @@
-import BaseService from "./base-service";
+import BaseService from "./base-service"
 const KEY_TOPIC_TRACK = 'TOPIC_TRACK'
+const baseUrl = 'api/community/topics/'
 export default class TopicService extends BaseService {
     constructor() {
         super()
@@ -21,14 +22,14 @@ export default class TopicService extends BaseService {
         if (!userId) {
             userId = this.getUserId()
         }
-        const res = await this.request('/api/topic/list/user', { pageIndex, pageSize, userId }, 'POST')
+        const res = await this.request(baseUrl + 'list/user', { pageIndex, pageSize, userId }, 'POST')
         if (res.code === 0) {
             return res.data.map(this.parseTopic.bind(this))
         }
         return null
     }
     async getDetails(id) {
-        const res = await this.request(`/api/topic/details/${id}`, null, 'GET')
+        const res = await this.request(baseUrl + `details/${id}`, null, 'GET')
         if (res.code === 0 && res.data) {
             return this.parseTopic(res.data)
         }
@@ -41,7 +42,7 @@ export default class TopicService extends BaseService {
             });
             return
         }
-        const res = await this.request(`/api/topic/follow/${id}`, null, 'GET')
+        const res = await this.request(baseUrl + `follow/${id}`, null, 'GET')
         if (res.code === 0) {
             this.showToast('已关注', 'success')
             return true
@@ -52,7 +53,7 @@ export default class TopicService extends BaseService {
     async cancel(id) {
         console.log(id);
 
-        const res = await this.request(`/api/topic/follow/cancel/${id}`, null, 'GET')
+        const res = await this.request(baseUrl + `follow/cancel/${id}`, null, 'GET')
         if (res.code === 0) {
             this.showToast('取消成功', 'success')
             return true
@@ -61,7 +62,7 @@ export default class TopicService extends BaseService {
         return false
     }
     async users({ topicId, pageIndex, pageSize }) {
-        const res = await this.request('/api/topic/follow/user/list', { topicId, pageIndex, pageSize }, 'POST')
+        const res = await this.request(baseUrl + 'follow/user/list', { topicId, pageIndex, pageSize }, 'POST')
         if (res.code === 0) {
             return res.data.map(item => {
                 if (item.user) {
@@ -77,7 +78,7 @@ export default class TopicService extends BaseService {
             title: '创建中...',
             mask: true
         });
-        const res = await this.request('/api/topic/add', { title, des, iconSrc, nickName }, 'POST')
+        const res = await this.request(baseUrl + 'add', { title, des, iconSrc, nickName }, 'POST')
         wx.hideLoading()
         if (res.code === 0) {
             this.showToast('已创建成功', 'success')

@@ -6,18 +6,24 @@ import com.github.lujs.commmon.controller.request.PrimaryKeyRequest;
 import com.github.lujs.commmon.model.vo.BaseRequest;
 import com.github.lujs.commmon.model.vo.BaseResponse;
 import com.github.lujs.commmon.query.PageQuery;
+import com.github.lujs.community.api.model.pojo.TopicFollows;
 import com.github.lujs.community.api.model.pojo.Topics;
 import com.github.lujs.community.api.model.query.TopicsQuery;
+import com.github.lujs.community.api.service.ITopicFollowsService;
 import com.github.lujs.community.api.service.ITopicsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *  前端控制器
@@ -31,6 +37,9 @@ public class TopicsController extends BaseController {
 
     @Resource
     private ITopicsService targetService;
+
+    @Resource
+    private ITopicFollowsService topicFollowsService;
 
     /**
      * 获取详情
@@ -99,6 +108,25 @@ public class TopicsController extends BaseController {
         */
         targetService.page(page, wrapper);
         return successResponse(page);
+    }
+
+    /**
+     * 获取user关注的话题
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/list/{userId}")
+    public BaseResponse get(@PathVariable("userId") Long userId) {
+        if(userId != null){
+            QueryWrapper<TopicFollows> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("userId",userId);
+            List<Long> topicsIds = topicFollowsService.list().stream().map(TopicFollows::getTopicId).collect(Collectors.toList());
+            QueryWrapper<Topics> queryTopicWrapper = new QueryWrapper<>();
+            queryTopicWrapper.in("id",topicsIds);
+            List<Topics> topics = targetService.list(queryTopicWrapper);
+            return successResponse(topics);
+        }
+        return failedResponse(new ArrayList<>());
     }
 }
 

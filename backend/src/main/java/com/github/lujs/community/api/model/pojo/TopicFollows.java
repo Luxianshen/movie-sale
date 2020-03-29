@@ -23,10 +23,10 @@ public class TopicFollows extends BaseEntity {
 private static final long serialVersionUID=1L;
 
     @TableField("userId")
-    private Integer userId;
+    private Long userId;
 
     @TableField("topicId")
-    private Integer topicId;
+    private Long topicId;
 
     /**
      * 是否关注话题
