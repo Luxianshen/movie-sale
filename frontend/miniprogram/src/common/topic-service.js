@@ -6,11 +6,7 @@ export default class TopicService extends BaseService {
         super()
     }
     async searchTopic({ keyword, pageIndex, pageSize }) {
-        const res = await this.request('/api/topic/list', {
-            keyword,
-            pageIndex,
-            pageSize
-        }, 'POST')
+      const res = await this.request(baseUrl + 'page', {'sign': '12345', 'timestamp': '12345', 'data': {}}, 'POST')
         if (res.code === 0) {
             return res.data.map(topic => {
                 return this.parseTopic(topic)
@@ -19,17 +15,15 @@ export default class TopicService extends BaseService {
         return []
     }
     async getListForUser({ pageIndex, pageSize, userId = null }) {
-        if (!userId) {
-            userId = this.getUserId()
-        }
-        const res = await this.request(baseUrl + 'list/user', { pageIndex, pageSize, userId }, 'POST')
+        userId = wx.getStorageSync('user').id
+        const res = await this.request(baseUrl + `list/user/${userId}`, null, 'GET')
         if (res.code === 0) {
             return res.data.map(this.parseTopic.bind(this))
         }
         return null
     }
     async getDetails(id) {
-        const res = await this.request(baseUrl + `details/${id}`, null, 'GET')
+        const res = await this.request(baseUrl + 'get', {'sign': '12345', 'timestamp': '12345', 'data': {'id': id}}, 'POST')
         if (res.code === 0 && res.data) {
             return this.parseTopic(res.data)
         }
@@ -78,7 +72,7 @@ export default class TopicService extends BaseService {
             title: '创建中...',
             mask: true
         });
-        const res = await this.request(baseUrl + 'add', { title, des, iconSrc, nickName }, 'POST')
+        const res = await this.request(baseUrl + 'add', {'sign': '12345', 'timestamp': '12345', 'data': { title, des, iconSrc, nickName }}, 'POST')
         wx.hideLoading()
         if (res.code === 0) {
             this.showToast('已创建成功', 'success')

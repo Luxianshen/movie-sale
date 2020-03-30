@@ -26,7 +26,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- *  前端控制器
+ * 前端控制器
+ *
  * @author joysim
  * @since 2020-03-27
  */
@@ -43,90 +44,91 @@ public class TopicsController extends BaseController {
 
     /**
      * 获取详情
+     *
      * @param request
      * @return
      */
     @RequestMapping("/get")
     public BaseResponse get(@Valid @RequestBody BaseRequest<PrimaryKeyRequest> request) {
         Topics topics = targetService.getById(request.getData().getId());
-            return successResponse(topics);
+        return successResponse(topics);
     }
 
     /**
-    * 新增
-    */
+     * 新增
+     */
     @RequestMapping("/add")
     public BaseResponse add(@Valid @RequestBody BaseRequest<Topics> request) {
-            boolean result = targetService.save(request.getData());
-            return baseResponse(result);
+        Topics topics = request.getData();
+        topics.init();
+        boolean result = targetService.save(request.getData());
+        return baseResponse(result);
     }
+
     /**
-    * 修改
-    */
+     * 修改
+     */
     @RequestMapping("/update")
-    public BaseResponse update(@Valid @RequestBody BaseRequest<Topics> request){
-        try{
-            Topics topics =request.getData();
+    public BaseResponse update(@Valid @RequestBody BaseRequest<Topics> request) {
+        try {
+            Topics topics = request.getData();
             topics.setUpdateTime(new Date());
-            boolean result= targetService.updateById(topics);
+            boolean result = targetService.updateById(topics);
             return baseResponse(result);
-        }catch(Exception ex){
-            logger.error("topicsupdate -=- {}",ex.toString());
+        } catch (Exception ex) {
+            logger.error("topicsupdate -=- {}", ex.toString());
         }
         return null;
     }
 
     /**
      * 删除
+     *
      * @param request
      * @return
      */
     @RequestMapping("/delete")
     public BaseResponse delete(@Valid @RequestBody BaseRequest<PrimaryKeyRequest> request) {
-            boolean result = targetService.removeById(request.getData().getId());
-            return baseResponse(result);
+        boolean result = targetService.removeById(request.getData().getId());
+        return baseResponse(result);
     }
 
 
     /**
-    * 分页查询
-    * @param request
-    * @return
-    */
+     * 分页查询
+     *
+     * @param request
+     * @return
+     */
     @RequestMapping("/page")
     public BaseResponse page(@RequestBody BaseRequest<PageQuery<Topics, TopicsQuery>> request) {
         PageQuery<Topics, TopicsQuery> page = request.getData();
         TopicsQuery query = page.getParams();
         QueryWrapper<Topics> wrapper = new QueryWrapper<>();
-        /*
-        if (null != query.getName()) {
-        wrapper.eq("name", query.getName());
-        }
-        if (null != query.getState()) {
-        wrapper.eq("state", query.getState());
-        }
-        */
-        targetService.page(page, wrapper);
-        return successResponse(page);
+        return successResponse(targetService.list(wrapper));
     }
 
     /**
      * 获取user关注的话题
+     *
      * @param userId
      * @return
      */
-    @RequestMapping("/list/{userId}")
+    @RequestMapping("/list/user/{userId}")
     public BaseResponse get(@PathVariable("userId") Long userId) {
-        if(userId != null){
+        List<Topics> topics = new ArrayList<>();
+        if (userId != null) {
             QueryWrapper<TopicFollows> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("userId",userId);
+            queryWrapper.eq("userId", userId);
             List<Long> topicsIds = topicFollowsService.list().stream().map(TopicFollows::getTopicId).collect(Collectors.toList());
-            QueryWrapper<Topics> queryTopicWrapper = new QueryWrapper<>();
-            queryTopicWrapper.in("id",topicsIds);
-            List<Topics> topics = targetService.list(queryTopicWrapper);
-            return successResponse(topics);
+            if (topicsIds.size() > 0) {
+                QueryWrapper<Topics> queryTopicWrapper = new QueryWrapper<>();
+                queryTopicWrapper.in("id", topicsIds);
+                topics = targetService.list(queryTopicWrapper);
+                return successResponse(topics);
+            }
         }
-        return failedResponse(new ArrayList<>());
+        return successResponse(topics);
     }
 }
 
