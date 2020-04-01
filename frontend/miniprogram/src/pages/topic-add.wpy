@@ -245,6 +245,7 @@ wepy.page({
         iconSrc: this.iconPath,
         nickName: this.nickName
       });
+      debugger
       if (topic) {
         wx.redirectTo({
           url: '/pages/topic?id=' + topic.id

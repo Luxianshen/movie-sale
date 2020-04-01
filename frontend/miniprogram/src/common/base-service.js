@@ -139,6 +139,35 @@ export default class BaseService {
         wx.showNavigationBarLoading()
         return await wepy.wx.request({
             url: baseUrl + url,
+            data:{
+                'sign': 'nosign', 
+                'timestamp': new Date().getTime(),
+                'data':data
+            },
+            header: {
+                token,
+                'Content-Type': 'application/json',
+                'from-wx': '16f9d417-03c3-45cc-90c7-d58e4e447ae6'
+            },
+            method
+        }).then(res => {
+            console.log(res)
+            console.log(url)
+            wx.hideNavigationBarLoading()
+            return res.data
+        }).catch(() => {
+            console.log(url)
+            wx.hideNavigationBarLoading()
+            return {
+                code: -1
+            }
+        })
+    }
+    async requestGet(url, data, method) {
+        const token = wx.getStorageSync('token') || ''
+        wx.showNavigationBarLoading()
+        return await wepy.wx.request({
+            url: baseUrl + url,
             data,
             header: {
                 token,
@@ -178,10 +207,18 @@ export default class BaseService {
     getUserId() {
         const user = this.getUser()
         if (user) {
-            return user.userId
+            return user.id
         }
         return null
     }
+    getUserCode() {
+        const user = this.getUser()
+        if (user) {
+            return user.openId
+        }
+        return null
+    }
+
     getUserType() {
         const user = this.getUser()
         if (user) {
@@ -276,6 +313,7 @@ export default class BaseService {
         }
     }
     async getQiniuToken(fileName, width, isCover = false) {
+        return null;
         const res = await this.request('/api/upload/token', {
             fileName,
             width,
@@ -311,11 +349,11 @@ export default class BaseService {
                 default:
                     break;
             }
-            if (token === null) {
-                continue
-            }
+            // if (token === null) {
+            //     continue
+            // }
             const result = await wepy.wx.uploadFile({
-                url: 'https://up-z1.qiniup.com',
+                url: 'http://127.0.0.1:8088/api/community/upload/image',
                 filePath: img.path,
                 name: 'file',
                 formData: {
