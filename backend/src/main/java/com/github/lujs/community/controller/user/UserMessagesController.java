@@ -1,4 +1,4 @@
-package com.github.lujs.community.controller;
+package com.github.lujs.community.controller.user;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.lujs.commmon.controller.BaseController;
@@ -6,9 +6,9 @@ import com.github.lujs.commmon.controller.request.PrimaryKeyRequest;
 import com.github.lujs.commmon.model.vo.BaseRequest;
 import com.github.lujs.commmon.model.vo.BaseResponse;
 import com.github.lujs.commmon.query.PageQuery;
-import com.github.lujs.community.api.model.pojo.UserNotices;
-import com.github.lujs.community.api.model.query.UserNoticesQuery;
-import com.github.lujs.community.api.service.IUserNoticesService;
+import com.github.lujs.community.api.model.pojo.UserMessages;
+import com.github.lujs.community.api.model.query.UserMessagesQuery;
+import com.github.lujs.community.api.service.IUserMessagesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,12 +25,12 @@ import java.util.Date;
  * @since 2020-03-27
  */
 @RestController
-@RequestMapping("/community/userNotices")
-public class UserNoticesController extends BaseController {
-    private final Logger logger = LoggerFactory.getLogger(UserNoticesController.class);
+@RequestMapping("/community/userMessages")
+public class UserMessagesController extends BaseController {
+    private final Logger logger = LoggerFactory.getLogger(UserMessagesController.class);
 
     @Resource
-    private IUserNoticesService targetService;
+    private IUserMessagesService targetService;
 
     /**
      * 获取详情
@@ -39,15 +39,15 @@ public class UserNoticesController extends BaseController {
      */
     @RequestMapping("/get")
     public BaseResponse get(@Valid @RequestBody BaseRequest<PrimaryKeyRequest> request) {
-        UserNotices userNotices = targetService.getById(request.getData().getId());
-            return successResponse(userNotices);
+        UserMessages userMessages = targetService.getById(request.getData().getId());
+            return successResponse(userMessages);
     }
 
     /**
     * 新增
     */
     @RequestMapping("/add")
-    public BaseResponse add(@Valid @RequestBody BaseRequest<UserNotices> request) {
+    public BaseResponse add(@Valid @RequestBody BaseRequest<UserMessages> request) {
             boolean result = targetService.save(request.getData());
             return baseResponse(result);
     }
@@ -55,14 +55,14 @@ public class UserNoticesController extends BaseController {
     * 修改
     */
     @RequestMapping("/update")
-    public BaseResponse update(@Valid @RequestBody BaseRequest<UserNotices> request){
+    public BaseResponse update(@Valid @RequestBody BaseRequest<UserMessages> request){
         try{
-            UserNotices userNotices =request.getData();
-            userNotices.setUpdateTime(new Date());
-            boolean result= targetService.updateById(userNotices);
+            UserMessages userMessages =request.getData();
+            userMessages.setUpdateTime(new Date());
+            boolean result= targetService.updateById(userMessages);
             return baseResponse(result);
         }catch(Exception ex){
-            logger.error("userNoticesupdate -=- {}",ex.toString());
+            logger.error("userMessagesupdate -=- {}",ex.toString());
         }
         return null;
     }
@@ -85,10 +85,10 @@ public class UserNoticesController extends BaseController {
     * @return
     */
     @RequestMapping("/page")
-    public BaseResponse page(@RequestBody BaseRequest<PageQuery<UserNotices, UserNoticesQuery>> request) {
-        PageQuery<UserNotices, UserNoticesQuery> page = request.getData();
-        UserNoticesQuery query = page.getParams();
-        QueryWrapper<UserNotices> wrapper = new QueryWrapper<>();
+    public BaseResponse page(@RequestBody BaseRequest<PageQuery<UserMessages, UserMessagesQuery>> request) {
+        PageQuery<UserMessages, UserMessagesQuery> page = request.getData();
+        UserMessagesQuery query = page.getParams();
+        QueryWrapper<UserMessages> wrapper = new QueryWrapper<>();
         /*
         if (null != query.getName()) {
         wrapper.eq("name", query.getName());

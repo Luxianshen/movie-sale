@@ -1,4 +1,4 @@
-package com.github.lujs.community.controller;
+package com.github.lujs.community.controller.posts;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.lujs.commmon.controller.BaseController;
@@ -6,9 +6,9 @@ import com.github.lujs.commmon.controller.request.PrimaryKeyRequest;
 import com.github.lujs.commmon.model.vo.BaseRequest;
 import com.github.lujs.commmon.model.vo.BaseResponse;
 import com.github.lujs.commmon.query.PageQuery;
-import com.github.lujs.community.api.model.pojo.TopicFollows;
-import com.github.lujs.community.api.model.query.TopicFollowsQuery;
-import com.github.lujs.community.api.service.ITopicFollowsService;
+import com.github.lujs.community.api.model.pojo.PostRecommends;
+import com.github.lujs.community.api.model.query.PostRecommendsQuery;
+import com.github.lujs.community.api.service.IPostRecommendsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,12 +25,12 @@ import java.util.Date;
  * @since 2020-03-27
  */
 @RestController
-@RequestMapping("/community/topicFollows")
-public class TopicFollowsController extends BaseController {
-    private final Logger logger = LoggerFactory.getLogger(TopicFollowsController.class);
+@RequestMapping("/community/postRecommends")
+public class PostRecommendsController extends BaseController {
+    private final Logger logger = LoggerFactory.getLogger(PostRecommendsController.class);
 
     @Resource
-    private ITopicFollowsService targetService;
+    private IPostRecommendsService targetService;
 
     /**
      * 获取详情
@@ -39,15 +39,15 @@ public class TopicFollowsController extends BaseController {
      */
     @RequestMapping("/get")
     public BaseResponse get(@Valid @RequestBody BaseRequest<PrimaryKeyRequest> request) {
-        TopicFollows topicFollows = targetService.getById(request.getData().getId());
-            return successResponse(topicFollows);
+        PostRecommends postRecommends = targetService.getById(request.getData().getId());
+            return successResponse(postRecommends);
     }
 
     /**
     * 新增
     */
     @RequestMapping("/add")
-    public BaseResponse add(@Valid @RequestBody BaseRequest<TopicFollows> request) {
+    public BaseResponse add(@Valid @RequestBody BaseRequest<PostRecommends> request) {
             boolean result = targetService.save(request.getData());
             return baseResponse(result);
     }
@@ -55,14 +55,14 @@ public class TopicFollowsController extends BaseController {
     * 修改
     */
     @RequestMapping("/update")
-    public BaseResponse update(@Valid @RequestBody BaseRequest<TopicFollows> request){
+    public BaseResponse update(@Valid @RequestBody BaseRequest<PostRecommends> request){
         try{
-            TopicFollows topicFollows =request.getData();
-            topicFollows.setUpdateTime(new Date());
-            boolean result= targetService.updateById(topicFollows);
+            PostRecommends postRecommends =request.getData();
+            postRecommends.setUpdateTime(new Date());
+            boolean result= targetService.updateById(postRecommends);
             return baseResponse(result);
         }catch(Exception ex){
-            logger.error("topicFollowsupdate -=- {}",ex.toString());
+            logger.error("postRecommendsupdate -=- {}",ex.toString());
         }
         return null;
     }
@@ -85,10 +85,10 @@ public class TopicFollowsController extends BaseController {
     * @return
     */
     @RequestMapping("/page")
-    public BaseResponse page(@RequestBody BaseRequest<PageQuery<TopicFollows, TopicFollowsQuery>> request) {
-        PageQuery<TopicFollows, TopicFollowsQuery> page = request.getData();
-        TopicFollowsQuery query = page.getParams();
-        QueryWrapper<TopicFollows> wrapper = new QueryWrapper<>();
+    public BaseResponse page(@RequestBody BaseRequest<PageQuery<PostRecommends, PostRecommendsQuery>> request) {
+        PageQuery<PostRecommends, PostRecommendsQuery> page = request.getData();
+        PostRecommendsQuery query = page.getParams();
+        QueryWrapper<PostRecommends> wrapper = new QueryWrapper<>();
         /*
         if (null != query.getName()) {
         wrapper.eq("name", query.getName());

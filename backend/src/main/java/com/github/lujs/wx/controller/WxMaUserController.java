@@ -1,12 +1,12 @@
-package com.github.lujs.controller;
+package com.github.lujs.wx.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.lujs.commmon.controller.BaseController;
 import com.github.lujs.commmon.model.vo.BaseResponse;
 import com.github.lujs.community.api.model.pojo.Users;
 import com.github.lujs.community.api.service.IUsersService;
-import com.github.lujs.config.WxMaConfiguration;
-import com.github.lujs.utils.JsonUtils;
+import com.github.lujs.commmon.config.WxMaConfiguration;
+import com.github.lujs.commmon.utils.JsonUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

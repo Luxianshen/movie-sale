@@ -1,4 +1,4 @@
-package com.github.lujs.community.controller;
+package com.github.lujs.community.controller.posts;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.lujs.commmon.controller.BaseController;
@@ -6,9 +6,9 @@ import com.github.lujs.commmon.controller.request.PrimaryKeyRequest;
 import com.github.lujs.commmon.model.vo.BaseRequest;
 import com.github.lujs.commmon.model.vo.BaseResponse;
 import com.github.lujs.commmon.query.PageQuery;
-import com.github.lujs.community.api.model.pojo.UserFollows;
-import com.github.lujs.community.api.model.query.UserFollowsQuery;
-import com.github.lujs.community.api.service.IUserFollowsService;
+import com.github.lujs.community.api.model.pojo.PostLikes;
+import com.github.lujs.community.api.model.query.PostLikesQuery;
+import com.github.lujs.community.api.service.IPostLikesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,12 +25,12 @@ import java.util.Date;
  * @since 2020-03-27
  */
 @RestController
-@RequestMapping("/community/userFollows")
-public class UserFollowsController extends BaseController {
-    private final Logger logger = LoggerFactory.getLogger(UserFollowsController.class);
+@RequestMapping("/community/postLikes")
+public class PostLikesController extends BaseController {
+    private final Logger logger = LoggerFactory.getLogger(PostLikesController.class);
 
     @Resource
-    private IUserFollowsService targetService;
+    private IPostLikesService targetService;
 
     /**
      * 获取详情
@@ -39,15 +39,15 @@ public class UserFollowsController extends BaseController {
      */
     @RequestMapping("/get")
     public BaseResponse get(@Valid @RequestBody BaseRequest<PrimaryKeyRequest> request) {
-        UserFollows userFollows = targetService.getById(request.getData().getId());
-            return successResponse(userFollows);
+        PostLikes postLikes = targetService.getById(request.getData().getId());
+            return successResponse(postLikes);
     }
 
     /**
     * 新增
     */
     @RequestMapping("/add")
-    public BaseResponse add(@Valid @RequestBody BaseRequest<UserFollows> request) {
+    public BaseResponse add(@Valid @RequestBody BaseRequest<PostLikes> request) {
             boolean result = targetService.save(request.getData());
             return baseResponse(result);
     }
@@ -55,14 +55,14 @@ public class UserFollowsController extends BaseController {
     * 修改
     */
     @RequestMapping("/update")
-    public BaseResponse update(@Valid @RequestBody BaseRequest<UserFollows> request){
+    public BaseResponse update(@Valid @RequestBody BaseRequest<PostLikes> request){
         try{
-            UserFollows userFollows =request.getData();
-            userFollows.setUpdateTime(new Date());
-            boolean result= targetService.updateById(userFollows);
+            PostLikes postLikes =request.getData();
+            postLikes.setUpdateTime(new Date());
+            boolean result= targetService.updateById(postLikes);
             return baseResponse(result);
         }catch(Exception ex){
-            logger.error("userFollowsupdate -=- {}",ex.toString());
+            logger.error("postLikesupdate -=- {}",ex.toString());
         }
         return null;
     }
@@ -85,10 +85,10 @@ public class UserFollowsController extends BaseController {
     * @return
     */
     @RequestMapping("/page")
-    public BaseResponse page(@RequestBody BaseRequest<PageQuery<UserFollows, UserFollowsQuery>> request) {
-        PageQuery<UserFollows, UserFollowsQuery> page = request.getData();
-        UserFollowsQuery query = page.getParams();
-        QueryWrapper<UserFollows> wrapper = new QueryWrapper<>();
+    public BaseResponse page(@RequestBody BaseRequest<PageQuery<PostLikes, PostLikesQuery>> request) {
+        PageQuery<PostLikes, PostLikesQuery> page = request.getData();
+        PostLikesQuery query = page.getParams();
+        QueryWrapper<PostLikes> wrapper = new QueryWrapper<>();
         /*
         if (null != query.getName()) {
         wrapper.eq("name", query.getName());

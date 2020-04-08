@@ -46,7 +46,8 @@ public class UploadController extends BaseController {
         try {
             //todo 先本地储存
             String filePath = imgLocalPath+ File.separator + fileName;
-            FileCopyUtils.copy(file.getBytes(), new File(imgLocalPath + File.separator, fileName));
+            File desFile = new File(filePath);
+            file.transferTo(desFile);
             return successResponse(filePath);
         } catch (IOException e) {
             e.printStackTrace();

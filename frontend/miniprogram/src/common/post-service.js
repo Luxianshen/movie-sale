@@ -1,4 +1,5 @@
 import BaseService from "./base-service";
+const baseUrl = '/api/commmunity/posts'
 export default class PostService extends BaseService {
     constructor() {
         super()
@@ -6,7 +7,7 @@ export default class PostService extends BaseService {
         this.userType = this.getUserType()
     }
     async release(post) {
-        const res = await this.request('/api/post/release', post, 'POST')
+        const res = await this.request(baseUrl + 'release', post, 'POST')
         wx.hideLoading()
         if (res.code === 0) {
             this.showToast('成功发布', 'success')
@@ -24,7 +25,7 @@ export default class PostService extends BaseService {
         if (!url) {
             return
         }
-        const res = await this.request('/api/post/analyse', { url }, 'POST')
+        const res = await this.request(baseUrl + 'analyse', { url }, 'POST')
         if (res.code === 0) {
             return res.data
         }
@@ -36,33 +37,33 @@ export default class PostService extends BaseService {
      * type: 0:推荐,1:动弹,2:文章,3:问答
      */
     async recommend(options) {
-        return await this._list('api/community/posts/recommend', options)
+        return await this._list(baseUrl + 'recommend', options)
     }
     async listForTopic(options) {
-        return await this._list('api/topic/post/page', options)
+        return await this._list(baseUrl + 'page', options)
     }
     async listForUser(options) {
-        return await this._list('api/post/list/user', options)
+        return await this._list(baseUrl + 'user', options)
     }
     async listForSchool(options) {
         options.school = this.getSchool()
-        return await this._list('api/post/list/school', options)
+        return await this._list(baseUrl + 'list/school', options)
     }
     /**
      * 关注动态
      * @param {pageIndex, pageSize, begin, isRefresh} options 
      */
     async follow(options) {
-        return await this._list('/api/post/follow', options)
+        return await this._list(baseUrl + 'follow', options)
     }
     async recommendForNew() {
-        return await this._list('/api/post/recommend/new', null, 'GET')
+        return await this._list(baseUrl + 'recommend/new', null, 'GET')
     }
     async answers(id, pageIndex, pageSize) {
-        return this._list('/api/post/answers', { id, pageIndex, pageSize })
+        return this._list(baseUrl + 'answers', { id, pageIndex, pageSize })
     }
     async details(id) {
-        const res = await this.request(`/api/post/details/${id}`, null, 'GET')
+        const res = await this.request(baseUrl + `details/${id}`, null, 'GET')
         if (res.code === 0) {
             return this._parsePost(res.data)
         }
@@ -79,7 +80,7 @@ export default class PostService extends BaseService {
             });
             return
         }
-        const res = await this.request('/api/post/comment', { toId, postId, commentId, commenType, content, imgs }, 'POST')
+        const res = await this.request(baseUrl + 'comment', { toId, postId, commentId, commenType, content, imgs }, 'POST')
         wx.hideLoading()
         if (res.code === 0 && res.data) {
             this.showToast('成功发表', 'success')
@@ -99,7 +100,7 @@ export default class PostService extends BaseService {
             title: '点赞中...',
             mask: true
         });
-        const res = await this.request('/api/post/like', { toId, postId, commentId, likeType }, 'POST')
+        const res = await this.request(baseUrl + 'like', { toId, postId, commentId, likeType }, 'POST')
         wx.hideLoading()
         if (res.code === 0) {
             this.showToast('点赞成功', 'success')
@@ -113,7 +114,7 @@ export default class PostService extends BaseService {
             title: '取消中...',
             mask: true
         });
-        const res = await this.request('/api/post/like/cancel', { likeType, id }, 'POST')
+        const res = await this.request(baseUrl + 'like/cancel', { likeType, id }, 'POST')
         wx.hideLoading()
         if (res.code === 0) {
             this.showToast('取消成功', 'success')
@@ -123,14 +124,14 @@ export default class PostService extends BaseService {
         return false
     }
     async getComments({ likeType, id, pageIndex, pageSize }) {
-        const res = await this.request('/api/post/comment/list', { likeType, id, pageIndex, pageSize }, 'POST')
+        const res = await this.request(baseUrl + 'comment/list', { likeType, id, pageIndex, pageSize }, 'POST')
         if (res.code === 0) {
             return res.data.map(this._parseComment.bind(this))
         }
         return null
     }
     async getCommentDetail(id) {
-        const res = await this.request(`/api/post/comment/get/${id}`, null, 'GET')
+        const res = await this.request(baseUrl + `comment/get/${id}`, null, 'GET')
         if (res.code === 0 && res.data) {
             return this._parseComment(res.data)
         }
@@ -141,7 +142,7 @@ export default class PostService extends BaseService {
             title: '删除中...',
             mask: true
         });
-        const res = await this.request(`/api/post/remove/${id}`, null, 'GET')
+        const res = await this.request(baseUrl + `remove/${id}`, null, 'GET')
         wx.hideLoading()
         if (res.code === 0) {
             this.showToast('已删除', 'success')
@@ -155,7 +156,7 @@ export default class PostService extends BaseService {
             title: '删除中...',
             mask: true
         });
-        const res = await this.request(`/api/post/comment/remove/${id}`, null, 'GET')
+        const res = await this.request(baseUrl + `comment/remove/${id}`, null, 'GET')
         wx.hideLoading()
         if (res.code === 0) {
             this.showToast('已删除', 'success')
@@ -165,7 +166,7 @@ export default class PostService extends BaseService {
         return false
     }
     async commentsForUser({ pageIndex, pageSize }) {
-        const res = await this.request(`/api/post/user/comment/list/${pageIndex}/${pageSize}`)
+        const res = await this.request(baseUrl + `user/comment/list/${pageIndex}/${pageSize}`)
         if (res.code === 0) {
             return res.data.map(item => {
                 if (item.user) {
@@ -195,7 +196,7 @@ export default class PostService extends BaseService {
             title: '设置中...',
             mask: true
         });
-        const res = await this.request(`/api/post/recommend/post/${id}`)
+        const res = await this.request(baseUrl + `recommend/post/${id}`)
         wx.hideLoading()
         if (res.code === 0) {
             this.showToast('成功', 'success')
@@ -209,7 +210,7 @@ export default class PostService extends BaseService {
             title: '设置中...',
             mask: true
         });
-        const res = await this.request(`/api/post/comment/hot/${id}`)
+        const res = await this.request(baseUrl + `comment/hot/${id}`)
         wx.hideLoading()
         if (res.code === 0) {
             this.showToast('成功', 'success')
@@ -219,7 +220,7 @@ export default class PostService extends BaseService {
         return false
     }
     async likesForUser({ pageIndex, pageSize }) {
-        const res = await this.request(`/api/post/user/like/list/${pageIndex}/${pageSize}`)
+        const res = await this.request(baseUrl + `user/like/list/${pageIndex}/${pageSize}`)
         if (res.code === 0) {
             return res.data.map(item => {
                 if (item.dataType === 1) {

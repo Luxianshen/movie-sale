@@ -1,4 +1,4 @@
-package com.github.lujs.config;
+package com.github.lujs.commmon.config;
 
 import java.util.List;
 

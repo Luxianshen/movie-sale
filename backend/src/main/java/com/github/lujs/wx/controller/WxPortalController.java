@@ -1,9 +1,9 @@
-package com.github.lujs.controller;
+package com.github.lujs.wx.controller;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaMessage;
 import cn.binarywang.wx.miniapp.constant.WxMaConstants;
-import com.github.lujs.config.WxMaConfiguration;
+import com.github.lujs.commmon.config.WxMaConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

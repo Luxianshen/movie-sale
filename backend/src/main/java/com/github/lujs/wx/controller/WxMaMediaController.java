@@ -1,4 +1,4 @@
-package com.github.lujs.controller;
+package com.github.lujs.wx.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.constant.WxMaConstants;
-import com.github.lujs.config.WxMaConfiguration;
+import com.github.lujs.commmon.config.WxMaConfiguration;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import me.chanjar.weixin.common.bean.result.WxMediaUploadResult;

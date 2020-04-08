@@ -1,4 +1,4 @@
-package com.github.lujs.community.controller;
+package com.github.lujs.community.controller.topic;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.lujs.commmon.controller.BaseController;
@@ -6,9 +6,9 @@ import com.github.lujs.commmon.controller.request.PrimaryKeyRequest;
 import com.github.lujs.commmon.model.vo.BaseRequest;
 import com.github.lujs.commmon.model.vo.BaseResponse;
 import com.github.lujs.commmon.query.PageQuery;
-import com.github.lujs.community.api.model.pojo.PostLikes;
-import com.github.lujs.community.api.model.query.PostLikesQuery;
-import com.github.lujs.community.api.service.IPostLikesService;
+import com.github.lujs.community.api.model.pojo.TopicFollows;
+import com.github.lujs.community.api.model.query.TopicFollowsQuery;
+import com.github.lujs.community.api.service.ITopicFollowsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,12 +25,12 @@ import java.util.Date;
  * @since 2020-03-27
  */
 @RestController
-@RequestMapping("/community/postLikes")
-public class PostLikesController extends BaseController {
-    private final Logger logger = LoggerFactory.getLogger(PostLikesController.class);
+@RequestMapping("/community/topicFollows")
+public class TopicFollowsController extends BaseController {
+    private final Logger logger = LoggerFactory.getLogger(TopicFollowsController.class);
 
     @Resource
-    private IPostLikesService targetService;
+    private ITopicFollowsService targetService;
 
     /**
      * 获取详情
@@ -39,15 +39,15 @@ public class PostLikesController extends BaseController {
      */
     @RequestMapping("/get")
     public BaseResponse get(@Valid @RequestBody BaseRequest<PrimaryKeyRequest> request) {
-        PostLikes postLikes = targetService.getById(request.getData().getId());
-            return successResponse(postLikes);
+        TopicFollows topicFollows = targetService.getById(request.getData().getId());
+            return successResponse(topicFollows);
     }
 
     /**
     * 新增
     */
     @RequestMapping("/add")
-    public BaseResponse add(@Valid @RequestBody BaseRequest<PostLikes> request) {
+    public BaseResponse add(@Valid @RequestBody BaseRequest<TopicFollows> request) {
             boolean result = targetService.save(request.getData());
             return baseResponse(result);
     }
@@ -55,14 +55,14 @@ public class PostLikesController extends BaseController {
     * 修改
     */
     @RequestMapping("/update")
-    public BaseResponse update(@Valid @RequestBody BaseRequest<PostLikes> request){
+    public BaseResponse update(@Valid @RequestBody BaseRequest<TopicFollows> request){
         try{
-            PostLikes postLikes =request.getData();
-            postLikes.setUpdateTime(new Date());
-            boolean result= targetService.updateById(postLikes);
+            TopicFollows topicFollows =request.getData();
+            topicFollows.setUpdateTime(new Date());
+            boolean result= targetService.updateById(topicFollows);
             return baseResponse(result);
         }catch(Exception ex){
-            logger.error("postLikesupdate -=- {}",ex.toString());
+            logger.error("topicFollowsupdate -=- {}",ex.toString());
         }
         return null;
     }
@@ -85,10 +85,10 @@ public class PostLikesController extends BaseController {
     * @return
     */
     @RequestMapping("/page")
-    public BaseResponse page(@RequestBody BaseRequest<PageQuery<PostLikes, PostLikesQuery>> request) {
-        PageQuery<PostLikes, PostLikesQuery> page = request.getData();
-        PostLikesQuery query = page.getParams();
-        QueryWrapper<PostLikes> wrapper = new QueryWrapper<>();
+    public BaseResponse page(@RequestBody BaseRequest<PageQuery<TopicFollows, TopicFollowsQuery>> request) {
+        PageQuery<TopicFollows, TopicFollowsQuery> page = request.getData();
+        TopicFollowsQuery query = page.getParams();
+        QueryWrapper<TopicFollows> wrapper = new QueryWrapper<>();
         /*
         if (null != query.getName()) {
         wrapper.eq("name", query.getName());

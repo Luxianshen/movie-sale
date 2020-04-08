@@ -1,4 +1,4 @@
-package com.github.lujs.community.controller;
+package com.github.lujs.community.controller.user;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.lujs.commmon.controller.BaseController;
@@ -6,12 +6,11 @@ import com.github.lujs.commmon.controller.request.PrimaryKeyRequest;
 import com.github.lujs.commmon.model.vo.BaseRequest;
 import com.github.lujs.commmon.model.vo.BaseResponse;
 import com.github.lujs.commmon.query.PageQuery;
-import com.github.lujs.community.api.model.pojo.Users;
-import com.github.lujs.community.api.model.query.UsersQuery;
-import com.github.lujs.community.api.service.IUsersService;
+import com.github.lujs.community.api.model.pojo.UserNotices;
+import com.github.lujs.community.api.model.query.UserNoticesQuery;
+import com.github.lujs.community.api.service.IUserNoticesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,29 +25,29 @@ import java.util.Date;
  * @since 2020-03-27
  */
 @RestController
-@RequestMapping("/community/users")
-public class UsersController extends BaseController {
-    private final Logger logger = LoggerFactory.getLogger(UsersController.class);
+@RequestMapping("/community/userNotices")
+public class UserNoticesController extends BaseController {
+    private final Logger logger = LoggerFactory.getLogger(UserNoticesController.class);
 
     @Resource
-    private IUsersService targetService;
+    private IUserNoticesService targetService;
 
     /**
      * 获取详情
      * @param request
      * @return
      */
-    @RequestMapping("/refresh")
+    @RequestMapping("/get")
     public BaseResponse get(@Valid @RequestBody BaseRequest<PrimaryKeyRequest> request) {
-        Users users = targetService.getById(request.getData().getId());
-        return successResponse(users);
+        UserNotices userNotices = targetService.getById(request.getData().getId());
+            return successResponse(userNotices);
     }
 
     /**
     * 新增
     */
     @RequestMapping("/add")
-    public BaseResponse add(@Valid @RequestBody BaseRequest<Users> request) {
+    public BaseResponse add(@Valid @RequestBody BaseRequest<UserNotices> request) {
             boolean result = targetService.save(request.getData());
             return baseResponse(result);
     }
@@ -56,14 +55,14 @@ public class UsersController extends BaseController {
     * 修改
     */
     @RequestMapping("/update")
-    public BaseResponse update(@Valid @RequestBody BaseRequest<Users> request){
+    public BaseResponse update(@Valid @RequestBody BaseRequest<UserNotices> request){
         try{
-            Users users =request.getData();
-            users.setUpdateTime(new Date());
-            boolean result= targetService.updateById(users);
+            UserNotices userNotices =request.getData();
+            userNotices.setUpdateTime(new Date());
+            boolean result= targetService.updateById(userNotices);
             return baseResponse(result);
         }catch(Exception ex){
-            logger.error("usersupdate -=- {}",ex.toString());
+            logger.error("userNoticesupdate -=- {}",ex.toString());
         }
         return null;
     }
@@ -86,10 +85,10 @@ public class UsersController extends BaseController {
     * @return
     */
     @RequestMapping("/page")
-    public BaseResponse page(@RequestBody BaseRequest<PageQuery<Users, UsersQuery>> request) {
-        PageQuery<Users, UsersQuery> page = request.getData();
-        UsersQuery query = page.getParams();
-        QueryWrapper<Users> wrapper = new QueryWrapper<>();
+    public BaseResponse page(@RequestBody BaseRequest<PageQuery<UserNotices, UserNoticesQuery>> request) {
+        PageQuery<UserNotices, UserNoticesQuery> page = request.getData();
+        UserNoticesQuery query = page.getParams();
+        QueryWrapper<UserNotices> wrapper = new QueryWrapper<>();
         /*
         if (null != query.getName()) {
         wrapper.eq("name", query.getName());
@@ -100,20 +99,6 @@ public class UsersController extends BaseController {
         */
         targetService.page(page, wrapper);
         return successResponse(page);
-    }
-
-    /**
-     * 绑定用户
-     * @param request
-     * @return
-     */
-    @PostMapping("/binding")
-    public BaseResponse binding(@Valid @RequestBody BaseRequest<Users> request) {
-        request.getData().setIsBinding(true);
-        if(targetService.updateById(request.getData())){
-            return successResponse(true);
-        }
-        return failedResponse(false);
     }
 }
 

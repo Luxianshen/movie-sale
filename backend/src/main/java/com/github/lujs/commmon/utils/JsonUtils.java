@@ -1,4 +1,4 @@
-package com.github.lujs.utils;
+package com.github.lujs.commmon.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;

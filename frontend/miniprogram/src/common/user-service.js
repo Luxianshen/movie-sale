@@ -71,7 +71,7 @@ export default class UserService extends BaseService {
             });
             return
         }
-        const res = await this.request(`/api/user/follow/${id}`, null, 'GET')
+        const res = await this.request(baseUserUrl + `follow/${id}`, null, 'GET')
         if (res.code === 0) {
             this.showToast('已关注', 'success')
             return true
@@ -80,7 +80,7 @@ export default class UserService extends BaseService {
         return false
     }
     async cancel(id) {
-        const res = await this.request(`/api/user/follow/cancel/${id}`, null, 'GET')
+        const res = await this.request(baseUserUrl + `follow/cancel/${id}`, null, 'GET')
         if (res.code === 0) {
             this.showToast('取消成功', 'success')
             return true
@@ -96,7 +96,7 @@ export default class UserService extends BaseService {
         return null
     }
     async searchSchool(keyword, pageIndex, pageSize) {
-        const res = await this.request('/api/user/school', { keyword, pageIndex, pageSize }, 'POST')
+        const res = await this.request(baseUserUrl + 'school', { keyword, pageIndex, pageSize }, 'POST')
         if (res.code === 0) {
             return res.data
         }
@@ -107,7 +107,7 @@ export default class UserService extends BaseService {
             title: '保存中...',
             mask: true
         });
-        const res = await this.request('/api/user/change', { filed, value }, 'POST')
+        const res = await this.request(baseUserUrl + 'change', { filed, value }, 'POST')
         wx.hideLoading()
         if (res.code === 0) {
             const user = this.getUser()
@@ -125,7 +125,7 @@ export default class UserService extends BaseService {
             title: '提交中...',
             mask: true
         });
-        const res = await this.request('/api/user/auth', {
+        const res = await this.request(baseUserUrl + 'auth', {
             realName, authSrc
         }, 'POST')
         wx.hideLoading()
@@ -137,13 +137,13 @@ export default class UserService extends BaseService {
         return false
     }
     async fans({ pageIndex, pageSize, type, userId }) {
-        const res = await this.request('/api/user/fans', { pageIndex, pageSize, type, userId }, 'POST')
+        const res = await this.request(baseUserUrl + 'fans', { pageIndex, pageSize, type, userId }, 'POST')
         if (res.code === 0) {
             return res.data.map(this.parseUser.bind(this))
         }
         return null
     }
     async send() {
-        const res = await this.request('/api/user/send', null, 'GET')
+        const res = await this.request(baseUserUrl + 'send', null, 'GET')
     }
 }
