@@ -24,37 +24,37 @@ private static final long serialVersionUID=1L;
 
     private String des;
 
-    @TableField("iconSrc")
+    @TableField("icon_src")
     private String iconSrc;
 
     /**
      * 话题用户别称
      */
-    @TableField("nickName")
+    @TableField("nick_name")
     private String nickName;
 
     /**
      * 话题类型:(0:系统话题,1:用户自定义话题)
      */
-    @TableField("topicType")
+    @TableField("topic_type")
     private Integer topicType;
 
     /**
      * 话题创造者
      */
-    @TableField("ownerId")
-    private Integer ownerId;
+    @TableField("owner_id")
+    private Long ownerId;
 
-    @TableField("followCount")
+    @TableField("follow_count")
     private Integer followCount;
 
-    @TableField("postCount")
+    @TableField("post_count")
     private Integer postCount;
 
-    @TableField("isTop")
+    @TableField("is_top")
     private Boolean isTop;
 
-    @TableField("isActivity")
+    @TableField("is_activity")
     private Boolean isActivity;
 
 

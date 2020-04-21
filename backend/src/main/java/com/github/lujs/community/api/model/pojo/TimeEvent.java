@@ -1,13 +1,11 @@
 package com.github.lujs.community.api.model.pojo;
 
-import com.github.lujs.commmon.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.github.lujs.commmon.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
-import java.util.Date;
 
 /**
  * 
@@ -17,30 +15,33 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@TableName("topic_follows")
-public class TopicFollows extends BaseEntity {
+@TableName("time_event")
+public class TimeEvent extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("user_id")
-    private Long userId;
-
-    @TableField("topic_id")
-    private Long topicId;
+    /**
+     * 标题
+     */
+    private String title;
 
     /**
-     * 是否关注话题
+     * 图标
      */
-    @TableField("has_follow")
-    private Boolean hasFollow;
+    private String icon;
+    
+    /**
+     * 颜色
+     */
+    private String color;
 
     /**
-     * 贡献积分
+     * 月和日
      */
-    private Integer score;
+    private String monthDay;
 
-    @TableField("follow_date")
-    private Date followDate;
-
-
+    /**
+     * 时分
+     */
+    private String hourMin;
 }

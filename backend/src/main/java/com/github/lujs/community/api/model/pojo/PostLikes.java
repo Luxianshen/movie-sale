@@ -22,28 +22,25 @@ public class PostLikes extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("userId")
+    @TableField("user_id")
     private Integer userId;
 
-    @TableField("toId")
+    @TableField("to_id")
     private Integer toId;
 
-    @TableField("postId")
+    @TableField("post_id")
     private Integer postId;
 
-    @TableField("commentId")
+    @TableField("comment_id")
     private Integer commentId;
 
     /**
      * 类型:0帖子,1评论
      */
-    @TableField("likeType")
+    @TableField("like_type")
     private Integer likeType;
 
-    @TableField("senDate")
-    private Date senDate;
-
-    @TableField("isRead")
+    @TableField("is_read")
     private Boolean isRead;
 
 

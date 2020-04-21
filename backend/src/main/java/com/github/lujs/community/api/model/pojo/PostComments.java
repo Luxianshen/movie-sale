@@ -22,44 +22,41 @@ public class PostComments extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("fromId")
+    @TableField("form_id")
     private Integer fromId;
 
-    @TableField("toId")
+    @TableField("to_id")
     private Integer toId;
 
-    @TableField("postId")
+    @TableField("post_id")
     private Integer postId;
 
-    @TableField("commentId")
+    @TableField("comment_id")
     private Integer commentId;
 
-    @TableField("replyId")
+    @TableField("reply_id")
     private Integer replyId;
 
     /**
      * 0:评论帖子,1:回复评论,2:回复评论的回复
      */
-    @TableField("commenType")
-    private Integer commenType;
+    @TableField("comment_type")
+    private Integer commentType;
 
     private String content;
 
     private String imgs;
 
-    @TableField("thumbsCount")
+    @TableField("thumbs_count")
     private Integer thumbsCount;
 
-    @TableField("replyCount")
+    @TableField("reply_count")
     private Integer replyCount;
 
-    @TableField("senDate")
-    private Date senDate;
-
-    @TableField("isRead")
+    @TableField("is_read")
     private Boolean isRead;
 
-    @TableField("isHot")
+    @TableField("is_hot")
     private Boolean isHot;
 
 

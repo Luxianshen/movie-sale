@@ -1,6 +1,6 @@
 package com.github.lujs.community.service.mapper;
 
-import com.github.lujs.community.api.model.pojo.Schools;
+import com.github.lujs.community.api.model.pojo.TimeEvent;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -8,6 +8,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author joysim
  * @since 2020-03-27
  */
-public interface SchoolsMapper extends BaseMapper<Schools> {
+public interface TimeEventMapper extends BaseMapper<TimeEvent> {
 
 }

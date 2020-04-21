@@ -22,14 +22,11 @@ public class PostViews extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("userId")
+    @TableField("user_id")
     private Integer userId;
 
-    @TableField("postId")
+    @TableField("post_id")
     private Integer postId;
-
-    @TableField("senDate")
-    private Date senDate;
 
 
 }

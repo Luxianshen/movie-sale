@@ -27,10 +27,10 @@ private static final long serialVersionUID=1L;
     /**
      * 0:文本,1:富文本
      */
-    @TableField("contentType")
+    @TableField("content_type")
     private Integer contentType;
 
-    @TableField("createDate")
+    @TableField("create_date")
     private Date createDate;
 
 

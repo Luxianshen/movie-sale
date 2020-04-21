@@ -22,23 +22,19 @@ public class PostRecommends extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("postId")
+    @TableField("post_id")
     private Integer postId;
 
-    @TableField("userId")
+    @TableField("user_id")
     private Integer userId;
 
-    @TableField("posType")
+    @TableField("post_type")
     private Integer posType;
 
     /**
      * 推荐类型(0:永久在推荐表,1:暂时24小时在推荐表)
      */
-    @TableField("recommendType")
+    @TableField("recommend_type")
     private Integer recommendType;
-
-    @TableField("senDate")
-    private Date senDate;
-
 
 }

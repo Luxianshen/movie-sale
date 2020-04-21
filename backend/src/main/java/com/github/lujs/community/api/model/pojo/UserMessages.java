@@ -22,16 +22,13 @@ public class UserMessages extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("toUserId")
+    @TableField("to_user_id")
     private Integer toUserId;
 
-    @TableField("messageId")
+    @TableField("message_id")
     private Integer messageId;
 
-    @TableField("senDate")
-    private Date senDate;
-
-    @TableField("isRead")
+    @TableField("is_read")
     private Boolean isRead;
 
 

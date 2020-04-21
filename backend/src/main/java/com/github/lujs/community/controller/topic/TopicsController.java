@@ -61,7 +61,7 @@ public class TopicsController extends BaseController {
     public BaseResponse add(@Valid @RequestBody BaseRequest<Topics> request) {
         Topics topics = request.getData();
         topics.init();
-        boolean result = targetService.save(request.getData());
+        boolean result = targetService.save(topics);
         return baseResponse(result);
     }
 

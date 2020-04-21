@@ -23,7 +23,7 @@ public class Users extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("openId")
+    @TableField("open_id")
     private String openId;
 
     /**
@@ -34,13 +34,13 @@ private static final long serialVersionUID=1L;
     /**
      * 分享者ID
      */
-    @TableField("shareId")
+    @TableField("share_id")
     private Integer shareId;
 
     /**
      * 公众号openId
      */
-    @TableField("gzhId")
+    @TableField("gzh_id")
     private String gzhId;
 
     /**
@@ -94,28 +94,16 @@ private static final long serialVersionUID=1L;
     private String city;
 
     /**
-     * 注册时间
-     */
-    @TableField("registerDate")
-    private Date registerDate;
-
-    /**
      * 是否学生认证
      */
-    @TableField("isAuth")
+    @TableField("is_auth")
     private Boolean isAuth;
 
     /**
      * 真实姓名
      */
-    @TableField("realName")
+    @TableField("real_name")
     private String realName;
-
-    /**
-     * 认证图片地址
-     */
-    @TableField("authSrc")
-    private String authSrc;
 
     /**
      * 头衔
@@ -125,7 +113,7 @@ private static final long serialVersionUID=1L;
     /**
      * 是否绑定个人信息
      */
-    @TableField("isBinding")
+    @TableField("is_binding")
     private Boolean isBinding;
 
     /**
@@ -134,25 +122,9 @@ private static final long serialVersionUID=1L;
     private String signature;
 
     /**
-     * 就读学校
-     */
-    private String school;
-
-    /**
-     * 学历(0专科,1本科,2硕士,3博士)
-     */
-    private Integer education;
-
-    /**
-     * 入学年份
-     */
-    @TableField("enrollmentYear")
-    private Integer enrollmentYear;
-
-    /**
      * 用户类型(0普通用户1系统用户2虚拟用户)
      */
-    @TableField("userType")
+    @TableField("user_type")
     private Integer userType;
 
     /**
@@ -163,31 +135,31 @@ private static final long serialVersionUID=1L;
     /**
      * 未读系统消息
      */
-    @TableField("sysMsgCount")
+    @TableField("sys_msg_count")
     private Integer sysMsgCount;
 
     /**
      * 未读用户消息
      */
-    @TableField("noticeCount")
+    @TableField("notice_ount")
     private Integer noticeCount;
 
     /**
      * 关注
      */
-    @TableField("followNum")
+    @TableField("follow_num")
     private Integer followNum;
 
     /**
      * 粉丝数
      */
-    @TableField("fansNum")
+    @TableField("fans_num")
     private Integer fansNum;
 
     /**
      * 获赞数
      */
-    @TableField("thumbsNum")
+    @TableField("thumbs_num")
     private Integer thumbsNum;
 
     /**

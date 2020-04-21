@@ -1,12 +1,10 @@
 package com.github.lujs.community.controller;
 
+import cn.hutool.core.io.FileUtil;
 import com.github.lujs.commmon.controller.BaseController;
 import com.github.lujs.commmon.model.vo.BaseResponse;
-import com.sun.imageio.plugins.common.ImageUtil;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,8 +44,7 @@ public class UploadController extends BaseController {
         try {
             //todo 先本地储存
             String filePath = imgLocalPath+ File.separator + fileName;
-            File desFile = new File(filePath);
-            file.transferTo(desFile);
+            FileUtil.writeBytes(file.getBytes(),filePath);
             return successResponse(filePath);
         } catch (IOException e) {
             e.printStackTrace();

@@ -108,7 +108,7 @@ public class PostsController extends BaseController {
      * @param request
      * @return
      */
-    @PostMapping("/recommend")
+    @PostMapping("/recommend/new")
     public BaseResponse recommend() {
 
         QueryWrapper<Posts> wrapper = new QueryWrapper<>();
@@ -116,5 +116,18 @@ public class PostsController extends BaseController {
 
         return successResponse(targetService.list(wrapper));
     }
+
+    /**
+     * 查询关注
+     * @param
+     * @return
+     */
+    @PostMapping("/follow")
+    public BaseResponse follow(@RequestBody BaseRequest<PageQuery<Posts, PostsQuery>> request) {
+
+
+        return successResponse(targetService.list());
+    }
+
 }
 

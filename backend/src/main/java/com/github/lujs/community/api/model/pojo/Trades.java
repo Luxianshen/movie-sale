@@ -22,10 +22,10 @@ public class Trades extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("userId")
+    @TableField("user_id")
     private Integer userId;
 
-    @TableField("fromId")
+    @TableField("from_id")
     private Integer fromId;
 
     private Integer shell;

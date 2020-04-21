@@ -22,13 +22,13 @@ public class UserFollows extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("fromId")
+    @TableField("from_id")
     private Integer fromId;
 
-    @TableField("toId")
+    @TableField("to_id")
     private Integer toId;
 
-    @TableField("followDate")
+    @TableField("follow_date")
     private Date followDate;
 
 

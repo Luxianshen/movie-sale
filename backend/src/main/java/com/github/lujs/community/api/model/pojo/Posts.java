@@ -23,22 +23,22 @@ public class Posts extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("userId")
+    @TableField("user_id")
     private Integer userId;
 
-    @TableField("questionId")
+    @TableField("question_id")
     private Integer questionId;
 
-    @TableField("articleTitle")
+    @TableField("article_title")
     private String articleTitle;
 
-    @TableField("articleImg")
+    @TableField("article_img")
     private String articleImg;
 
-    @TableField("articleHtml")
+    @TableField("article_html")
     private String articleHtml;
 
-    @TableField("articleDelta")
+    @TableField("article_delta")
     private String articleDelta;
 
     private String introduction;
@@ -50,7 +50,7 @@ private static final long serialVersionUID=1L;
     /**
      * 帖子类型(0:动弹,1:文章,2:问答,3:投票)
      */
-    @TableField("posType")
+    @TableField("pos_type")
     private Integer posType;
 
     private String link;
@@ -59,25 +59,19 @@ private static final long serialVersionUID=1L;
 
     private String audio;
 
-    /**
-     * 发布时间
-     */
-    @TableField("senDate")
-    private Date senDate;
-
-    @TableField("thumbsCount")
+    @TableField("thumbs_count")
     private Integer thumbsCount;
 
-    @TableField("commentCount")
+    @TableField("comment_count")
     private Integer commentCount;
 
-    @TableField("viewCount")
+    @TableField("view_count")
     private Integer viewCount;
 
-    @TableField("topicId")
+    @TableField("topic_id")
     private Integer topicId;
 
-    @TableField("topicTitle")
+    @TableField("topic_title")
     private String topicTitle;
 
     private BigDecimal latitude;
@@ -86,10 +80,10 @@ private static final long serialVersionUID=1L;
 
     private String address;
 
-    @TableField("isRecommend")
+    @TableField("is_recommend")
     private Boolean isRecommend;
 
-    @TableField("isTop")
+    @TableField("is_top")
     private Boolean isTop;
 
     /**
