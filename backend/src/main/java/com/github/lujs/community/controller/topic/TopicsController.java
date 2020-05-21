@@ -130,5 +130,31 @@ public class TopicsController extends BaseController {
         }
         return successResponse(topics);
     }
+
+    /**
+     * 关注话题
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping("/follow")
+    public BaseResponse follow(@RequestBody BaseRequest<TopicFollows> request) {
+
+        boolean flag = false;
+        TopicFollows topicFollows = request.getData();
+        if (topicFollows.getTopicId() != null) {
+            topicFollows.init();
+            topicFollows.setHasFollow(true);
+            flag = topicFollowsService.save(topicFollows);
+
+        }
+        if (flag) {
+            return successResponse(flag);
+        } else {
+            return failedResponse(flag);
+        }
+
+    }
+
 }
 

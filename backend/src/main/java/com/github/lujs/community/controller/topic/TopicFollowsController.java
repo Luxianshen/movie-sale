@@ -20,7 +20,8 @@ import javax.validation.Valid;
 import java.util.Date;
 
 /**
- *  前端控制器
+ * 前端控制器
+ *
  * @author joysim
  * @since 2020-03-27
  */
@@ -34,71 +35,71 @@ public class TopicFollowsController extends BaseController {
 
     /**
      * 获取详情
+     *
      * @param request
      * @return
      */
     @RequestMapping("/get")
     public BaseResponse get(@Valid @RequestBody BaseRequest<PrimaryKeyRequest> request) {
         TopicFollows topicFollows = targetService.getById(request.getData().getId());
-            return successResponse(topicFollows);
+        return successResponse(topicFollows);
     }
 
     /**
-    * 新增
-    */
+     * 新增
+     */
     @RequestMapping("/add")
     public BaseResponse add(@Valid @RequestBody BaseRequest<TopicFollows> request) {
-            boolean result = targetService.save(request.getData());
-            return baseResponse(result);
+        boolean result = targetService.save(request.getData());
+        return baseResponse(result);
     }
+
     /**
-    * 修改
-    */
+     * 修改
+     */
     @RequestMapping("/update")
-    public BaseResponse update(@Valid @RequestBody BaseRequest<TopicFollows> request){
-        try{
-            TopicFollows topicFollows =request.getData();
+    public BaseResponse update(@Valid @RequestBody BaseRequest<TopicFollows> request) {
+        try {
+            TopicFollows topicFollows = request.getData();
             topicFollows.setUpdateTime(new Date());
-            boolean result= targetService.updateById(topicFollows);
+            boolean result = targetService.updateById(topicFollows);
             return baseResponse(result);
-        }catch(Exception ex){
-            logger.error("topicFollowsupdate -=- {}",ex.toString());
+        } catch (Exception ex) {
+            logger.error("topicFollowsupdate -=- {}", ex.toString());
         }
         return null;
     }
 
     /**
      * 删除
+     *
      * @param request
      * @return
      */
     @RequestMapping("/delete")
     public BaseResponse delete(@Valid @RequestBody BaseRequest<PrimaryKeyRequest> request) {
-            boolean result = targetService.removeById(request.getData().getId());
-            return baseResponse(result);
+        boolean result = targetService.removeById(request.getData().getId());
+        return baseResponse(result);
     }
 
 
     /**
-    * 分页查询
-    * @param request
-    * @return
-    */
+     * 分页查询
+     *
+     * @param request
+     * @return
+     */
     @RequestMapping("/page")
     public BaseResponse page(@RequestBody BaseRequest<PageQuery<TopicFollows, TopicFollowsQuery>> request) {
         PageQuery<TopicFollows, TopicFollowsQuery> page = request.getData();
         TopicFollowsQuery query = page.getParams();
         QueryWrapper<TopicFollows> wrapper = new QueryWrapper<>();
-        /*
-        if (null != query.getName()) {
-        wrapper.eq("name", query.getName());
-        }
-        if (null != query.getState()) {
-        wrapper.eq("state", query.getState());
-        }
-        */
+
         targetService.page(page, wrapper);
         return successResponse(page);
     }
+
+
+
 }
 

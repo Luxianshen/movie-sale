@@ -39,8 +39,4 @@ private static final long serialVersionUID=1L;
      */
     private Integer score;
 
-    @TableField("follow_date")
-    private Date followDate;
-
-
 }

@@ -96,23 +96,26 @@ public class TimeEventController extends BaseController {
     @RequestMapping("/list")
     public BaseResponse list() {
 
-        //Map<String,List<TimeEvent>> reslut = new HashMap<>();
+        Map<String,List<TimeEvent>> result = new HashMap<>();
 
         QueryWrapper<TimeEvent> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("create_time");
         List<TimeEvent> timeEvents = targetService.list(queryWrapper);
 
-        Map<String,List<TimeEvent>> map = timeEvents.stream().collect(Collectors.groupingBy(TimeEvent::getMonthDay));
-
-        LinkedHashMap result = new LinkedHashMap();
-        ListIterator<Map.Entry<String,List<TimeEvent>>> i = new ArrayList<Map.Entry<String,List<TimeEvent>>>(map.entrySet()).listIterator(map.size());
-
-        while(i.hasPrevious()) {
-            Map.Entry<String, List<TimeEvent>> entry=i.previous();
-            result.put(entry.getKey(),entry.getValue());
-        }
+        result = sortByKey(timeEvents.stream().collect(Collectors.groupingBy(TimeEvent::getMonthDay)));
 
         return successResponse(result);
     }
+
+
+    public <K extends Comparable<? super K>, V > Map<K, V> sortByKey(Map<K, V> map) {
+        Map<K, V> result = new LinkedHashMap<>();
+
+        map.entrySet().stream()
+                .sorted(Map.Entry.<K, V>comparingByKey()
+                        .reversed()).forEachOrdered(e -> result.put(e.getKey(), e.getValue()));
+        return result;
+    }
+
 }
 

@@ -61,7 +61,7 @@ private static final long serialVersionUID=1L;
     /**
      * 头像
      */
-    private String avtater;
+    private String avatar;
 
     /**
      * 情感
@@ -122,12 +122,6 @@ private static final long serialVersionUID=1L;
     private String signature;
 
     /**
-     * 用户类型(0普通用户1系统用户2虚拟用户)
-     */
-    @TableField("user_type")
-    private Integer userType;
-
-    /**
      * 用户等级(0普通1优秀2高级3VIP)
      */
     private Integer grade;
@@ -141,7 +135,7 @@ private static final long serialVersionUID=1L;
     /**
      * 未读用户消息
      */
-    @TableField("notice_ount")
+    @TableField("notice_count")
     private Integer noticeCount;
 
     /**

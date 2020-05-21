@@ -56,7 +56,7 @@ public class WxMaUserController extends BaseController {
             this.logger.info(session.getOpenid());
             Map<String, Object> result = new HashMap<>();
             QueryWrapper<Users> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("openId", session.getOpenid());
+            queryWrapper.eq("open_id", session.getOpenid());
             Users users = usersService.getOne(queryWrapper);
             if (users == null) {
                 users = new Users();
