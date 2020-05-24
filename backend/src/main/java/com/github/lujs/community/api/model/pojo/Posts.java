@@ -1,5 +1,8 @@
 package com.github.lujs.community.api.model.pojo;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.github.lujs.commmon.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -68,8 +71,8 @@ private static final long serialVersionUID=1L;
     @TableField("view_count")
     private Integer viewCount;
 
-    @TableField("topic_id")
-    private Integer topicId;
+    @JsonSerialize(using= ToStringSerializer.class)
+    private Long topicId;
 
     @TableField("topic_title")
     private String topicTitle;

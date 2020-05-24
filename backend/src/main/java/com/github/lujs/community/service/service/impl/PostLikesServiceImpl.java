@@ -6,6 +6,8 @@ import com.github.lujs.community.api.service.IPostLikesService;
 import com.github.lujs.community.service.mapper.PostLikesMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  *  服务实现类
  * @author joysim
@@ -14,4 +16,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class PostLikesServiceImpl extends ServiceImpl<PostLikesMapper, PostLikes> implements IPostLikesService {
 
+    @Override
+    public List<PostLikes> getByPostId(Long id) {
+        return baseMapper.getByPostId(id);
+    }
 }

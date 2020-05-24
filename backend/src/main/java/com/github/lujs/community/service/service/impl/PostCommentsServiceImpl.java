@@ -6,6 +6,8 @@ import com.github.lujs.community.api.service.IPostCommentsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  *  服务实现类
  * @author joysim
@@ -14,4 +16,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class PostCommentsServiceImpl extends ServiceImpl<PostCommentsMapper, PostComments> implements IPostCommentsService {
 
+    @Override
+    public List<PostComments> getByPostId(Long id) {
+        return baseMapper.getByPostId(id);
+    }
 }

@@ -8,7 +8,10 @@ import com.github.lujs.commmon.model.vo.BaseResponse;
 import com.github.lujs.commmon.query.PageQuery;
 import com.github.lujs.community.api.model.pojo.Posts;
 import com.github.lujs.community.api.model.query.PostsQuery;
+import com.github.lujs.community.api.service.IPostCommentsService;
+import com.github.lujs.community.api.service.IPostLikesService;
 import com.github.lujs.community.api.service.IPostsService;
+import com.github.lujs.community.api.service.IUsersService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.Date;
+import java.util.*;
 
 /**
  *  前端控制器
@@ -33,6 +36,15 @@ public class PostsController extends BaseController {
 
     @Resource
     private IPostsService targetService;
+
+    @Resource
+    private IUsersService usersService;
+
+    @Resource
+    private IPostLikesService postLikesService;
+
+    @Resource
+    private IPostCommentsService postCommentsService;
 
     /**
      * 获取详情
@@ -88,19 +100,24 @@ public class PostsController extends BaseController {
     */
     @RequestMapping("/page")
     public BaseResponse page(@RequestBody BaseRequest<PageQuery<Posts, PostsQuery>> request) {
+        //返回个map 包含用户信息 文章内容 喜欢的 评论
+        List<Object> list = new ArrayList<>();
+
         PageQuery<Posts, PostsQuery> page = request.getData();
         PostsQuery query = page.getParams();
         QueryWrapper<Posts> wrapper = new QueryWrapper<>();
-        /*
-        if (null != query.getName()) {
-        wrapper.eq("name", query.getName());
-        }
-        if (null != query.getState()) {
-        wrapper.eq("state", query.getState());
-        }
-        */
+        wrapper.eq("is_recommend", 1);
+        wrapper.orderByDesc("create_time");
         targetService.page(page, wrapper);
-        return successResponse(page);
+        page.getRecords().forEach(x->{
+            Map<String,Object> result = new HashMap<>();
+            result.put("user",usersService.getById(x.getUserId()));
+            result.put("post",x);
+            result.put("likers",postLikesService.getByPostId(x.getId()));
+            result.put("comments",postCommentsService.getByPostId(x.getId()));
+            list.add(result);
+        });
+        return successResponse(list);
     }
 
     /**
@@ -125,8 +142,21 @@ public class PostsController extends BaseController {
     @PostMapping("/follow")
     public BaseResponse follow(@RequestBody BaseRequest<PageQuery<Posts, PostsQuery>> request) {
 
-
         return successResponse(targetService.list());
+    }
+
+
+    /**
+     * 发布图文
+     * @param request
+     * @return
+     */
+    @RequestMapping("/release")
+    public BaseResponse release(@Valid @RequestBody BaseRequest<Posts> request) {
+        Posts posts = request.getData();
+        posts.init();
+        boolean result = targetService.save(posts);
+        return baseResponse(result);
     }
 
 }

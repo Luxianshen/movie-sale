@@ -6,10 +6,12 @@ import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
 import com.qcloud.cos.auth.COSCredentials;
+import com.qcloud.cos.model.CannedAccessControlList;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.region.Region;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,10 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
- * @deprecated 文件上传接口
  * @author lujs
+ * @description 文件上传接口
  */
 @RestController
 @RequestMapping("/community/upload")
@@ -58,20 +61,23 @@ public class UploadController extends BaseController {
         }
         String random = RandomStringUtils.randomAlphabetic(16);
         String fileName = random + ".jpg";
-        // 指定要上传的文件
-        File localFile = (File) file;
+        // 指定要上传的文件file.getInputStream()
         COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
-        Region region = new Region("COS_REGION");
+        Region region = new Region("cn-south");
         ClientConfig clientConfig = new ClientConfig(region);
         COSClient cosClient = new COSClient(cred, clientConfig);
 
-        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileName, localFile);
-        PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
-
-        //todo 先本地储存
-        //String filePath = imgLocalPath + File.separator + fileName;
-        //FileUtil.writeBytes(file.getBytes(), filePath);
-        return successResponse(fileName);
-
+        PutObjectRequest putObjectRequest;
+        try {
+            putObjectRequest = new PutObjectRequest(bucketName, fileName, file.getInputStream(), null);
+            PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
+            cosClient.setObjectAcl(bucketName, fileName, CannedAccessControlList.PublicRead);
+            if (StringUtils.isNotEmpty(putObjectResult.getRequestId())) {
+                return successResponse(fileName);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return failedResponse("");
     }
 }

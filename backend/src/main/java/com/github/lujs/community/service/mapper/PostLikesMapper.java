@@ -2,6 +2,9 @@ package com.github.lujs.community.service.mapper;
 
 import com.github.lujs.community.api.model.pojo.PostLikes;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  *  Mapper 接口
@@ -10,4 +13,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface PostLikesMapper extends BaseMapper<PostLikes> {
 
+    List<PostLikes> getByPostId(@Param("id") Long id);
 }
