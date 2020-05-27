@@ -1,5 +1,7 @@
 package com.github.lujs.community.api.model.pojo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.github.lujs.commmon.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -22,14 +24,10 @@ public class UserFollows extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("from_id")
-    private Integer fromId;
+    @JsonSerialize(using= ToStringSerializer.class)
+    private Long fromId;
 
-    @TableField("to_id")
-    private Integer toId;
-
-    @TableField("follow_date")
-    private Date followDate;
-
+    @JsonSerialize(using= ToStringSerializer.class)
+    private Long toId;
 
 }

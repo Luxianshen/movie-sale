@@ -1,6 +1,5 @@
 package com.github.lujs.community.api.model.pojo;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.lujs.commmon.BaseEntity;
 import lombok.Data;
@@ -27,10 +26,8 @@ private static final long serialVersionUID=1L;
     /**
      * 0:文本,1:富文本
      */
-    @TableField("content_type")
     private Integer contentType;
 
-    @TableField("create_date")
     private Date createDate;
 
 

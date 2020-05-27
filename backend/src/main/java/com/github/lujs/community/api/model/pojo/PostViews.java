@@ -1,5 +1,7 @@
 package com.github.lujs.community.api.model.pojo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.github.lujs.commmon.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -22,11 +24,10 @@ public class PostViews extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("user_id")
-    private Integer userId;
+    @JsonSerialize(using= ToStringSerializer.class)
+    private Long userId;
 
-    @TableField("post_id")
-    private Integer postId;
-
+    @JsonSerialize(using= ToStringSerializer.class)
+    private Long postId;
 
 }

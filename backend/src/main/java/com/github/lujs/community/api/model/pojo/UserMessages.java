@@ -2,6 +2,8 @@ package com.github.lujs.community.api.model.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.github.lujs.commmon.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,13 +24,12 @@ public class UserMessages extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("to_user_id")
-    private Integer toUserId;
+    @JsonSerialize(using= ToStringSerializer.class)
+    private Long toUserId;
 
-    @TableField("message_id")
-    private Integer messageId;
+    @JsonSerialize(using= ToStringSerializer.class)
+    private Long messageId;
 
-    @TableField("is_read")
     private Boolean isRead;
 
 

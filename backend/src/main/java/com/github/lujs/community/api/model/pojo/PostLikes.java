@@ -1,5 +1,7 @@
 package com.github.lujs.community.api.model.pojo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.github.lujs.commmon.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -22,25 +24,23 @@ public class PostLikes extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("user_id")
-    private Integer userId;
+    @JsonSerialize(using= ToStringSerializer.class)
+    private Long userId;
 
-    @TableField("to_id")
-    private Integer toId;
+    @JsonSerialize(using= ToStringSerializer.class)
+    private Long toId;
 
-    @TableField("post_id")
-    private Integer postId;
+    @JsonSerialize(using= ToStringSerializer.class)
+    private Long postId;
 
-    @TableField("comment_id")
-    private Integer commentId;
+    @JsonSerialize(using= ToStringSerializer.class)
+    private Long commentId;
 
     /**
      * 类型:0帖子,1评论
      */
-    @TableField("like_type")
     private Integer likeType;
 
-    @TableField("is_read")
     private Boolean isRead;
 
 

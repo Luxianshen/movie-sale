@@ -26,22 +26,17 @@ public class Posts extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("user_id")
-    private Integer userId;
+    @JsonSerialize(using= ToStringSerializer.class)
+    private Long userId;
 
-    @TableField("question_id")
     private Integer questionId;
 
-    @TableField("article_title")
     private String articleTitle;
 
-    @TableField("article_img")
     private String articleImg;
 
-    @TableField("article_html")
     private String articleHtml;
 
-    @TableField("article_delta")
     private String articleDelta;
 
     private String introduction;
@@ -53,7 +48,6 @@ private static final long serialVersionUID=1L;
     /**
      * 帖子类型(0:动弹,1:文章,2:问答,3:投票)
      */
-    @TableField("pos_type")
     private Integer posType;
 
     private String link;
@@ -62,19 +56,15 @@ private static final long serialVersionUID=1L;
 
     private String audio;
 
-    @TableField("thumbs_count")
     private Integer thumbsCount;
 
-    @TableField("comment_count")
     private Integer commentCount;
 
-    @TableField("view_count")
     private Integer viewCount;
 
     @JsonSerialize(using= ToStringSerializer.class)
     private Long topicId;
 
-    @TableField("topic_title")
     private String topicTitle;
 
     private BigDecimal latitude;
@@ -83,10 +73,8 @@ private static final long serialVersionUID=1L;
 
     private String address;
 
-    @TableField("is_recommend")
     private Boolean isRecommend;
 
-    @TableField("is_top")
     private Boolean isTop;
 
     /**

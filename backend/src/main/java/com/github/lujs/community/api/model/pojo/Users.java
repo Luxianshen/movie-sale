@@ -23,7 +23,6 @@ public class Users extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("open_id")
     private String openId;
 
     /**
@@ -34,13 +33,11 @@ private static final long serialVersionUID=1L;
     /**
      * 分享者ID
      */
-    @TableField("share_id")
     private Integer shareId;
 
     /**
      * 公众号openId
      */
-    @TableField("gzh_id")
     private String gzhId;
 
     /**
@@ -96,13 +93,11 @@ private static final long serialVersionUID=1L;
     /**
      * 是否学生认证
      */
-    @TableField("is_auth")
     private Boolean isAuth;
 
     /**
      * 真实姓名
      */
-    @TableField("real_name")
     private String realName;
 
     /**
@@ -113,7 +108,6 @@ private static final long serialVersionUID=1L;
     /**
      * 是否绑定个人信息
      */
-    @TableField("is_binding")
     private Boolean isBinding;
 
     /**
@@ -129,31 +123,26 @@ private static final long serialVersionUID=1L;
     /**
      * 未读系统消息
      */
-    @TableField("sys_msg_count")
     private Integer sysMsgCount;
 
     /**
      * 未读用户消息
      */
-    @TableField("notice_count")
     private Integer noticeCount;
 
     /**
      * 关注
      */
-    @TableField("follow_num")
     private Integer followNum;
 
     /**
      * 粉丝数
      */
-    @TableField("fans_num")
     private Integer fansNum;
 
     /**
      * 获赞数
      */
-    @TableField("thumbs_num")
     private Integer thumbsNum;
 
     /**
@@ -165,6 +154,5 @@ private static final long serialVersionUID=1L;
      * 玉帛贝
      */
     private Integer shell;
-
 
 }

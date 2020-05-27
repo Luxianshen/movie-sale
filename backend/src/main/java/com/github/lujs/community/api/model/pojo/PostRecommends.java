@@ -1,5 +1,7 @@
 package com.github.lujs.community.api.model.pojo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.github.lujs.commmon.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -22,19 +24,17 @@ public class PostRecommends extends BaseEntity {
 
 private static final long serialVersionUID=1L;
 
-    @TableField("post_id")
-    private Integer postId;
+    @JsonSerialize(using= ToStringSerializer.class)
+    private Long postId;
 
-    @TableField("user_id")
-    private Integer userId;
+    @JsonSerialize(using= ToStringSerializer.class)
+    private Long userId;
 
-    @TableField("post_type")
     private Integer posType;
 
     /**
      * 推荐类型(0:永久在推荐表,1:暂时24小时在推荐表)
      */
-    @TableField("recommend_type")
     private Integer recommendType;
 
 }
