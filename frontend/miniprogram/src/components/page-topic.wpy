@@ -205,8 +205,8 @@
   </mp-page>
 </template>
 <script>
-import wepy from '@wepy/core';
-import { Topic } from '../common/api';
+import wepy from '@wepy/core'
+import { Topic } from '../common/api'
 wepy.component({
   options: {
     addGlobalClass: true
@@ -230,29 +230,29 @@ wepy.component({
   watch: {
     async isInit(val) {
       if (val) {
-        this.tracks = Topic.getTopicTrack();
+        this.tracks = Topic.getTopicTrack()
         if (await this.loadData()) {
           if (this.items.length) {
-            this.state = 2;
+            this.state = 2
           } else {
             const items = await Topic.searchTopic({
               keyword: null,
               pageIndex: 1,
               pageSize: 10
-            });
+            })
             if (items) {
               if (items.length) {
-                this.recommends = items;
-                this.state = 2;
+                this.recommends = items
+                this.state = 2
               } else {
-                this.state = 3;
+                this.state = 3
               }
             } else {
-              this.state = 1;
+              this.state = 1
             }
           }
         } else {
-          this.state = 1;
+          this.state = 1
         }
       }
     }
@@ -260,60 +260,60 @@ wepy.component({
   methods: {
     async loadData(isRefresh) {
       if (!this.hasMore || this.isLoading) {
-        return;
+        return
       }
-      this.isLoading = true;
+      this.isLoading = true
       const items = await Topic.getListForUser({
         pageIndex: this.pageIndex,
         pageSize: this.pageSize
-      });
+      })
       if (items) {
         for (const item of items) {
-          this.items.push(item);
+          this.items.push(item)
         }
-        this.pageIndex++;
-        this.hasMore = items.length === this.pageSize;
+        this.pageIndex++
+        this.hasMore = items.length === this.pageSize
       }
-      this.isLoading = false;
-      return items;
+      this.isLoading = false
+      return items
     },
     async onScrolltolower() {
-      await this.loadData();
+      await this.loadData()
     },
     async onRefresherpulling() {
-      this.triggered = true;
+      this.triggered = true
     },
     async onRefresherrefresh() {
-      await this.loadData(true);
+      await this.loadData(true)
       setTimeout(() => {
-        this.num = -1;
-      }, 2000);
-      this.triggered = false;
+        this.num = -1
+      }, 2000)
+      this.triggered = false
     },
     onRefresherrestore() {
-      this.triggered = false;
+      this.triggered = false
     },
     onClean() {
       if (Topic.cleanTopicTrack()) {
-        this.tracks = [];
+        this.tracks = []
       }
     },
     async onFollow({ topic, index }) {
       if (topic.hasFollow) {
         if (await Topic.cancel(topic.id)) {
-          this.recommends[index].hasFollow = false;
+          this.recommends[index].hasFollow = false
         }
       } else {
-        this.recommends[index].hasFollow = await Topic.follow(topic.id);
+        this.recommends[index].hasFollow = await Topic.follow(topic.id)
       }
     },
     goMaidan() {
       wx.navigateTo({
         url: `/pages/topic-maidan`
-      });
+      })
     }
   }
-});
+})
 </script>
 <config>
 {

@@ -4,6 +4,7 @@
 		"urlCheck": false,
 		"es6": false,
 		"postcss": false,
+		"preloadBackgroundData": false,
 		"minified": true,
 		"newFeature": true,
 		"coverView": true,
@@ -17,7 +18,9 @@
 			"ignore": [],
 			"disablePlugins": [],
 			"outputPath": ""
-		}
+		},
+		"useCompilerModule": false,
+		"userConfirmedUseCompilerModuleSwitch": false
 	},
 	"compileType": "miniprogram",
 	"appid": "wxc881e493f40bedca",
@@ -25,7 +28,7 @@
 	"miniprogramRoot": "weapp/",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
-	"libVersion": "2.10.1",
+	"libVersion": "2.10.4",
 	"qqappid": "1110072555",
 	"condition": {
 		"search": {
@@ -180,6 +183,13 @@
 					"id": -1,
 					"name": "pages/topic-add",
 					"pathName": "pages/topic-add",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/timeevent-add",
+					"pathName": "pages/timeevent-add",
 					"query": "",
 					"scene": null
 				},

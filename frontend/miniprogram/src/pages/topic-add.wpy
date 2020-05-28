@@ -76,8 +76,6 @@
       font-size: 30rpx;
       padding: 20rpx 0rpx;
     }
-    textarea {
-    }
   }
   .cell-title {
     font-size: 34rpx;
@@ -157,15 +155,6 @@
         :maxlength="140"
       />
     </div>
-    <div class="cell-title">创建话题条件</div>
-    <div class="cell">
-      <icon type="success" size="16" color="#{{isAuth ? 'ffd100' : '7a8299'}}" />
-      <div>完成情侣绑定</div>
-    </div>
-    <div class="cell">
-      <icon type="success" size="16" color="#{{isVip ? 'ffd100' : '7a8299'}}" />
-      <div>已成为VIP用户</div>
-    </div>
     <div class="footer">
       <button
         class="btn-add {{disabled ? 'btn-disabled' : ''}}"
@@ -176,8 +165,8 @@
   </div>
 </template>
 <script>
-import wepy from '@wepy/core';
-import { Topic } from '../common/api';
+import wepy from '@wepy/core'
+import { Topic } from '../common/api'
 wepy.page({
   data: {
     title: '',
@@ -190,29 +179,25 @@ wepy.page({
     isVip: false
   },
   onLoad() {
-    const { isAuth, isBinding, userType, grade } = wx.getStorageSync('user');
-    this.isAuth = isAuth > 0;
+    const { isAuth, userType, grade } = wx.getStorageSync('user')
+    this.isAuth = isAuth > 0
     this.isVip = userType === 1 || grade === 3
-    this.disabled = !this.isAuth || !this.isVip;
+    this.disabled = !this.isAuth || !this.isVip
   },
   methods: {
     async chooseImage() {
-      this.iconPath = null;
+      this.iconPath = null
       const res = await wepy.wx.chooseImage({
         count: 1,
         sizeType: ['compressed'],
         sourceType: ['album', 'camera']
-      });
-      const { tempFilePaths } = res;
+      })
+      const { tempFilePaths } = res
       if (tempFilePaths) {
-        this.imgPath = tempFilePaths[0];
+        this.imgPath = tempFilePaths[0]
       }
     },
     async onAdd() {
-      if (!this.imgPath) {
-        Topic.showToast('请选择话题头像');
-        return;
-      }
       if (!this.iconPath) {
         this.iconPath = await Topic.uploadFile(
           [
@@ -221,39 +206,42 @@ wepy.page({
             }
           ],
           1
-        );
+        )
+      }
+      if (!this.imgPath) {
+        Topic.showToast('请选择话题头像')
+        return
       }
       if (!this.iconPath) {
-        Topic.showToast('上传头像失败');
-        return;
+        Topic.showToast('上传头像失败')
+        return
       }
       if (!/[\u4e00-\u9fa5a-zA-Z]{2,10}/.test(this.title)) {
-        Topic.showToast('话题标题格式不对');
-        return;
+        Topic.showToast('话题标题格式不对')
+        return
       }
       if (!this.nickName) {
-        Topic.showToast('输入关注者称号');
-        return;
+        Topic.showToast('输入关注者称号')
+        return
       }
-      if (!this.des) {
-        Topic.showToast('输入话题描述');
-        return;
-      }
+      // if (!this.des) {
+      //   Topic.showToast('输入话题描述')
+      //   return
+      // }
       const topic = await Topic.add({
         title: this.title,
         des: this.des,
         iconSrc: this.iconPath,
         nickName: this.nickName
-      });
-      debugger
+      })
       if (topic) {
         wx.redirectTo({
           url: '/pages/topic?id=' + topic.id
-        });
+        })
       }
     }
   }
-});
+})
 </script>
 <config>
 {

@@ -1,5 +1,8 @@
 <style lang="less">
+@import './icon.wxss';
+@import './main.wxss';
 @import './font.wxss';
+
 page {
   font-family: -apple-system-font, Helvetica, 'Helvetica Neue', sans-serif;
   background: #f8f8f8;
@@ -36,20 +39,20 @@ page {
 </style>
 
 <script>
-import wepy from '@wepy/core';
-import promisify from '@wepy/use-promisify';
-wepy.use(promisify);
+import wepy from '@wepy/core'
+import promisify from '@wepy/use-promisify'
+wepy.use(promisify)
 wepy.app({
   globalData: {
     userInfo: null
   },
   navigationHeight: function() {
-    const { statusBarHeight } = wx.getSystemInfoSync();
-    const { top, bottom } = wx.getMenuButtonBoundingClientRect();
-    return top - statusBarHeight + bottom;
+    const { statusBarHeight } = wx.getSystemInfoSync()
+    const { top, bottom } = wx.getMenuButtonBoundingClientRect()
+    return top - statusBarHeight + bottom
   },
   onLaunch() {}
-});
+})
 </script>
 <config>
 {
@@ -73,6 +76,7 @@ wepy.app({
       'pages/topic',
       'pages/topic-maidan',
       'pages/topic-add',
+      'pages/timeevent-add',
       'pages/gender',
       /**纸飞机 */
       'plugin/plane/index',
@@ -113,7 +117,7 @@ wepy.app({
       backgroundTextStyle: 'dark',
       navigationBarBackgroundColor: '#f8f8f8',
       backgroundColor: '#f8f8f8',
-      navigationBarTitleText: '分享空间',
+      navigationBarTitleText: 'Hold On',
       navigationBarTextStyle: 'black'
     }
 }

@@ -50,26 +50,26 @@
   </div>
 </template>
 <script>
-import wepy from '@wepy/core';
+import wepy from '@wepy/core'
 wepy.page({
   data: {
     init: false
   },
   methods: {
     async onSearch(e) {
-      const { value } = e.$wx.detail;
-      this.$refs.list.loadData(true, value);
+      const { value } = e.$wx.detail
+      this.$refs.list.loadData(true, value)
     },
     async onCancel() {
-      this.$refs.list.loadData(true);
+      this.$refs.list.loadData(true)
     },
     goAdd() {
       wx.navigateTo({
         url: `/pages/topic-add`
-      });
+      })
     }
   }
-});
+})
 </script>
 <config>
 {

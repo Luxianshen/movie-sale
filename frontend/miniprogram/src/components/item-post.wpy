@@ -352,7 +352,7 @@
         <div class="post-img-item" v-for="(img, index) in item.post.imgs" :key="index">
           <img
             @tap.stop="onPreview(item.post.imgs, index)"
-            :src="img.thumbPath"
+            :src="img.path"
             mode="aspectFill"
             :lazy-load="true"
           />
@@ -424,8 +424,8 @@
   </div>
 </template>
 <script>
-import wepy from '@wepy/core';
-import { baseUrl } from '../common/api';
+import wepy from '@wepy/core'
+import { baseUrl } from '../common/api'
 wepy.component({
   options: {
     addGlobalClass: true
@@ -453,36 +453,36 @@ wepy.component({
   methods: {
     onPreview(imgs, index) {
       const urls = imgs.map(img => {
-        return img.path;
-      });
+        return img.path
+      })
       wx.previewImage({
         urls,
         current: urls[index]
-      });
+      })
     },
     goDetails(id) {
       wx.navigateTo({
         url: `/pages/post-details?id=${id}`
-      });
+      })
     },
     goTopic(id) {
       wx.navigateTo({
         url: `/pages/topic?id=${id}`
-      });
+      })
     },
     goWeb(url) {
       wx.navigateTo({
-        url: `/pages/post-article?url=${baseUrl}/api/public/article/${encodeURIComponent(
+        url: `/pages/post-article?url=${baseUrl}api/public/article/${encodeURIComponent(
           url
         )}`
-      });
+      })
     },
     onMore() {
       this.$emit('remove', {
         index: this.index,
         isSys: this.item.isSys,
         post: this.item.post
-      });
+      })
       // eventHub.$emit('remove', {
       //   index: this.index,
       //   post: this.item
@@ -493,16 +493,16 @@ wepy.component({
     },
     onCatchShare() {},
     onShare() {
-      console.log(1);
+      console.log(1)
 
       this.$emit('share', {
         index: this.index,
         post: this.item.post
-      });
-      return false;
+      })
+      return false
     }
   }
-});
+})
 </script>
 <config>
 {

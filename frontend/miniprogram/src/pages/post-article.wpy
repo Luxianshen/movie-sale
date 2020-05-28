@@ -4,22 +4,17 @@
   </div>
 </template>
 <script>
-import wepy from '@wepy/core';
-import { baseUrl } from '../common/api';
+import wepy from '@wepy/core'
+
 wepy.page({
   data: {
     link: ''
   },
   onLoad(q) {
-    const { url } = q;
-    if (url === '0') {
-        const token = wx.getStorageSync('token') || ''
-        this.link = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx1710dd7f9b1bbe4f&redirect_uri=${encodeURIComponent('https://www.wutuobangxinyougou.com/public/binding.html?token=' + token)}&response_type=code&scope=snsapi_base&state=0#wechat_redirect`
-    } else {
-      this.link = url;
-    }
+    const { url } = q
+    this.link = decodeURIComponent(url.slice(41))
   }
-});
+})
 </script>
 <config>
 {

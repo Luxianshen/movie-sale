@@ -23,7 +23,7 @@
       style="height: calc(100vh - {{navigationHeight}}px);"
     >
       <swiper-item>
-        <page-follow :isInit="init0" />
+        <page-timeevent ref="timeevent" :isInit="init0" />
       </swiper-item>
       <swiper-item>
         <page-topic :isInit="init1" />
@@ -48,15 +48,15 @@
   </div>
 </template>
 <script>
-import wepy from '@wepy/core';
-import { Post, imgUrl, appUpdate } from '../common/api';
+import wepy from '@wepy/core'
+import { Post, appUpdate } from '../common/api'
 import Share from '../mixins/share'
 wepy.page({
   mixins: [Share],
   data: {
     labels: [
       {
-        title: '纪念',
+        title: '路程',
         showDot: false
       },
       {
@@ -97,51 +97,56 @@ wepy.page({
     emptyBtnTxt: null,
     navigationHeight: 0
   },
+  onShow() {
+    if (this.current === 0) {
+      this.$refs['timeevent'].loadData()
+    }
+  },
   onLoad() {
-    const { sysMsgCount, noticeCount } = Post.getUser();
+    const { sysMsgCount, noticeCount } = Post.getUser()
     if (noticeCount || sysMsgCount) {
       wx.setTabBarBadge({
         index: 1,
-        text:`${sysMsgCount + noticeCount}`
-      });
+        text: `${sysMsgCount + noticeCount}`
+      })
     }
     appUpdate()
-    this.navigationHeight = this.$app.$options.navigationHeight();
+    this.navigationHeight = this.$app.$options.navigationHeight()
     if (this.$app.$options.globalData.postId) {
       wx.navigateTo({
         url: '/pages/post-details?id=' + this.$app.$options.globalData.postId
-      });
+      })
     }
     if (this.$app.$options.globalData.commentId) {
       wx.navigateTo({
         url: '/pages/post-comment?id=' + this.$app.$options.globalData.commentId
-      });
+      })
     }
     this.emptyBtnTxt = Post.getSchool() ? null : '选择学校'
   },
   methods: {
     onTabChange(index) {
-      this.current = index;
+      this.current = index
     },
     onChange(res) {
-      const { current, source } = res.$wx.detail;
-      this.tabIndex = current;
-      this.current = current;
-        if (!this[`init${current}`]) {
-          this[`init${current}`] = true;
-        }
+      const { current, source } = res.$wx.detail
+      this.tabIndex = current
+      this.current = current
+      if (!this[`init${current}`]) {
+        this[`init${current}`] = true
+      }
     },
     onEmptyTap() {
       wx.navigateTo({
         url: `/pages/user-seting`
-      });
+      })
     }
   }
-});
+})
 </script>
 <config>
 {
-    navigationBarTitleText: '分享空间',
+    navigationBarTitleText: 'Hold On',
     navigationStyle: 'custom',
     usingComponents: {
       "tabs": "../components/tab-bar",
@@ -149,7 +154,7 @@ wepy.page({
       "tool": "../components/action-tool",
       "navigation-bar": "../components/navigation-bar/navigation-bar",
       'page-topic': "../components/page-topic",
-      'page-follow': "../components/page-follow"
+      'page-timeevent': "../components/page-timeevent"
     }
 }
 </config>

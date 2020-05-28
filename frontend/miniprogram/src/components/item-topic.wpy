@@ -84,7 +84,7 @@
   </div>
 </template>
 <script>
-import wepy from '@wepy/core';
+import wepy from '@wepy/core'
 wepy.component({
   options: {
     addGlobalClass: true
@@ -106,12 +106,12 @@ wepy.component({
       if (this.isLink) {
         wx.navigateTo({
           url: `/pages/topic?id=${id}`
-        });
+        })
       }
     },
     onFollow(topic, index) {
-      this.$emit('follow', { topic, index });
+      this.$emit('follow', { topic, index })
     }
   }
-});
+})
 </script>

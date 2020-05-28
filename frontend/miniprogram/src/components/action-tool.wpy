@@ -77,7 +77,7 @@
   </div>
 </template>
 <script>
-import wepy from '@wepy/core';
+import wepy from '@wepy/core'
 wepy.component({
   options: {
     addGlobalClass: true
@@ -117,11 +117,11 @@ wepy.component({
   },
   methods: {
     goSend(index) {
-      this.showMore = false;
+      this.showMore = false
       if (index === 0) {
-         wx.navigateTo({
+        wx.navigateTo({
           url: '/plugin/plane/index'
-        });
+        })
         return
       }
       if (this.topic) {
@@ -129,13 +129,13 @@ wepy.component({
           url: `/pages/post-send?type=${index}&topicId=${
             this.topic.id
           }&title=${encodeURI(this.topic.title)}`
-        });
+        })
       } else {
         wx.navigateTo({
           url: `/pages/post-send?type=${index}`
-        });
+        })
       }
     }
   }
-});
+})
 </script>

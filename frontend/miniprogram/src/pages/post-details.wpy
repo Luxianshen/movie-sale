@@ -329,8 +329,8 @@
   </div>
 </template>
 <script>
-import wepy from '@wepy/core';
-import { Post, User, eventHub, imgUrl, baseUrl } from '../common/api';
+import wepy from '@wepy/core'
+import { Post, User, eventHub, imgUrl, baseUrl } from '../common/api'
 wepy.page({
   data: {
     showUser: false,
@@ -344,22 +344,22 @@ wepy.page({
     editorCtx: null
   },
   async onLoad(q) {
-    const { id } = q;
-    this.isqq = Post.isQQ();
-    this.navigationHeight = this.$app.$options.navigationHeight();
+    const { id } = q
+    this.isqq = Post.isQQ()
+    this.navigationHeight = this.$app.$options.navigationHeight()
     if (id) {
-      this.post = await Post.details(id);
+      this.post = await Post.details(id)
       if (this.post) {
         setTimeout(async () => {
           if (this.post.post.posType === 3) {
-            await this.$refs.answers.loadData(this.post.post);
+            await this.$refs.answers.loadData(this.post.post)
           } else {
-            await this.$refs.list.loadData(this.post.post.id);
+            await this.$refs.list.loadData(this.post.post.id)
           }
-          this.state = this.post ? 2 : 1;
-        }, 300);
+          this.state = this.post ? 2 : 1
+        }, 300)
       } else {
-        this.state = 1;
+        this.state = 1
       }
     }
   },
@@ -367,7 +367,7 @@ wepy.page({
     const imageUrl =
       this.post.post.imgs && this.post.post.imgs.length
         ? this.post.post.imgs[0].path
-        : `${imgUrl}/share.png`;
+        : `${imgUrl}/share.png`
     return {
       title:
         this.post.post.baseTxt ||
@@ -375,64 +375,64 @@ wepy.page({
         this.post.post.content,
       imageUrl: imageUrl,
       path: `/pages/index?id=${Post.getUserId()}&postId=${this.post.post.id}`
-    };
+    }
   },
   methods: {
     onScroll(res) {
-      this.toView = '';
-      this.showUser = res.scrollTop > this.navigationHeight;
+      this.toView = ''
+      this.showUser = res.scrollTop > this.navigationHeight
     },
     onCommentTap() {
-      console.log(1);
-      this.toView = 'other';
+      console.log(1)
+      this.toView = 'other'
     },
     onEditorReady() {
       wx.createSelectorQuery()
         .select('#editor')
         .context(res => {
           if (res) {
-            this.editorCtx = res.context;
+            this.editorCtx = res.context
             if (this.post) {
               this.editorCtx.setContents({
                 html: this.post.post.articleHtml,
                 delta: this.post.post.articleDelta
-              });
+              })
             }
           }
         })
-        .exec();
+        .exec()
     },
     async onScrolltolower() {
       if (this.post.post.posType === 3) {
-        await this.$refs.answers.loadData();
+        await this.$refs.answers.loadData()
       } else {
-        await this.$refs.list.loadData();
+        await this.$refs.list.loadData()
       }
     },
     onComment(comment) {
-      this.$refs.list.addComment(comment);
-      this.showInput = false;
-      this.post.post.commentCount++;
+      this.$refs.list.addComment(comment)
+      this.showInput = false
+      this.post.post.commentCount++
     },
     goBack() {
-      wx.navigateBack();
+      wx.navigateBack()
     },
     goTopic(id) {
       wx.navigateTo({
         url: `/pages/topic?id=${this.post.post.topicId}`
-      });
+      })
     },
     goQustion() {
       wx.navigateTo({
         url: `/pages/post-details?id=${this.post.post.questionId}`
-      });
+      })
     },
     onLike(isLike) {
-      this.post.hasLike = isLike;
+      this.post.hasLike = isLike
       if (isLike) {
-        this.post.post.thumbsCount++;
+        this.post.post.thumbsCount++
       } else {
-        this.post.post.thumbsCount--;
+        this.post.post.thumbsCount--
       }
     },
     onAnswer(isQuestion) {
@@ -440,30 +440,30 @@ wepy.page({
         `/pages/post-answer?id=${this.post.post.questionId}&title=${encodeURI(
           this.post.post.articleTitle
         )}&topicId=${this.post.post.topicId}`
-      );
+      )
 
       if (isQuestion) {
         wx.navigateTo({
           url: `/pages/post-answer?id=${this.post.post.questionId}&topicId=${
             this.post.post.topicId
           }&title=${encodeURI(this.post.post.articleTitle)}`
-        });
+        })
       } else {
         wx.navigateTo({
           url: `/pages/post-answer?id=${this.post.post.id}&topicId=${
             this.post.post.topicId
           }&title=${encodeURI(this.post.post.content)}`
-        });
+        })
       }
     },
     async onFollow() {
       if (this.post.hasFollow) {
         if (await User.cancel(this.post.user.id)) {
-          this.post.hasFollow = false;
+          this.post.hasFollow = false
         }
       } else {
-        this.post.hasFollow = await User.follow(this.post.user.id);
-        User.subscribe();
+        this.post.hasFollow = await User.follow(this.post.user.id)
+        User.subscribe()
       }
     },
     async onShare() {
@@ -472,8 +472,8 @@ wepy.page({
           const imageUrl =
             this.post.post.imgs && this.post.post.imgs.length
               ? this.post.post.imgs[0].path
-              : `${imgUrl}/share.png`;
-          let path = await Post.getShareImg(imageUrl, true);
+              : `${imgUrl}/share.png`
+          let path = await Post.getShareImg(imageUrl, true)
           wx.openQzonePublish({
             text:
               this.post.post.baseTxt ||
@@ -485,62 +485,62 @@ wepy.page({
                 path
               }
             ]
-          });
+          })
         }
       } else {
-        const title = '授权后才可以分享图片';
-        const id = this.post.post.id;
+        const title = '授权后才可以分享图片'
+        const id = this.post.post.id
         wx.getSetting({
           success: res => {
             if (res.authSetting['scope.writePhotosAlbum']) {
-              goShare();
+              goShare()
             } else {
-              const auth = res.authSetting['scope.writePhotosAlbum'];
+              const auth = res.authSetting['scope.writePhotosAlbum']
               if (auth === undefined) {
                 wx.authorize({
                   scope: 'scope.writePhotosAlbum',
                   success: () => {
-                    goShare();
+                    goShare()
                   },
                   fail() {
                     wx.showToast({
                       title,
                       icon: 'none'
-                    });
+                    })
                   }
-                });
+                })
               } else {
                 wx.openSetting({
                   success: res => {
                     if (res.authSetting['scope.writePhotosAlbum']) {
-                      goShare();
+                      goShare()
                     } else {
                       wx.showToast({
                         title,
                         icon: 'none'
-                      });
+                      })
                     }
                   },
                   fail: () => {
                     wx.showToast({
                       title,
                       icon: 'none'
-                    });
+                    })
                   }
-                });
+                })
               }
             }
           }
-        });
+        })
         function goShare() {
           wx.navigateTo({
             url: '/pages/post-share?id=' + id
-          });
+          })
         }
       }
     }
   }
-});
+})
 </script>
 <config>
 {

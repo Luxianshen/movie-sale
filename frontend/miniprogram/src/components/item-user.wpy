@@ -64,13 +64,13 @@
   <div class="user" @tap.stop="goUser">
     <img
       class="user-avtater"
-      :src="item.avtater"
+      :src="item.avatar"
       style="width: {{width}}rpx;height: {{width}}rpx;border-radius: {{radius}}rpx;"
     />
     <div class="user-info">
       <div class="user-info-top">
         <div class="user-info-nick {{item.grade === 3 ? 'vip' : ''}}">{{item.nick}}</div>
-        <img
+        <!--<img
           class="ic-img"
           src="https://www.wutuobangxinyougou.com/public/ic/ic_auth.svg"
           v-if="item.isAuth"
@@ -84,12 +84,12 @@
           class="ic-img"
           src="https://www.wutuobangxinyougou.com/public/ic/ic_sys.svg"
           v-if="item.userType === 1"
-        />
+        />-->
       </div>
       <div class="user-info-bottom">
         <div>{{item.gender}}</div>
         <div>·</div>
-        <div>{{item.title || item.school || '未填写学校'}}</div>
+        <div>{{item.title}}</div>
       </div>
       <div class="user-num" v-if="showNum">
         <text>
@@ -112,7 +112,7 @@
   </div>
 </template>
 <script>
-import wepy from '@wepy/core';
+import wepy from '@wepy/core'
 wepy.component({
   options: {
     multipleSlots: true,
@@ -137,8 +137,8 @@ wepy.component({
     goUser() {
       wx.navigateTo({
         url: `/pages/user-home?id=${this.item.id}`
-      });
+      })
     }
   }
-});
+})
 </script>

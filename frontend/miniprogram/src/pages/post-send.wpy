@@ -417,8 +417,8 @@ page {
         <div class="post-article" v-if="link" v-show="posType === 1">
           <div
             class="post-article-title {{article ? '' : 'des'}} {{analyseState === 1 ? 'error' : ''}}"
-          >{{article ? article.title : analyseState === 1 ? '解析链接失败(目前支持(公众号|知乎专栏|简书)文章)' : '正在解析链接···'}}</div>
-          <img :src="article.imageSrc" mode="aspectFill" v-if="article" />
+          >{{article ? article.articleTitle : analyseState === 1 ? '解析链接失败(目前支持(公众号|知乎专栏|简书)文章)' : '正在解析链接···'}}</div>
+          <img :src="article.articleImg" mode="aspectFill" v-if="article" />
           <div class="img-empty" v-else>
             <text class="icon icon-link-fill" />
           </div>
@@ -517,8 +517,8 @@ page {
   </div>
 </template>
 <script>
-import wepy from '@wepy/core';
-import { Post } from '../common/api';
+import wepy from '@wepy/core'
+import { Post } from '../common/api'
 wepy.page({
   data: {
     innerWidth: '',
@@ -582,96 +582,96 @@ wepy.page({
     location: null
   },
   async onLoad(q) {
-    const { type, id, topicId, title } = q;
-    const index = parseInt(type) || 0;
-    this.onChoicePostType(this.types[index - 1]);
-    this.userId = q.id;
+    const { type, id, topicId, title } = q
+    const index = parseInt(type) || 0
+    this.onChoicePostType(this.types[index - 1])
+    this.userId = q.id
     if (topicId) {
       this.topic = {
         id: parseInt(topicId),
         title: decodeURI(title)
-      };
+      }
     }
     let rect = wx.getMenuButtonBoundingClientRect
       ? wx.getMenuButtonBoundingClientRect()
-      : null;
-    this.innerWidth = rect ? 'width:' + rect.left + 'px' : '';
-    const sys = wx.getSystemInfoSync();
-    this.showMap = !sys.AppPlatform || sys.AppPlatform !== 'qq';
+      : null
+    this.innerWidth = rect ? 'width:' + rect.left + 'px' : ''
+    const sys = wx.getSystemInfoSync()
+    this.showMap = !sys.AppPlatform || sys.AppPlatform !== 'qq'
   },
   methods: {
     showAction() {
-      this.showBox = true;
+      this.showBox = true
       setTimeout(() => {
-        this.opacity = 1;
-      }, 100);
+        this.opacity = 1
+      }, 100)
     },
     hideBox() {
-      this.opacity = 0;
+      this.opacity = 0
       setTimeout(() => {
-        this.showBox = false;
-      }, 300);
+        this.showBox = false
+      }, 300)
     },
     onClose() {
-      wx.navigateBack();
+      wx.navigateBack()
     },
     onChoicePostType(item) {
-      this.posType = item.type;
-      this.title = item.title;
-      this.hideBox();
+      this.posType = item.type
+      this.title = item.title
+      this.hideBox()
       if (this.posType === 3) {
-        this.placeholder = '请输入问题(5-30个字)问号结尾';
+        this.placeholder = '请输入问题(5-30个字)问号结尾'
       } else if (this.posType === 1) {
-        this.placeholder = '此时对文章的看法...';
-        this.showLink = true;
+        this.placeholder = '此时对文章的看法...'
+        this.showLink = true
       } else if (this.posType === 0) {
-        this.placeholder = '记录真实的校园生活...';
+        this.placeholder = '记录真实的校园生活...'
       }
     },
     async submit(res) {
-      wx.hideKeyboard();
+      wx.hideKeyboard()
       Post.subscribe()
       if (!this.topic) {
-        this.onTopic();
-        return;
+        this.onTopic()
+        return
       }
       wx.showLoading({
         title: '发布中...',
         mask: true
-      });
-      this.btntext = '发布中';
+      })
+      this.btntext = '发布中'
       if (this.posType === 2) {
-        this.articleHtml = res.delta.ops;
+        this.articleHtml = res.delta.ops
       }
       if (
         this.posType === 0 &&
         this.content.length < 5 &&
         !this.images.length
       ) {
-        Post.showToast('动弹内容太少');
-        return;
+        Post.showToast('动弹内容太少')
+        return
       } else if (this.posType === 3 && this.content.length < 5) {
-        Post.showToast('问题标题太短');
-        return;
+        Post.showToast('问题标题太短')
+        return
       } else if (this.posType === 1 && !this.article) {
-        this.showLink = true;
-        return;
+        this.showLink = true
+        return
       } else if (this.posType === 2 && this.articleTitle.length < 5) {
-        Post.showToast('文章标题太短或内容太少');
-        return;
+        Post.showToast('文章标题太短或内容太少')
+        return
       }
-      this.loading = true;
-      this.disabled = true;
-      let _post = null;
+      this.loading = true
+      this.disabled = true
+      let _post = null
       if (this.posType === 0) {
         if (!this.hasUpload) {
-          this.images = await Post.uploadFile(this.images, 2);
+          this.images = await Post.uploadFile(this.images, 2)
         }
-        this.hasUpload = true;
+        this.hasUpload = true
         _post = {
           content: this.content,
           imgs: this.images.filter(img => {
-            return img.path != null;
+            return img.path != null
           }),
           posType: this.posType,
           topicId: this.topic.id,
@@ -679,30 +679,30 @@ wepy.page({
           latitude: this.latitude,
           longitude: this.longitude,
           address: this.address
-        };
+        }
       } else if (this.posType === 1) {
         _post = {
           content: this.content,
           link: this.link,
-          articleTitle: this.article.title,
-          articleImg: this.article.imageSrc,
+          articleTitle: this.article.articleTitle,
+          articleImg: this.article.articleImg,
           posType: this.posType,
           topicId: this.topic.id,
           topicTitle: this.topic.title
-        };
+        }
       } else if (this.posType === 2) {
-        const imgs = [];
-        const images = [];
+        const imgs = []
+        const images = []
         wx.showLoading({
           title: '上传图片...',
           mask: true
-        });
+        })
         for (const item of res.delta.ops) {
-          const path = item.insert.image;
+          const path = item.insert.image
           if (path && path.indexOf(Post.getQiniuUrl()) === -1) {
             const { height, width, type } = await wepy.wx.getImageInfo({
               src: path
-            });
+            })
             const _res = await Post.uploadFile(
               [
                 {
@@ -713,10 +713,10 @@ wepy.page({
                 }
               ],
               2
-            );
-            const url = Post.getQiniuUrl() + _res[0].path;
-            item.insert.image = url;
-            res.html = res.html.replace(path, url);
+            )
+            const url = Post.getQiniuUrl() + _res[0].path
+            item.insert.image = url
+            res.html = res.html.replace(path, url)
             if (_res[0].path) {
               images.push({
                 height,
@@ -724,11 +724,11 @@ wepy.page({
                 type,
                 isQiniu: true,
                 path: _res[0].path
-              });
+              })
             }
           }
         }
-        wx.hideLoading();
+        wx.hideLoading()
         _post = {
           articleTitle: this.articleTitle,
           articleHtml: res.html,
@@ -738,157 +738,157 @@ wepy.page({
           posType: this.posType,
           topicId: this.topic.id,
           topicTitle: this.topic.title
-        };
+        }
       } else if (this.posType === 3) {
         _post = {
           content: this.content,
           posType: this.posType,
           topicId: this.topic.id,
           topicTitle: this.topic.title
-        };
+        }
       }
       if (await Post.release(_post)) {
         try {
-          wx.removeStorageSync('editor');
+          wx.removeStorageSync('editor')
         } catch (e) {
-          console.log(e);
+          console.log(e)
         }
         Post.subscribe(() => {
-          wx.navigateBack();
-        });
+          wx.navigateBack()
+        })
       }
-      this.loading = false;
-      this.disabled = false;
+      this.loading = false
+      this.disabled = false
     },
     async onLinkAdd(url) {
-      this.showLink = false;
-      this.link = url;
-      const res = await Post.analyse(url);
+      this.showLink = false
+      this.link = url
+      const res = await Post.analyse(url)
       if (res) {
-        this.article = res;
+        this.article = res
       } else {
-        this.analyseState = 1;
+        this.analyseState = 1
       }
     },
     onInput() {
-      this.canSend();
+      this.canSend()
     },
     async chooseImage() {
       if (this.posType === 1 || this.posType === 3) {
-        return;
+        return
       }
       const res = await wepy.wx.chooseImage({
         count: 9 - this.images.length,
         sizeType: ['compressed'],
         sourceType: ['album', 'camera']
-      });
-      const { tempFilePaths } = res;
+      })
+      const { tempFilePaths } = res
       for (const file of tempFilePaths) {
         const info = await wepy.wx.getImageInfo({
           src: file
-        });
-        const { height, width, type } = info;
+        })
+        const { height, width, type } = info
         this.images.push({
           height,
           width,
           type,
           isQiniu: true,
           path: file
-        });
+        })
       }
-      this.focus = true;
-      this.canSend();
+      this.focus = true
+      this.canSend()
     },
     onPreview(imgs, index) {
       const urls = imgs.map(img => {
-        return img.path;
-      });
+        return img.path
+      })
       wx.previewImage({
         urls,
         current: urls[index]
-      });
+      })
     },
     onRemove(index) {
-      this.images.splice(index, 1);
+      this.images.splice(index, 1)
     },
     canSend() {
       if (this.images.length > 0 || this.content.length >= 5) {
-        this.disabled = false;
+        this.disabled = false
       } else {
-        this.disabled = true;
+        this.disabled = true
       }
     },
     onkeyboardheightchange(e) {
-      const { height } = e.$wx.detail;
+      const { height } = e.$wx.detail
       if (!this.isGet && height > 0) {
-        this.inputType = 0;
-        this.bottom = height;
-        this.boardheight = height;
-        this.isGet = true;
+        this.inputType = 0
+        this.bottom = height
+        this.boardheight = height
+        this.isGet = true
       }
     },
     onFocus(res) {
-      const { height } = res.$wx.detail;
+      const { height } = res.$wx.detail
       if (height) {
-        this.inputType = 0;
-        this.bottom = height;
-        this.boardheight = height;
-        this.isGet = true;
+        this.inputType = 0
+        this.bottom = height
+        this.boardheight = height
+        this.isGet = true
       }
     },
     onBlur(res) {
-      const { cursor } = res.$wx.detail;
-      this.cursor = cursor;
+      const { cursor } = res.$wx.detail
+      this.cursor = cursor
       if (this.inputType === 0) {
-        this.bottom = 0;
+        this.bottom = 0
       }
-      this.isGet = false;
-      this.focus = false;
+      this.isGet = false
+      this.focus = false
     },
     onEmoji(type) {
       if (this.posType === 3) {
-        return;
+        return
       }
       if (type === 0) {
-        wx.hideKeyboard();
-        this.bottom = this.boardheight;
+        wx.hideKeyboard()
+        this.bottom = this.boardheight
       } else {
-        this.focus = true;
+        this.focus = true
       }
-      this.inputType = type === 0 ? 1 : 0;
+      this.inputType = type === 0 ? 1 : 0
     },
     onInputEmoji(val) {
-      let str = this.content.split('');
-      str.splice(this.cursor, 0, val);
-      this.content = str.join('');
+      let str = this.content.split('')
+      str.splice(this.cursor, 0, val)
+      this.content = str.join('')
       if (this.cursor === -1) {
-        this.cursor += val.length + 1;
+        this.cursor += val.length + 1
       } else {
-        this.cursor += val.length;
+        this.cursor += val.length
       }
-      this.canSend();
+      this.canSend()
     },
     /**
-     * 
+     *
      */
     onDelEmoji() {
-      let str = this.content.split('');
-      const leftStr = this.content.substring(0, this.cursor);
-      const leftLen = leftStr.length;
-      const rightStr = this.content.substring(this.cursor);
-      const left_left_Index = leftStr.lastIndexOf('[');
-      const left_right_Index = leftStr.lastIndexOf(']');
-      const right_right_Index = rightStr.indexOf(']');
-      const right_left_Index = rightStr.indexOf('[');
+      let str = this.content.split('')
+      const leftStr = this.content.substring(0, this.cursor)
+      const leftLen = leftStr.length
+      const rightStr = this.content.substring(this.cursor)
+      const left_left_Index = leftStr.lastIndexOf('[')
+      const left_right_Index = leftStr.lastIndexOf(']')
+      const right_right_Index = rightStr.indexOf(']')
+      const right_left_Index = rightStr.indexOf('[')
       if (
         left_right_Index === leftLen - 1 &&
         leftLen - left_left_Index <= 8 &&
         left_left_Index > -1
       ) {
         // "111[不简单]|23[33]"left_left_Index=3,left_right_Index=7,leftLen=8
-        const len = left_right_Index - left_left_Index + 1;
-        str.splice(this.cursor - len, len);
-        this.cursor -= len;
+        const len = left_right_Index - left_left_Index + 1
+        str.splice(this.cursor - len, len)
+        this.cursor -= len
       } else if (
         left_left_Index > -1 &&
         right_right_Index > -1 &&
@@ -897,130 +897,130 @@ wepy.page({
       ) {
         // left_left_Index:4,left_right_Index:3,right_right_Index:1,right_left_Index:2
         // "111[666][不简|单]"right_right_Index=1,left_left_Index=3,leftLen=6
-        let len = right_right_Index + 1 + (leftLen - left_left_Index);
+        let len = right_right_Index + 1 + (leftLen - left_left_Index)
         if (len <= 10) {
-          str.splice(this.cursor - (leftLen - left_left_Index), len);
-          this.cursor -= leftLen - left_left_Index;
+          str.splice(this.cursor - (leftLen - left_left_Index), len)
+          this.cursor -= leftLen - left_left_Index
         } else {
-          str.splice(this.cursor, 1);
-          this.cursor -= 1;
+          str.splice(this.cursor, 1)
+          this.cursor -= 1
         }
       } else {
-        str.splice(this.cursor, 1);
-        this.cursor -= 1;
+        str.splice(this.cursor, 1)
+        this.cursor -= 1
       }
-      this.content = str.join('');
+      this.content = str.join('')
     },
     goAuth() {
       wx.navigateTo({
         url: '/pages/user-school'
-      });
+      })
     },
     onDelLocation(type) {
       if (type === 0) {
-        this.location = null;
+        this.location = null
       } else {
-        this.topic = null;
+        this.topic = null
       }
     },
     onMap() {
       if (this.posType === 1 || this.posType === 3) {
-        return;
+        return
       }
-      this.bottom = 0;
-      this.inputType = 0;
-      wx.hideKeyboard();
+      this.bottom = 0
+      this.inputType = 0
+      wx.hideKeyboard()
       wx.getSetting({
         success: res => {
           if (res.authSetting['scope.userLocation']) {
-            this._openMap();
+            this._openMap()
           } else {
-            const auth = res.authSetting['scope.userLocation'];
+            const auth = res.authSetting['scope.userLocation']
             if (auth === undefined) {
               wx.authorize({
                 scope: 'scope.userLocation',
                 success: () => {
-                  this._openMap();
+                  this._openMap()
                 },
                 fail() {
                   wx.showToast({
                     title: '授权后才可以打开地图',
                     icon: 'none'
-                  });
+                  })
                 }
-              });
+              })
             } else {
               wx.openSetting({
                 success: res => {
                   if (res.authSetting['scope.userLocation']) {
-                    this._openMap();
+                    this._openMap()
                   } else {
                     wx.showToast({
                       title: '授权后才可以打开地图',
                       icon: 'none'
-                    });
+                    })
                   }
                 },
                 fail: () => {
                   wx.showToast({
                     title: '授权后才可以打开地图',
                     icon: 'none'
-                  });
+                  })
                 }
-              });
+              })
             }
           }
         }
-      });
+      })
     },
     _openMap() {
       wx.showLoading({
         title: '加载中'
-      });
+      })
       wx.getLocation({
         altitude: true,
         isHighAccuracy: true,
         success: res => {
-          const { latitude, longitude } = res;
+          const { latitude, longitude } = res
           wx.chooseLocation({
             latitude,
             longitude,
             success: obj => {
-              wx.hideLoading();
-              this.location = obj;
+              wx.hideLoading()
+              this.location = obj
             },
             fail: err => {
-              wx.hideLoading();
+              wx.hideLoading()
             }
-          });
+          })
         },
         fail: err => {
-          wx.hideLoading();
-          console.log(err);
+          wx.hideLoading()
+          console.log(err)
         }
-      });
+      })
     },
     onTopic() {
-      this.show = false;
-      this.bottom = 0;
-      this.focus = false;
-      this.showTopic = true;
+      this.show = false
+      this.bottom = 0
+      this.focus = false
+      this.showTopic = true
     },
     onSelect(topic) {
-      this.topic = topic;
-      this.onTopicClose();
+      this.topic = topic
+      this.onTopicClose()
     },
     onTopicClose() {
-      this.showTopic = false;
-      this.show = true;
-      this.inputType = 0;
+      this.showTopic = false
+      this.show = true
+      this.inputType = 0
       const time = setTimeout(() => {
-        this.focus = true;
-        clearTimeout(time);
-      }, 300);
+        this.focus = true
+        clearTimeout(time)
+      }, 300)
     }
   }
-});
+})
 </script>
 <config>
 {

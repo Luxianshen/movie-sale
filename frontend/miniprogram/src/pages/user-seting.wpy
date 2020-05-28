@@ -249,27 +249,27 @@
   </div>
 </template>
 <script>
-import wepy from '@wepy/core';
-import province from '../common/province';
-import { User, qiniuUrl } from '../common/api';
-const provinces = [];
-const citys = province['北京'];
+import wepy from '@wepy/core'
+import province from '../common/province'
+import { User, qiniuUrl } from '../common/api'
+const provinces = []
+const citys = province['北京']
 for (const p in province) {
   if (province.hasOwnProperty(p)) {
-    provinces.push(p);
+    provinces.push(p)
   }
 }
-const years = [];
-const months = [];
-const days = [];
+const years = []
+const months = []
+const days = []
 for (let i = 1; i <= 31; i++) {
-  days.push(i);
+  days.push(i)
 }
 for (let i = 1; i <= 12; i++) {
-  months.push(i);
+  months.push(i)
 }
 for (let i = 1980; i <= new Date().getFullYear(); i++) {
-  years.push(i);
+  years.push(i)
 }
 wepy.page({
   data: {
@@ -317,37 +317,37 @@ wepy.page({
     }
   },
   async onLoad() {
-    this.user = await User.details(User.getUserId());
+    this.user = await User.details(User.getUserId())
     if (this.user) {
-      const user = this.user;
+      const user = this.user
       for (const key in this.info) {
         if (this.info.hasOwnProperty(key)) {
           switch (key) {
             case 'feeling':
-              this.info[key].value = this.groups[user[key]].text;
-              break;
+              this.info[key].value = this.groups[user[key]].text
+              break
             case 'birthday':
               if (user[key]) {
-                let date = new Date(user[key]);
+                let date = new Date(user[key])
                 this.birthday = [
                   date.getFullYear() - 1980,
                   date.getMonth(),
                   date.getDate() - 1
-                ];
-                this.info[key].value = user[key];
+                ]
+                this.info[key].value = user[key]
               }
-              break;
+              break
             case 'hometown':
-              this.citys = province[user.province];
+              this.citys = province[user.province]
               this.hometown = [
                 this.provinces.indexOf(user.province),
                 province[user.province].indexOf(user.city)
-              ];
-              this.info[key].value = `${user.province} ${user.city}`;
-              break;
+              ]
+              this.info[key].value = `${user.province} ${user.city}`
+              break
             default:
-              this.info[key].value = user[key];
-              break;
+              this.info[key].value = user[key]
+              break
           }
         }
       }
@@ -357,108 +357,108 @@ wepy.page({
     goAuth() {
       wx.navigateTo({
         url: '/pages/user-auth'
-      });
+      })
     },
     onClose() {
-      this.showActionsheet = false;
+      this.showActionsheet = false
     },
     onDialogClose() {
-      this.dialogShow = false;
+      this.dialogShow = false
     },
     onDialogSignClose() {
-      this.dialogSignShow = false;
+      this.dialogSignShow = false
     },
     async onActiontap(res) {
-      const { value, index } = res.$wx.detail;
-      this.info.feeling.value = this.groups[index].text;
-      this.onClose();
-      await User.change('feeling', this.groups[index].value);
+      const { value, index } = res.$wx.detail
+      this.info.feeling.value = this.groups[index].text
+      this.onClose()
+      await User.change('feeling', this.groups[index].value)
     },
     async onNickTap(res) {
-      this.dialogShow = false;
-      const { index } = res.$wx.detail;
+      this.dialogShow = false
+      const { index } = res.$wx.detail
       if (index === 1) {
         if (this.info.nick.value) {
-          await User.change('nick', this.info.nick.value);
+          await User.change('nick', this.info.nick.value)
         }
       }
     },
     async onSignButtontap(res) {
-      this.dialogSignShow = false;
-      const { index } = res.$wx.detail;
+      this.dialogSignShow = false
+      const { index } = res.$wx.detail
       if (index === 1) {
-        await User.change('signature', this.info.signature.value);
+        await User.change('signature', this.info.signature.value)
       }
     },
     onBirthDayChange(e) {
-      const res = e.$wx.detail.value;
-      this.birthday[0] = res[0];
-      this.birthday[1] = res[1];
-      this.birthday[2] = res[2];
+      const res = e.$wx.detail.value
+      this.birthday[0] = res[0]
+      this.birthday[1] = res[1]
+      this.birthday[2] = res[2]
     },
     onBirthDayCancel() {
-      this.screenBirthDayDialog = false;
+      this.screenBirthDayDialog = false
     },
     async onBirthDayConfirm() {
-      this.onBirthDayCancel();
+      this.onBirthDayCancel()
       this.info.birthday.value = `${this.years[this.birthday[0]]}-${
         this.months[this.birthday[1]]
-      }-${this.days[this.birthday[2]]}`;
-      await User.change('birthday', this.info.birthday.value);
+      }-${this.days[this.birthday[2]]}`
+      await User.change('birthday', this.info.birthday.value)
     },
     onHomeTownChange(e) {
-      const res = e.$wx.detail.value;
+      const res = e.$wx.detail.value
       if (this.hometown[0] !== res[0]) {
-        this.hometown[0] = res[0];
-        this.citys = province[provinces[res[0]]];
-        this.hometown[1] = 0;
+        this.hometown[0] = res[0]
+        this.citys = province[provinces[res[0]]]
+        this.hometown[1] = 0
       } else {
-        this.hometown[1] = res[1];
+        this.hometown[1] = res[1]
       }
     },
     onHomeTownCancel() {
-      this.homeTownDialog = false;
+      this.homeTownDialog = false
     },
     async onHomeTownConfirm() {
-      this.onHomeTownCancel();
+      this.onHomeTownCancel()
       this.info.hometown.value = `${provinces[this.hometown[0]]} ${
         this.citys[this.hometown[1]]
-      }`;
-      await User.change('hometown', this.info.hometown.value);
+      }`
+      await User.change('hometown', this.info.hometown.value)
     },
     onTap(item, filed) {
       switch (filed) {
         case 'nick':
-          this.dialogShow = true;
-          break;
+          this.dialogShow = true
+          break
         case 'feeling':
-          this.showActionsheet = true;
-          break;
+          this.showActionsheet = true
+          break
         case 'signature':
-          this.dialogSignShow = true;
-          break;
+          this.dialogSignShow = true
+          break
         case 'birthday':
-          this.screenBirthDayDialog = true;
-          break;
+          this.screenBirthDayDialog = true
+          break
         case 'hometown':
-          this.homeTownDialog = true;
-          break;
+          this.homeTownDialog = true
+          break
         default:
-          break;
+          break
       }
     },
     async onSchoolSelect(school) {
-      this.showSchool = false;
+      this.showSchool = false
       if (await User.change('school', school.name)) {
-        this.user.school = school.name;
+        this.user.school = school.name
       }
     },
     onSchoolClose() {
-      this.showSchool = false;
+      this.showSchool = false
     },
     onShowSchool() {
       if (!this.user.isAuth) {
-         this.showSchool = true;
+        this.showSchool = true
       }
     },
     async onUpload() {
@@ -466,12 +466,12 @@ wepy.page({
         count: 1,
         sizeType: ['compressed'],
         sourceType: ['album', 'camera']
-      });
-      const { tempFilePaths } = res;
+      })
+      const { tempFilePaths } = res
       wx.showLoading({
         title: '上传头像...',
         mask: true
-      });
+      })
       const imgUrl = await User.uploadFile(
         [
           {
@@ -479,15 +479,15 @@ wepy.page({
           }
         ],
         0
-      );
-      wx.hideLoading();
-      const avtater = qiniuUrl + imgUrl;
+      )
+      wx.hideLoading()
+      const avtater = imgUrl
       if (await User.change('avtater', avtater)) {
-        this.user.avtater = avtater;
+        this.user.avtater = avtater
       }
     }
   }
-});
+})
 </script>
 <config>
 {

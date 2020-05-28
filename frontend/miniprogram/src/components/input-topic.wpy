@@ -26,8 +26,8 @@
   </screen-dialog>
 </template>
 <script>
-import wepy from '@wepy/core';
-import { Topic } from '../common/api';
+import wepy from '@wepy/core'
+import { Topic } from '../common/api'
 wepy.component({
   options: {
     addGlobalClass: true
@@ -47,7 +47,7 @@ wepy.component({
   watch: {
     async show(val) {
       if (val && !this.items.length) {
-        await this.loadData();
+        await this.loadData()
       }
     }
   },
@@ -58,45 +58,45 @@ wepy.component({
           keyword: null,
           pageIndex: this.pageIndex,
           pageSize: this.pageSize
-        });
+        })
         for (const item of items) {
-          this.items.push(item);
+          this.items.push(item)
         }
-        this.pageIndex++;
-        this.isCanLoad = items.length === this.pageSize;
+        this.pageIndex++
+        this.isCanLoad = items.length === this.pageSize
       }
     },
     onSelect(topic) {
       this.$emit('result', {
         id: topic.id,
         title: topic.title
-      });
+      })
     },
     async onSearch(e) {
-      const { value } = e.$wx.detail;
-      this.pageIndex = 1;
-      this.isCanLoad = true;
+      const { value } = e.$wx.detail
+      this.pageIndex = 1
+      this.isCanLoad = true
       const items = await Topic.searchTopic({
         keyword: value,
         pageIndex: this.pageIndex,
         pageSize: this.pageSize
-      });
-      this.items = items;
+      })
+      this.items = items
     },
     async onCancel() {
-      this.items = [];
-      this.isCanLoad = true;
-      this.pageIndex = 1;
-      await this.loadData();
+      this.items = []
+      this.isCanLoad = true
+      this.pageIndex = 1
+      await this.loadData()
     },
     onClose() {
-      this.$emit('close');
+      this.$emit('close')
     },
     async onScrolltolower() {
-      await this.loadData();
+      await this.loadData()
     }
   }
-});
+})
 </script>
 <config>
 {

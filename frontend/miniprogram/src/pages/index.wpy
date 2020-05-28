@@ -55,8 +55,8 @@ swiper {
 </template>
 
 <script>
-import wepy from '@wepy/core';
-import { User } from '../common/api';
+import wepy from '@wepy/core'
+import { User } from '../common/api'
 wepy.page({
   data: {
     btntext: '开始体验',
@@ -86,24 +86,24 @@ wepy.page({
     disabled: false
   },
   async onLoad(q) {
-    const scene = decodeURIComponent(q.scene);
-    const { room, mode, id, postId, commentId } = q;
+    const scene = decodeURIComponent(q.scene)
+    const { room, mode, id, postId, commentId } = q
     if (scene) {
-      const obj = {};
-      const params = scene.split('&');
+      const obj = {}
+      const params = scene.split('&')
       for (const p of params) {
-        const arr = p.split('=');
+        const arr = p.split('=')
         if (arr.length === 2) {
-          obj[arr[0]] = arr[1];
+          obj[arr[0]] = arr[1]
         }
       }
-      this.shareId = obj.id || id;
-      this.$app.$options.globalData.postId = obj.postId || postId;
-      this.$app.$options.globalData.commentId = obj.commentId || commentId;
+      this.shareId = obj.id || id
+      this.$app.$options.globalData.postId = obj.postId || postId
+      this.$app.$options.globalData.commentId = obj.commentId || commentId
     }
     // this.init()
     if (User.getUserId()) {
-      await this.login();
+      await this.login()
     }
   },
   methods: {
@@ -111,7 +111,7 @@ wepy.page({
       wx.setStorageSync('user', {
         userId: 14614,
         subscribe: 1,
-        nick: '分享空间',
+        nick: 'Hold On',
         avtater: 'http://img.wutuobangxinyougou.com/u_14614_1582983801804.jpge',
         isBinding: 1,
         isAuth: 1,
@@ -119,34 +119,34 @@ wepy.page({
         grade: 3,
         sysMsgCount: 0,
         noticeCount: 0
-      });
+      })
       wx.setStorageSync(
         'token',
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyVHlwZSI6MSwidXNlcklkIjoxNDYxNCwiaWF0IjoxNTgzMDY3OTUyfQ.NLLUTuROQxxfw8APFB8eyXX2n6zE6tu-foabllZ36cU'
-      );
+      )
     },
     async login() {
-      this.loading = true;
-      this.disabled = true;
-      this.btntext = '开启中..';
+      this.loading = true
+      this.disabled = true
+      this.btntext = '开启中..'
       // const isLogin = true;
-      const isLogin = await User.login(this.shareId);
+      const isLogin = await User.login(this.shareId)
       if (isLogin) {
         wx.switchTab({
           url: '/pages/home'
-        });
+        })
       } else {
-        this.btntext = '重试';
+        this.btntext = '重试'
       }
-      this.loading = false;
-      this.disabled = false;
+      this.loading = false
+      this.disabled = false
     }
   }
-});
+})
 </script>
 <config>
 {
-    navigationBarTitleText: '分享空间',
+    navigationBarTitleText: 'Hold On',
     navigationBarBackgroundColor: '#ffffff',
     usingComponents: {
       

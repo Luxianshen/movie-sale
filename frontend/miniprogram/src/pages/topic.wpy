@@ -274,8 +274,8 @@
   </div>
 </template>
 <script>
-import wepy from '@wepy/core';
-import { Topic } from '../common/api';
+import wepy from '@wepy/core'
+import { Topic } from '../common/api'
 import Share from '../mixins/share'
 wepy.page({
   mixins: [Share],
@@ -326,100 +326,100 @@ wepy.page({
     refresherEnabled: false
   },
   async onLoad(q) {
-    const { id } = q;
-    this.topicId = parseInt(id);
-    const { bottom, top, height } = wx.getMenuButtonBoundingClientRect();
-    this.bottom = this.$app.$options.navigationHeight();
+    const { id } = q
+    this.topicId = parseInt(id)
+    const { bottom, top, height } = wx.getMenuButtonBoundingClientRect()
+    this.bottom = this.$app.$options.navigationHeight()
     this.$wx
       .createSelectorQuery()
       .select('.head')
       .boundingClientRect(res => {
-        let _top = this.bottom + res.height + 20;
-        this.top = _top;
-        this.baseTop = _top;
-        this.position = 'position:fixed';
+        let _top = this.bottom + res.height + 20
+        this.top = _top
+        this.baseTop = _top
+        this.position = 'position:fixed'
       })
-      .exec();
-    this.topic = await Topic.getDetails(id);
+      .exec()
+    this.topic = await Topic.getDetails(id)
     if (this.topic.id === 10) {
       this.tabs[2].title = '兼职'
     }
-    Topic.topicAddTrack(this.topic);
-    this.init0 = true;
+    Topic.topicAddTrack(this.topic)
+    this.init0 = true
   },
   methods: {
     async onTabChange(index) {
-      this.current = index;
+      this.current = index
     },
     touchmove(res) {
-      let _pageY = res.$wx.changedTouches[0].pageY;
+      let _pageY = res.$wx.changedTouches[0].pageY
       if (this.startY === 0) {
-        this.startY = _pageY;
+        this.startY = _pageY
       }
-      let offset = _pageY - this.startY;
+      let offset = _pageY - this.startY
       if (offset < 0) {
         if (this.top > this.bottom) {
-          this.startY = _pageY;
-          let _top = this.top + offset;
-          this.top = _top < this.bottom ? this.bottom : _top;
+          this.startY = _pageY
+          let _top = this.top + offset
+          this.top = _top < this.bottom ? this.bottom : _top
         }
       } else {
         if (this.top < this.baseTop) {
-          this.startY = _pageY;
-          let _top = this.top + offset;
-          this.top = _top > this.baseTop ? this.baseTop : _top;
+          this.startY = _pageY
+          let _top = this.top + offset
+          this.top = _top > this.baseTop ? this.baseTop : _top
         }
       }
     },
     touchend(res) {
-      this.startY = 0;
+      this.startY = 0
       this.$wx
         .createSelectorQuery()
         .select('.main')
         .boundingClientRect(res => {
-          const { top } = wx.getMenuButtonBoundingClientRect();
+          const { top } = wx.getMenuButtonBoundingClientRect()
           if (res.top > (this.baseTop - top) / 2 + top) {
-            this.top = this.baseTop;
-            this.scrollY = false;
+            this.top = this.baseTop
+            this.scrollY = false
           } else {
-            this.top = this.bottom;
-            this.scrollY = true;
+            this.top = this.bottom
+            this.scrollY = true
           }
-          this.transition = 'all 0.3s';
+          this.transition = 'all 0.3s'
           setTimeout(() => {
-            this.transition = 'none';
-          }, 300);
+            this.transition = 'none'
+          }, 300)
         })
-        .exec();
+        .exec()
     },
     onChange(res) {
-      const { current, source } = res.$wx.detail;
-      this.tabIndex = current;
+      const { current, source } = res.$wx.detail
+      this.tabIndex = current
       if (!this[`init${current}`]) {
-        this[`init${current}`] = true;
+        this[`init${current}`] = true
       }
     },
     goBack() {
-      wx.navigateBack();
+      wx.navigateBack()
     },
     goSend() {
       wx.navigateTo({
         url: `/pages/post-send?type=0&topicId=${this.topicId}&title=${encodeURI(
           this.topic.title
         )}`
-      });
+      })
     },
     async onFollow() {
       if (this.topic.hasFollow) {
         if (await Topic.cancel(this.topic.id)) {
-          this.topic.hasFollow = false;
+          this.topic.hasFollow = false
         }
       } else {
-        this.topic.hasFollow = await Topic.follow(this.topic.id);
+        this.topic.hasFollow = await Topic.follow(this.topic.id)
       }
     }
   }
-});
+})
 </script>
 <config>
 {

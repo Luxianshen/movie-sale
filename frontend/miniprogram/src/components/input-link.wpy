@@ -87,7 +87,7 @@
   </screen-dialog>
 </template>
 <script>
-import wepy from '@wepy/core';
+import wepy from '@wepy/core'
 wepy.component({
   options: {
     addGlobalClass: true
@@ -111,40 +111,40 @@ wepy.component({
     wx.getClipboardData({
       success: res => {
         if (this.urlReg.test(res.data)) {
-          this.link = res.data;
+          this.link = res.data
         }
       }
-    });
+    })
   },
   methods: {
     onFocus(res) {
-      this.focus = true;
-      const { height } = res.$wx.detail;
+      this.focus = true
+      const { height } = res.$wx.detail
       if (height) {
-        this.bottom = height;
+        this.bottom = height
       }
     },
     onSelect() {
-      this.url = this.link;
-      this.link = null;
+      this.url = this.link
+      this.link = null
     },
     onBlur() {
-      this.bottom = 0;
-      this.focus = false;
+      this.bottom = 0
+      this.focus = false
     },
     onAdd() {
       if (this.urlReg.test(this.url)) {
-        this.isError = false;
-        this.$emit('add', this.url);
+        this.isError = false
+        this.$emit('add', this.url)
       } else {
-        this.isError = true;
+        this.isError = true
       }
     },
     onClose() {
-      this.$emit('close');
+      this.$emit('close')
     }
   }
-});
+})
 </script>
 <config>
 {

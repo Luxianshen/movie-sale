@@ -118,10 +118,10 @@
   </mp-page>
 </template>
 <script>
-import wepy from '@wepy/core';
-import { Post, Topic, Message, User } from '../common/api';
+import wepy from '@wepy/core'
+import { Post, Topic, Message, User } from '../common/api'
 import { Tip } from '../plugin/tip/api'
-let self = null;
+let self = null
 wepy.component({
   props: {
     dataType: {
@@ -180,15 +180,15 @@ wepy.component({
   watch: {
     async isInit(val) {
       if (val) {
-        this.hasMore = true;
+        this.hasMore = true
         if (await this.loadData()) {
           if (this.items.length) {
-            this.state = 2;
+            this.state = 2
           } else {
-            this.state = 3;
+            this.state = 3
           }
         } else {
-          this.state = 1;
+          this.state = 1
         }
       }
     }
@@ -196,22 +196,22 @@ wepy.component({
   methods: {
     async loadData(isRefresh, keyword = null) {
       if ((!this.hasMore && !isRefresh) || this.isLoading) {
-        return;
+        return
       }
-      this.isLoading = true;
-      let items = null;
+      this.isLoading = true
+      let items = null
       if (this.controller === 'post') {
         items = await Post[this.action]({
-          isRefresh,
           id: this.objId,
           begin: isRefresh ? this.begin : null,
           pageIndex: isRefresh ? 1 : this.pageIndex,
           pageSize: this.pageSize,
-          type: this.dataType
-        });
+          type: this.dataType,
+          isRefresh: isRefresh ? 1 : 0
+        })
       } else if (this.controller === 'topic') {
         if (isRefresh) {
-          this.items = [];
+          this.items = []
         }
         items = await Topic[this.action]({
           isRefresh,
@@ -220,62 +220,61 @@ wepy.component({
           begin: isRefresh ? this.begin : null,
           pageIndex: isRefresh ? 1 : this.pageIndex,
           pageSize: this.pageSize
-        });
+        })
       } else if (this.controller === 'message') {
         items = await Message[this.action]({
           isRefresh,
           begin: isRefresh ? this.begin : null,
           pageIndex: isRefresh ? 1 : this.pageIndex,
           pageSize: this.pageSize
-        });
+        })
       } else if (this.controller === 'user') {
         items = await User[this.action]({
           type: this.dataType,
           userId: this.objId,
           pageIndex: isRefresh ? 1 : this.pageIndex,
           pageSize: this.pageSize
-        });
-      } else if(this.controller === 'tip') {
+        })
+      } else if (this.controller === 'tip') {
         items = await Tip[this.action]({
           pageIndex: isRefresh ? 1 : this.pageIndex,
           pageSize: this.pageSize
-        });
+        })
       }
       if (items) {
         for (const item of items) {
-          this.items[isRefresh ? 'unshift' : 'push'](item);
+          this.items[isRefresh ? 'unshift' : 'push'](item)
         }
         if (isRefresh) {
-          this.begin = new Date();
-          this.num = items.length;
+          this.begin = new Date()
+          this.num = items.length
         } else {
-          this.pageIndex++;
+          this.pageIndex++
         }
-        this.hasMore = items.length === this.pageSize;
+        this.hasMore = items.length === this.pageSize
       }
-      this.isLoading = false;
-      return items;
+      this.isLoading = false
+      return items
     },
     async onScrolltolower() {
-      console.log(1);
-
-      await this.loadData();
+      console.log(1)
+      await this.loadData()
     },
     async onRefresherpulling() {
-      this.triggered = true;
+      this.triggered = true
     },
     async onRefresherrefresh() {
-      await this.loadData(true);
+      await this.loadData(true)
       setTimeout(() => {
-        this.num = -1;
-      }, 2000);
-      this.triggered = false;
+        this.num = -1
+      }, 2000)
+      this.triggered = false
     },
     onRefresherrestore() {
-      this.triggered = false;
+      this.triggered = false
     },
     onSubscribe() {
-      Post.subscribe();
+      Post.subscribe()
       // wx.navigateTo({
       //   url: '/pages/post-article?url=0'
       // });
@@ -296,11 +295,11 @@ wepy.component({
               success: async res => {
                 if (res.confirm) {
                   if (await Post.removePost(post.id)) {
-                    this.items.splice(index, 1);
+                    this.items.splice(index, 1)
                   }
                 }
               }
-            });
+            })
           } else if (res.tapIndex === 1) {
             wx.showModal({
               title: '推荐设置提示',
@@ -313,28 +312,28 @@ wepy.component({
                 if (res.confirm) {
                   if (await Post.setPostRecommend(post.id)) {
                     if (post.isRecommend) {
-                      this.items.splice(index, 1);
+                      this.items.splice(index, 1)
                     }
                   }
                 }
               }
-            });
+            })
           }
         }
-      });
+      })
     },
     onShare({ index, post }) {
-      this.$emit('share', post);
+      this.$emit('share', post)
     },
     onEmptyTap() {
       this.$emit('emptyTap')
     },
     async onRelaod() {
-      this.state = 0;
-      await this.loadData(true);
+      this.state = 0
+      await this.loadData(true)
     }
   }
-});
+})
 </script>
 <config>
 {
