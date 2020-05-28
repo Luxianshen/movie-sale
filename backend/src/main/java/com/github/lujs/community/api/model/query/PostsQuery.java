@@ -19,9 +19,9 @@ public class PostsQuery implements Serializable {
     private Integer type;
 
     /**
-     * 是否获取新的数据
+     * 是否获取新的数据 0否 1是
      */
-    private boolean isRefresh;
+    private Integer isRefresh;
 
     /**
      * 获取什么时间之前的
@@ -31,6 +31,6 @@ public class PostsQuery implements Serializable {
     /**
      * 是否推荐 0否 1是
      */
-    private boolean isRecommend;
+    private Integer isRecommend;
 
 }

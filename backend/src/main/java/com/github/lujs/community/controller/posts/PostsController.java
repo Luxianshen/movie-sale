@@ -59,8 +59,10 @@ public class PostsController extends BaseController {
      */
     @RequestMapping("/get")
     public BaseResponse get(@Valid @RequestBody BaseRequest<PrimaryKeyRequest> request) {
+        Map<String, Object> result = new HashMap<>();
         Posts posts = targetService.getById(request.getData().getId());
-        return successResponse(posts);
+        result.put("post",posts);
+        return successResponse(result);
     }
 
     /**
@@ -118,12 +120,12 @@ public class PostsController extends BaseController {
         if (query.getType() != null) {
             queryWrapper.eq("pos_type", query.getType());
         }
-        if (query.isRefresh() && query.getBegin() != null) {
+        if (query.getIsRefresh() == 1 && query.getBegin() != null) {
             queryWrapper.ge("create_time", query.getBegin());
         }
-        if(query.isRecommend()){
+        /*if(query.getIsRecommend() == 1){
             queryWrapper.eq("is_recommend", 1);
-        }
+        }*/
 
         queryWrapper.orderByDesc("create_time");
         targetService.page(page, queryWrapper);
