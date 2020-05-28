@@ -3,6 +3,7 @@ package com.github.lujs.community.api.model.query;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 
@@ -13,14 +14,23 @@ import java.io.Serializable;
 public class PostsQuery implements Serializable {
 
     /**
-    * id 在查询业务一般是不需要的，这里是举个例子
-        private String number;
+    * id 在查询业务一般是不需要的，这里是举个
     */
-    private Long id;
+    private Integer type;
+
+    /**
+     * 是否获取新的数据
+     */
+    private boolean isRefresh;
+
+    /**
+     * 获取什么时间之前的
+     */
+    private Date begin;
 
     /**
      * 是否推荐 0否 1是
      */
-    private String isRecommend;
+    private boolean isRecommend;
 
 }

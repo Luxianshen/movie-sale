@@ -1,5 +1,6 @@
 package com.github.lujs.community.controller;
 
+import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.lujs.commmon.controller.BaseController;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -64,9 +66,9 @@ public class TimeEventController extends BaseController {
     @RequestMapping("/update")
     public BaseResponse update(@Valid @RequestBody BaseRequest<TimeEvent> request) {
         try {
-            TimeEvent schools = request.getData();
-            schools.setUpdateTime(new Date());
-            boolean result = targetService.updateById(schools);
+            TimeEvent timeEvent = request.getData();
+            timeEvent.setUpdateTime(new Date());
+            boolean result = targetService.updateById(timeEvent);
             return baseResponse(result);
         } catch (Exception ex) {
             logger.error("schoolsupdate -=- {}", ex.toString());
@@ -96,18 +98,32 @@ public class TimeEventController extends BaseController {
     @RequestMapping("/list")
     public BaseResponse list() {
 
-        Map<String,List<TimeEvent>> result = new HashMap<>();
+        Map<String,List<TimeEvent>> result;
 
         QueryWrapper<TimeEvent> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("create_time");
         List<TimeEvent> timeEvents = targetService.list(queryWrapper);
-
         result = sortByKey(timeEvents.stream().collect(Collectors.groupingBy(TimeEvent::getMonthDay)));
-
         return successResponse(result);
     }
 
+    /**
+     * 获取时间差
+     * @return
+     */
+    @RequestMapping("/getTimePass")
+    public BaseResponse getTimePass() {
+        long passDay = DateUtil.between(new Date(),DateUtil.parse("2019-10-16"), DateUnit.DAY);
+        return successResponse(passDay);
+    }
 
+    /**
+     * map排序
+     * @param map
+     * @param <K>
+     * @param <V>
+     * @return
+     */
     public <K extends Comparable<? super K>, V > Map<K, V> sortByKey(Map<K, V> map) {
         Map<K, V> result = new LinkedHashMap<>();
 

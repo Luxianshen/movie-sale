@@ -114,10 +114,19 @@ public class PostsController extends BaseController {
 
         PageQuery<Posts, PostsQuery> page = request.getData();
         PostsQuery query = page.getParams();
-        QueryWrapper<Posts> wrapper = new QueryWrapper<>();
-        wrapper.eq("is_recommend", 1);
-        wrapper.orderByDesc("create_time");
-        targetService.page(page, wrapper);
+        QueryWrapper<Posts> queryWrapper = new QueryWrapper<>();
+        if (query.getType() != null) {
+            queryWrapper.eq("pos_type", query.getType());
+        }
+        if (query.isRefresh() && query.getBegin() != null) {
+            queryWrapper.ge("create_time", query.getBegin());
+        }
+        if(query.isRecommend()){
+            queryWrapper.eq("is_recommend", 1);
+        }
+
+        queryWrapper.orderByDesc("create_time");
+        targetService.page(page, queryWrapper);
         page.getRecords().forEach(x -> {
             Map<String, Object> result = new HashMap<>();
             result.put("user", usersService.getById(x.getUserId()));
@@ -136,12 +145,18 @@ public class PostsController extends BaseController {
      * @return
      */
     @PostMapping("/recommend/new")
-    public BaseResponse recommend() {
+    public BaseResponse recommend(@RequestBody BaseRequest<PageQuery<Posts, PostsQuery>> request) {
 
-        QueryWrapper<Posts> wrapper = new QueryWrapper<>();
-        wrapper.eq("isRecommend", 1);
+        PageQuery<Posts, PostsQuery> page = request.getData();
+        PostsQuery postsQuery = page.getParams();
 
-        return successResponse(targetService.list(wrapper));
+        QueryWrapper<Posts> queryWrapper = new QueryWrapper<>();
+        if (postsQuery.getType() != null) {
+            queryWrapper.eq("post_type", postsQuery.getType());
+        }
+        queryWrapper.eq("isRecommend", 1);
+
+        return successResponse(targetService.page(page, queryWrapper));
     }
 
     /**
@@ -152,7 +167,6 @@ public class PostsController extends BaseController {
      */
     @PostMapping("/follow")
     public BaseResponse follow(@RequestBody BaseRequest<PageQuery<Posts, PostsQuery>> request) {
-
         return successResponse(targetService.list());
     }
 
