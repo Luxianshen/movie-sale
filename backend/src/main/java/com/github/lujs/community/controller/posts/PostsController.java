@@ -16,10 +16,7 @@ import com.github.lujs.community.api.service.IUsersService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -172,6 +169,23 @@ public class PostsController extends BaseController {
         posts.init();
         boolean result = targetService.save(posts);
         return baseResponse(result);
+    }
+
+    /**
+     * 校验文章
+     */
+    @RequestMapping("/analyse")
+    public BaseResponse analyse(@Valid @RequestBody BaseRequest<Posts> request) {
+        Posts posts = request.getData();
+        //检查文章地址 获取文章html
+        String urlRegex = "https?://(mp.weixin.qq.com)[-A-Za-z0-9+&@#/%=~_|]*";
+        Pattern pattern = Pattern.compile(urlRegex);
+        Matcher mac = pattern.matcher(posts.getLink());
+        if (mac.matches()) {
+            getArticleInfo(posts);
+            return successResponse(posts);
+        }
+        return failedResponse(null);
     }
 
     /**
