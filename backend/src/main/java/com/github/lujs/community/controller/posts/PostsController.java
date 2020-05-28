@@ -215,16 +215,16 @@ public class PostsController extends BaseController {
         if (mac.matches()) {
             posts.init();
             getArticleInfo(posts);
-            return successResponse(targetService.save(posts));
+            if(StringUtils.isNotEmpty(posts.getArticleTitle())){
+                return successResponse(targetService.save(posts));
+            }
         }
         return failedResponse(GlobalStatusCode.FAILED);
     }
 
     private void getArticleInfo(Posts posts) {
         try {
-            //构建一URL对象
             URL url = new URL(posts.getLink());
-            //使用openStream得到一输入流并由此构造一个BufferedReader对象
             BufferedReader in = new BufferedReader(new InputStreamReader(url
                     .openStream(), "UTF-8"));
             String line;
