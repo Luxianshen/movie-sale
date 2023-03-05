@@ -61,7 +61,7 @@ public class PostsController extends BaseController {
     public BaseResponse get(@Valid @RequestBody BaseRequest<PrimaryKeyRequest> request) {
         Map<String, Object> result = new HashMap<>();
         Posts posts = targetService.getById(request.getData().getId());
-        result.put("post",posts);
+        result.put("post", posts);
         return successResponse(result);
     }
 
@@ -126,7 +126,9 @@ public class PostsController extends BaseController {
         /*if(query.getIsRecommend() == 1){
             queryWrapper.eq("is_recommend", 1);
         }*/
-
+        if (query.getUserId() != null) {
+            queryWrapper.eq("user_id", query.getUserId());
+        }
         queryWrapper.orderByDesc("create_time");
         targetService.page(page, queryWrapper);
         page.getRecords().forEach(x -> {
@@ -157,7 +159,6 @@ public class PostsController extends BaseController {
             queryWrapper.eq("post_type", postsQuery.getType());
         }
         queryWrapper.eq("isRecommend", 1);
-
         return successResponse(targetService.page(page, queryWrapper));
     }
 
@@ -217,7 +218,7 @@ public class PostsController extends BaseController {
         if (mac.matches()) {
             posts.init();
             getArticleInfo(posts);
-            if(StringUtils.isNotEmpty(posts.getArticleTitle())){
+            if (StringUtils.isNotEmpty(posts.getArticleTitle())) {
                 return successResponse(targetService.save(posts));
             }
         }

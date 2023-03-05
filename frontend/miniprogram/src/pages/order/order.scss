@@ -1,0 +1,101 @@
+.order{
+  .timeDown{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    color: #f90;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    background: #fef3d9;
+    text-align: center;
+    line-height: 38Px;
+    box-sizing: border-box;
+    height: 38Px;
+    font-size: 0.65rem;
+  }
+  .movieInfo{
+    width: 100%;
+    height: 130Px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+    .movieName{
+     color:#6e6e6e;
+     font-size: 1rem;
+    }
+    .movieTime{
+      color: #f34d41 !important;
+    }
+    .station,.cinemas,.movieTime{
+      width: 100%;
+      height: 20Px;
+      line-height: 20Px;
+      color: #6e6e6e;
+      font-size:0.8rem;
+      margin-top: 15px;
+    }
+  }
+  .discountInfo{
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    padding:25px;
+    .card,.phone,.totalMoney{
+      display: flex;
+      flex-direction:row;
+      justify-content: space-between;
+      color: #666;
+      height:35Px;
+      line-height: 35Px;
+      font-size: 0.8rem;
+      border-top: 2px solid #f0f0f0;
+    }
+    .total{
+      color: #ef4238;
+      font-size: 1rem;
+    }
+  }
+  .line{
+      width: 100%;
+      height: 20px;
+      background-color: #f0f0f0;
+  }
+  .afford{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+    height: 100Px;
+    line-height: 100Px;
+    background-color: #fff;
+    border-top:1px solid #f0f0f0;
+    padding:25px;
+    margin-bottom: 15Px;
+    .tickerInfo{
+      width: 100%;
+      height: 40Px;
+      line-height: 40Px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      color: #999;
+      font-size:0.8rem;
+      .moneyAll{
+        font-size:1rem;
+        color: #ef4238;
+        font-weight: 700;
+      }
+    }
+    .affordBtn{
+      width: 100%;
+      height: 40Px;
+      line-height: 40Px;
+      background-color: #ff9e05;
+      color: #fff;
+      text-align: center;
+      border-radius: 10px;
+    }
+  }
+}

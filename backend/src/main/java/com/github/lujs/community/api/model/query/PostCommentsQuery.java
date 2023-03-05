@@ -1,5 +1,7 @@
 package com.github.lujs.community.api.model.query;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -11,9 +13,11 @@ import java.io.Serializable;
  */
 @Data
 public class PostCommentsQuery implements Serializable {
-    private Long id;
+
     /**
     * id 在查询业务一般是不需要的，这里是举个例子
-        private String number;
     */
+    @JsonSerialize( using = ToStringSerializer.class)
+    private Long postId;
+
 }
