@@ -3,7 +3,7 @@ import { View, Text,Input} from '@tarojs/components'
 import './search.scss'
 export default class Search extends Component {
   config = {
-    navigationBarTitleText: '猫眼电影',
+    navigationBarTitleText: '阿刘电影',
     enablePullDownRefresh:false
   }
   constructor(props){

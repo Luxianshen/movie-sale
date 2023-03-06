@@ -4,7 +4,7 @@ import './person.scss'
 
 export default class Person extends Component {
   config = {
-    navigationBarTitleText: '猫眼电影',
+    navigationBarTitleText: '阿刘电影',
     enablePullDownRefresh:false,
   }
   constructor(props){
@@ -66,7 +66,7 @@ export default class Person extends Component {
                 <View className="register">注册</View>
                 <View className="findPass">找回密码</View>
             </View>
-            <View className="company">© 猫眼电影 客服电话：400-670-5335</View>
+            <View className="company">© 阿刘电影 客服电话：400-670-5335</View>
         </View>
       </View>
     )

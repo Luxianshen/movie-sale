@@ -81,37 +81,27 @@ public class IndexController {
 
     /**
      * 电影院 详情
-     *
-     * @param cityCode
      * @return
      */
     @GetMapping("/cinemas/{cinemaId}/{movieId}")
     public String cinemas(@PathVariable("cinemaId") String cinemaId, @PathVariable("movieId") String movieId) {
-//888936  1430102
-        //String cinemas = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/schedule/schedules-list-qmm", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=27164025&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=afab2bd7a7984fc18231f8619ce7a11c&v=&isCouponPop=&ci=8&cinemaId=" + cinemaId + "&movieId=" + movieId);
-        //return cinemas;
-        String result = JSONUtil.readJSON(new File("/Users/lulu/IdeaProjects/github/dubbo3_naocs2/doc/movieIndex.json"), Charset.defaultCharset()).toString();
-        return result;
+
+        String cinemas = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/schedule/schedules-list-qmm", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=27164025&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=afab2bd7a7984fc18231f8619ce7a11c&v=&isCouponPop=&ci=8&cinemaId=" + cinemaId + "&movieId=" + movieId);
+        return cinemas;
     }
 
     /**
-     * 电影院 详情
-     *
-     * @param cityCode
+     * 电影院 详
      * @return
      */
     @GetMapping("/seat/{cinemaName}/{showId}")
     public String seat(@PathVariable("cinemaName") String cinemaName,@PathVariable("showId") String showId) {
 
-        //String seat = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/seat-plan/from-qmm", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=27164025&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=afab2bd7a7984fc18231f8619ce7a11c&v=&isCouponPop=&ci=8&cinemaName="+cinemaName+"&showId="+showId);
-        //System.out.println(seat);
-        String result = JSONUtil.readJSON(new File("/Users/lulu/IdeaProjects/github/dubbo3_naocs2/doc/seat.json"), Charset.defaultCharset()).toString();
-
-        Response response = JSONUtil.toBean(result, Response.class);
+        String seat = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/seat-plan/from-qmm", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=27164025&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=afab2bd7a7984fc18231f8619ce7a11c&v=&isCouponPop=&ci=8&cinemaName="+cinemaName+"&showId="+showId);
+        System.out.println(seat);
+        Response response = JSONUtil.toBean(seat, Response.class);
         SeatData seatData = JSONUtil.toBean(((JSONObject) response.getData()).getStr("seatData"), SeatData.class);
-
         Map<String, List<Seat>> collect = seatData.getSeats().stream().collect(Collectors.groupingBy(Seat::getRowNo));
-
         response = new Response(200,"success",collect);
         return JSONUtil.toJsonStr(response);
     }

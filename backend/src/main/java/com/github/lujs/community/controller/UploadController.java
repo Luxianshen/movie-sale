@@ -26,8 +26,8 @@ import java.io.IOException;
  * @author lujs
  * @description 文件上传接口
  */
-@RestController
-@RequestMapping("/community/upload")
+//@RestController
+//@RequestMapping("/community/upload")
 public class UploadController extends BaseController {
 
     /**

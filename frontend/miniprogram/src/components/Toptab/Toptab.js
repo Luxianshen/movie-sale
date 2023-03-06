@@ -12,7 +12,7 @@ export default class Toptab extends Component{
     this.state = {
       currentNavtab:0,
       name:data.geoCity?data.geoCity.nm:'广州',
-      id:data.geoCity?data.geoCity.id:'20',
+      id:data.geoCity?data.geoCity.id:'440100',
       navTab:["正在热映","即将上映"],
       onList:[],
       movieIds:[],
@@ -31,7 +31,7 @@ export default class Toptab extends Component{
     Taro.navigateTo({ url: url })
   }
   navigateDetail(url,item,cityId){
-    url = url+`?id=${item.id}&title=${item.showName}&cityId=${cityId}`
+    url = url+`?id=${item.showId}&title=${item.showName}&cityId=${cityId}`
     Taro.navigateTo({ url: url })
   }
   getMoviesOnList(){
@@ -40,20 +40,18 @@ export default class Toptab extends Component{
       title:"加载中"
     });
     Taro.request({
-      url:"http://127.1.0.1:8080/index/movie",
+      url:"http://42.192.250.192:8088/index/movie",
       method:"GET"
     }).then(res=>{
       if(res.statusCode == 200){
         Taro.hideLoading();
-        debugger
         res.data.data.list.forEach((value)=>{
-          this.state.movieIds.push(value["id"]);
+          this.state.movieIds.push(value["showId"]);
         });
         this.setState({
           onList:res.data.data.list,
           startIndex:0,
-          //startIndex:res.data.data.list.length,
-          lastIndex:30,
+          lastIndex:30
         });
       }else{
         this.setState({
@@ -76,9 +74,9 @@ export default class Toptab extends Component{
       });
       return false;
     }
-    for(let i = 0;i<10;i++){
+    for(let i = 0;i<29;i++){
       if(startIndex <= lastIndex && this.state.movieIds[startIndex]){
-        if(i == 9){
+        if(i == 29){
           url = url +this.state.movieIds[startIndex];
         }else{
           if(this.state.movieIds[startIndex+1]){
@@ -98,8 +96,7 @@ export default class Toptab extends Component{
       if(res.statusCode == 200){
         Taro.hideLoading();
         res.data.coming.forEach((value)=>{
-          let arr = value["img"].split("w.h");
-          value["img"] = arr[0]+"128.180"+  arr[1]
+
         });
         this.setState({
           onList:self.state.onList.concat(res.data.coming),
@@ -120,10 +117,6 @@ export default class Toptab extends Component{
       if(res.statusCode == 200){
         let data = res.data.coming;
         offset +=10;
-        data.forEach(value=>{
-          let arr = value["img"].split("w.h");
-          value['img'] = arr[0]+'128.180'+arr[1]
-        })
         self.setState({
           expectData:expectData.concat(data),
           offset:offset
@@ -172,7 +165,7 @@ export default class Toptab extends Component{
                       <View className="title">
                         <Text>{item.showName}</Text>
                         <View className="icon">
-                          {item.version.split(' ')[0] === "v3d"?<Image src={ico2Png}></Image>:<Image src={ico1Png}></Image>}
+                          {item.showMark.includes('3D')?<Image src={ico2Png}></Image>:<Image src={ico1Png}></Image>}
                         </View>
                       </View>
                       {item.globalReleased?<View className="comment smallFont">观众评 <Text className="yellow">{item.remark}</Text></View>:<View className="comment smallFont"><Text className="yellow">{item.wish}</Text>人想看</View>}

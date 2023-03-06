@@ -14,7 +14,7 @@
     <artifactId>movie-sale</artifactId>
     <packaging>jar</packaging>
 
-    <name>miniapp-share-info</name>
+    <name>movie-sale</name>
 
     <properties>
         <weixin-java-miniapp.version>3.7.0</weixin-java-miniapp.version>

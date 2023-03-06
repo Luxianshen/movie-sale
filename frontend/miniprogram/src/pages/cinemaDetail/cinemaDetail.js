@@ -39,7 +39,7 @@ export default class CinemasDetail extends Component {
         title:"加载数据中"
       });
       Taro.request({
-        url:`http://localhost:8080/index/cinemas/${cinemaId}/${movieId}`,
+        url:`http://42.192.250.192:8088/index/cinemas/${cinemaId}/${movieId}`,
         method:'GET'
       }).then(res=>{
         if(res.statusCode == 200){
@@ -131,6 +131,7 @@ export default class CinemasDetail extends Component {
               scrollIntoView={this.state.viewId}
           >
                         {showData.map((item,index)=>{
+                          debugger
                           return (
                               <Image  src={item.pic} key={item.filmId}  id={'view'+item.filmId} onClick={this.selected.bind(this,item,index,e)} className={ item.filmId ==  this.state.reqList.movieId?'active pic':'pic'}></Image>
                           );
@@ -161,7 +162,7 @@ export default class CinemasDetail extends Component {
                 <View className="ticketInfo" key={index}>
                   <View className="time">
                     <View className="startTime">
-                      {item.showTime.replace(dateLists[tabIndex], "")}
+                      {item.showTime.substr(12,16)}
                     </View>
                     <View className="endTime"></View>
                   </View>
