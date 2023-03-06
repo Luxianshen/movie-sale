@@ -152,7 +152,6 @@ export default class Detail extends Component {
       showDate: item.date,
       scrollLeft: e.target.offsetLeft
     }, () => {
-      debugger
       this.getAddrByDay(this.state.queryDates[index])
     });
   }
@@ -160,7 +159,6 @@ export default class Detail extends Component {
     Taro.showLoading({
       title: "加载数据中"
     });
-    debugger
     Taro.request({
       url: `http://42.192.250.192:8088/index/schedule/123/${this.state.params.id}/`+item
     }).then(res => {
@@ -265,7 +263,7 @@ export default class Detail extends Component {
           itemData.showName
         } < /View> <
         View className = "star" > {
-          itemData.leadingRole
+          itemData.leadingRole.substr(0,15)
         } < /View> {
         itemData.globalReleased ? < View className = "comment" > 观众评 {
           itemData.remakr

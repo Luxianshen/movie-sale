@@ -64,6 +64,7 @@ export default class CinemasDetail extends Component {
 
   }
   selected(item,index,e){
+    debugger
     const self = this;
     this.setState({
       reqList:{
@@ -99,12 +100,12 @@ export default class CinemasDetail extends Component {
   }
   render () {
     let cinemaData = this.state.movieData?this.state.cinemaData:{};
-    let showData = this.state.movieData?this.state.movieData:{};
-    let activeIndex = this.state.reqList.movieId?this.state.reqList.movieId:0;
+    let showData = this.state.movieData?this.state.movieData:[];
+    let activeIndex = this.state.activeIndex;
     let dataLists = this.state.movieData?this.state.dataList:[];
     let dateLists = this.state.dates;
     let tabIndex = this.state.tabIndex;
-    let dataList = dataLists.length == 0?[]:dataLists[activeIndex][dateLists[tabIndex]];
+    let dataList = dataLists.length == 0?[]:dataLists[this.state.reqList.movieId][dateLists[tabIndex]];
     //小吃
     let dealList = this.state.movieData? this.state.dealList:{};
     let reqList = this.state.reqList;
@@ -131,7 +132,7 @@ export default class CinemasDetail extends Component {
               scrollIntoView={this.state.viewId}
           >
                         {showData.map((item,index)=>{
-                          debugger
+                debugger
                           return (
                               <Image  src={item.pic} key={item.filmId}  id={'view'+item.filmId} onClick={this.selected.bind(this,item,index,e)} className={ item.filmId ==  this.state.reqList.movieId?'active pic':'pic'}></Image>
                           );
