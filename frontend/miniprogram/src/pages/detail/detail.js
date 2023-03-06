@@ -26,6 +26,7 @@ export default class Detail extends Component {
       showDate: "",
       detailMovie: {},
       dates: [],
+      queryDates: [],
       cinemas: [],
       allData: {},
       scrollLeft: '0',
@@ -52,7 +53,7 @@ export default class Detail extends Component {
   getfilterCinemas() {
     let cityId = this.state.params.cityId;
     Taro.request({
-      url: `http://localhost:8080/index/schedule/123/${this.state.params.id}/2023-03-04` //${this.state.showDate}
+      url: `http://42.192.250.192:8088/index/schedule/123/${this.state.params.id}/2023-03-06` //${this.state.showDate}
     }).then(res => {
       if (res.statusCode == 200) {
         let data = res.data.data;
@@ -65,17 +66,17 @@ export default class Detail extends Component {
   }
   getDetailData() {
     Taro.request({
-      url: `http://localhost:8080/index/movieDetail/123/${this.state.params.id}`
+      url: `http://42.192.250.192:8088/index/movieDetail/440100/${this.state.params.id}`
     }).then(res => {
       if (res.statusCode == 200) {
-        debugger
         let data = res.data.data;
         let movie = data.movie;
         let showDate = data.dateList[0];
         this.getHotDate(showDate);
         this.setState({
           detailMovie: movie,
-          dates: data.dateList
+          dates: data.dateList,
+          queryDates: data.dateList
         }, () => {
           this.getfilterCinemas()
         });
@@ -107,25 +108,8 @@ export default class Detail extends Component {
       title: "加载数据中"
     });
     Taro.request({
-      url: `http://localhost:8080/index/query/440100`,
-      method: 'GET',
-      data: {
-        movieId: this.state.params.id,
-        day: showDate,
-        offset: this.state.offset,
-        limit: 20,
-        districtId: -1,
-        lineId: -1,
-        hallType: -1,
-        brandId: -1,
-        serviceId: -1,
-        areaId: -1,
-        stationId: -1,
-        item: "",
-        updateShowDay: true,
-        reqId: Date.now(),
-        cityId: this.state.params.cityId,
-      }
+      url: `http://42.192.250.192:8088/index/query/440100`,
+      method: 'GET'
     }).then(res => {
       if (res.statusCode == 200) {
         let self = this
@@ -168,7 +152,8 @@ export default class Detail extends Component {
       showDate: item.date,
       scrollLeft: e.target.offsetLeft
     }, () => {
-      this.getAddrByDay(item)
+      debugger
+      this.getAddrByDay(this.state.queryDates[index])
     });
   }
   getAddrByDay(item) {
@@ -177,7 +162,7 @@ export default class Detail extends Component {
     });
     debugger
     Taro.request({
-      url: `http://localhost:8080/index/schedule/123/${this.state.params.id}/${this.state.showDate}`
+      url: `http://42.192.250.192:8088/index/schedule/123/${this.state.params.id}/`+item
     }).then(res => {
       if (res.statusCode == 200) {
         Taro.hideLoading();
