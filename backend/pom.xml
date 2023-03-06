@@ -11,10 +11,10 @@
 
     <groupId>com.github.binarywang</groupId>
     <version>1.0.0-SNAPSHOT</version>
-    <artifactId>miniapp-share-info</artifactId>
+    <artifactId>movie-sale</artifactId>
     <packaging>jar</packaging>
 
-    <name>miniapp-share-info</name>
+    <name>movie-sale</name>
 
     <properties>
         <weixin-java-miniapp.version>3.7.0</weixin-java-miniapp.version>

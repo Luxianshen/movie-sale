@@ -4,7 +4,7 @@ import Toptab from "../../components/Toptab/Toptab.js";
 import "./movies.scss";
 export default class Movies extends Component {
   config = {
-    navigationBarTitleText: "猫眼电影"
+    navigationBarTitleText: "阿刘电影"
   };
   constructor(props) {
     super(props);
