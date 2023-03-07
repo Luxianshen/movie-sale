@@ -53,7 +53,7 @@ export default class Detail extends Component {
   getfilterCinemas() {
     let cityId = this.state.params.cityId;
     Taro.request({
-      url: `http://42.192.250.192:8088/index/schedule/123/${this.state.params.id}/2023-03-06` //${this.state.showDate}
+      url: `http://42.192.250.192:8088/index/schedule/123/${this.state.params.id}/${this.state.queryDates[this.state.active]}`
     }).then(res => {
       if (res.statusCode == 200) {
         let data = res.data.data;
@@ -263,7 +263,7 @@ export default class Detail extends Component {
           itemData.showName
         } < /View> <
         View className = "star" > {
-          itemData.leadingRole.substr(0,15)
+          itemData.leadingRole.substring(0,15)
         } < /View> {
         itemData.globalReleased ? < View className = "comment" > 观众评 {
           itemData.remakr

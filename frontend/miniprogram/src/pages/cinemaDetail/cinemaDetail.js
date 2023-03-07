@@ -21,6 +21,7 @@ export default class CinemasDetail extends Component {
       tabIndex:0,
       dates:[],
       dataList: {},
+      showDateList:[],
       dealList: []
     }
   }
@@ -45,6 +46,9 @@ export default class CinemasDetail extends Component {
         if(res.statusCode == 200){
           Taro.hideLoading();
           let data = res.data.data;
+          data.dates.map((item,index)=>{
+            this.state.showDateList.push(this.formatDateString(item));
+          })
           self.setState({
             cinemaData: data.cinema,
             movieData: data.movies,
@@ -81,7 +85,7 @@ export default class CinemasDetail extends Component {
     });
   }
   navigateToMap(url,cinemaData){
-    url = url+`?lng=${cinemaData.longitude}&lat=${cinemaData.latitude}&title=${cinemaData.cinemaName}`;
+    url = url+`?lng=${cinemaData.longitude}&lat=${cinemaData.latitude}&title=${this.state.cinemaData.cinemaName}`;
     Taro.navigateTo({
       url:url
     })
@@ -98,6 +102,22 @@ export default class CinemasDetail extends Component {
   componentDidMount () {
     this.getCinemaDetail();
   }
+  formatDateString(date) {
+    let dates = new Date();
+    let day = dates.getDate();
+    let dateParam = date.split('-');
+    if (dateParam[2] == day) {
+      return "今天" + dateParam[1] + "月" + dateParam[2] + "日";
+    } else if (dateParam[2] == day + 1) {
+      return "明天" + dateParam[1] + "月" + dateParam[2] + "日";
+    } else if (dateParam[2] == day + 2) {
+      return "后天" + dateParam[1] + "月" + dateParam[2] + "日";
+    } else {
+      let weekday = new Date(date).getDay();
+      let arr = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"]
+      return arr[weekday] + dateParam[1] + "月" + dateParam[2] + "日";
+    }
+  }
   render () {
     let cinemaData = this.state.movieData?this.state.cinemaData:{};
     let showData = this.state.movieData?this.state.movieData:[];
@@ -106,6 +126,9 @@ export default class CinemasDetail extends Component {
     let dateLists = this.state.dates;
     let tabIndex = this.state.tabIndex;
     let dataList = dataLists.length == 0?[]:dataLists[this.state.reqList.movieId][dateLists[tabIndex]];
+    if(typeof(dataList) == 'undefined'){
+      dataList = [];
+    }
     //小吃
     let dealList = this.state.movieData? this.state.dealList:{};
     let reqList = this.state.reqList;
@@ -132,16 +155,15 @@ export default class CinemasDetail extends Component {
               scrollIntoView={this.state.viewId}
           >
                         {showData.map((item,index)=>{
-                debugger
                           return (
-                              <Image  src={item.pic} key={item.filmId}  id={'view'+item.filmId} onClick={this.selected.bind(this,item,index,e)} className={ item.filmId ==  this.state.reqList.movieId?'active pic':'pic'}></Image>
+                              <Image  src={item.pic} key={item.filmId}  id={'view'+item.filmId} onClick={this.selected.bind(this,item,index,e)} className={ item.filmId ==  this.state.reqList.movieId?'active img':'img'}></Image>
                           );
                         })}
             </ScrollView>
         </View>
         <View className="movieInfo">
           <View className="movieName">
-            {showData[activeIndex].name}<Text className="comment">{showData[activeIndex].grade}分</Text>
+            {showData[activeIndex].name}<Text className="comment">{showData[activeIndex].grade *1 /10}分</Text>
           </View>
           <View className="movieDesc"></View>
         </View>
@@ -150,7 +172,7 @@ export default class CinemasDetail extends Component {
           scrollWithAnimation
           scrollTop='0'
           style="height:50Px;">
-          {dateLists.map((item,index)=>{
+          {showDateList.map((item,index)=>{
             return (
               <View key={index} className={this.state.tabIndex == index?'selected dateItem':'dateItem'} onClick={this.chooseItem.bind(this,index)}>{item}</View>
             )
@@ -163,7 +185,7 @@ export default class CinemasDetail extends Component {
                 <View className="ticketInfo" key={index}>
                   <View className="time">
                     <View className="startTime">
-                      {item.showTime.substr(12,16)}
+                      {item.showTime.substring(11,16)}
                     </View>
                     <View className="endTime"></View>
                   </View>
