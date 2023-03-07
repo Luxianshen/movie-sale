@@ -31,6 +31,7 @@ export default class CinemasDetail extends Component {
     let cinemaId = params.cinemaId?params.cinemaId:"";
     const self = this;
     this.setState({
+      viewId:'view'+movieId,
       reqList:{
         cinemaId:cinemaId,
         movieId:movieId
@@ -129,6 +130,7 @@ export default class CinemasDetail extends Component {
     if(typeof(dataList) == 'undefined'){
       dataList = [];
     }
+    debugger
     //小吃
     let dealList = this.state.movieData? this.state.dealList:{};
     let reqList = this.state.reqList;

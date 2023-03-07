@@ -19,7 +19,7 @@ export default class Detail extends Component {
     this.state = {
       active: 0,
       params: {},
-      offset: 0,
+      offset: 1,
       hide: false,
       type: '',
       flag: true,
@@ -52,15 +52,31 @@ export default class Detail extends Component {
   }
   getfilterCinemas() {
     let cityId = this.state.params.cityId;
+
     Taro.request({
-      url: `http://42.192.250.192:8088/index/schedule/123/${this.state.params.id}/${this.state.queryDates[this.state.active]}`
+      url: `http://42.192.250.192:8088/index/schedule/123/${this.state.params.id}/${this.state.queryDates[this.state.active]}/${this.state.offset}`
     }).then(res => {
+
       if (res.statusCode == 200) {
         let data = res.data.data;
-        this.setState({
-          allData: data,
-          cinemas: data.list
-        });
+        if (data.hasMore > 0) {
+          if (this.state.offset < 2) {
+            this.setState({
+              allData: data,
+              cinemas: data.list
+            });
+          } else {
+            data.list.map((item) => {
+              this.state.cinemas.push(item);
+            })
+          }
+        } else {
+          _index2.default.showToast({
+            title: '没有更多数据了',
+            icon: 'success',
+            duration: 2000
+          });
+        }
       }
     })
   }
@@ -160,25 +176,30 @@ export default class Detail extends Component {
       title: "加载数据中"
     });
     Taro.request({
-      url: `http://42.192.250.192:8088/index/schedule/123/${this.state.params.id}/`+item
+      url: `http://42.192.250.192:8088/index/schedule/123/${this.state.params.id}/` + item+'/1'
     }).then(res => {
       if (res.statusCode == 200) {
         Taro.hideLoading();
         let data = res.data.data;
         this.setState({
-          cinemas: data.list
+          cinemas: data.list,
+          offset:1
         });
       }
     })
   }
   load(e) {
     let offset = this.state.offset
-    offset = offset + 20;
+    offset = offset + 1;
     let showDate = this.state.showDate;
     this.setState({
       offset: offset
     }, () => {
-      this.getHotDate(showDate);
+      Taro.showLoading({
+        title: '加载中'
+      })
+      this.getfilterCinemas();
+      Taro.hideLoading();
     })
   }
   scroll(e) {
@@ -263,7 +284,7 @@ export default class Detail extends Component {
           itemData.showName
         } < /View> <
         View className = "star" > {
-          itemData.leadingRole.substring(0,15)
+          itemData.leadingRole.substring(0, 15)
         } < /View> {
         itemData.globalReleased ? < View className = "comment" > 观众评 {
           itemData.remakr
@@ -278,18 +299,18 @@ export default class Detail extends Component {
     /{itemData.duration}分钟</View >
     <
     View className = "time" > {
-        itemData.pubDesc
-      } < /View> < /
-      View > <
+      itemData.pubDesc
+    } < /View> < /
+    View > <
       View className = "arrow"
     onClick = {
         this.navigateContent.bind(this, '../content/content', itemData)
       } >
       <
       View className = "icon" > < /View> < /
-      View > <
+    View > <
       /View> < /
-      View > <
+    View > <
       /View> <
     View className = {
         this.state.hide ? 'fix' : ''
