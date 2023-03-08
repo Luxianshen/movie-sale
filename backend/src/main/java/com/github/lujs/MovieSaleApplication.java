@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * @author Lujs
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.github.**")
 public class MovieSaleApplication {
 
     public static void main(String[] args) {

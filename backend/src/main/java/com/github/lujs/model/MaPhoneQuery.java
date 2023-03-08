@@ -19,9 +19,7 @@ public class MaPhoneQuery {
     @NotEmpty(message = "iv不为空")
     private String iv;
 
-    //@NotNull(message = "用户类型不为空")
-    private Integer userType;
-
+    private String sessionKey;
     /**
      * 绑定手机号时必填
      */

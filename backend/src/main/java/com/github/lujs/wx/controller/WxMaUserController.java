@@ -1,42 +1,27 @@
 package com.github.lujs.wx.controller;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.github.lujs.commmon.CzToken;
-import com.github.lujs.commmon.controller.BaseController;
-import com.github.lujs.commmon.model.vo.BaseRequest;
-import com.github.lujs.commmon.model.vo.BaseResponse;
-import com.github.lujs.community.api.model.pojo.Users;
-import com.github.lujs.community.api.service.IUsersService;
-import com.github.lujs.commmon.config.WxMaConfiguration;
-import com.github.lujs.commmon.utils.JsonUtils;
-import com.github.lujs.mapper.TalentThirdMapper;
-import com.github.lujs.mapper.TalentUserMapper;
-import com.github.lujs.model.*;
-import com.github.lujs.wx.controller.request.UserMaLoginRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
-
-import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
-import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
-import me.chanjar.weixin.common.error.WxErrorException;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.github.lujs.commmon.CzToken;
+import com.github.lujs.commmon.annotation.Token;
+import com.github.lujs.commmon.config.WxMaConfiguration;
+import com.github.lujs.commmon.controller.BaseController;
+import com.github.lujs.commmon.model.vo.BaseRequest;
+import com.github.lujs.community.service.mapper.TalentThirdMapper;
+import com.github.lujs.community.service.mapper.TalentUserMapper;
+import com.github.lujs.model.*;
+import com.github.lujs.service.CzTokenService;
+import com.github.lujs.wx.controller.request.UserMaLoginRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 微信小程序用户接口
@@ -45,11 +30,11 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @RestController
-@RequestMapping("/wx/user/{appid}")
+@RequestMapping("/wx")
 public class WxMaUserController extends BaseController {
 
     @Resource
-    private IUsersService usersService;
+    private CzTokenService tokenService;
 
     @Resource
     private TalentThirdMapper talentThirdMapper;
@@ -57,8 +42,10 @@ public class WxMaUserController extends BaseController {
     @Resource
     private TalentUserMapper talentUserMapper;
 
-    @Value("${appId}")
+
+    @Value("${wx.miniapp.configs[0].appid}")
     private String appId;
+
 
     /**
      * 小程序用户登录
@@ -66,13 +53,8 @@ public class WxMaUserController extends BaseController {
      * @param request
      * @return
      */
-    @PostMapping("/maLogin")
-    public Result<CzToken> maLogin(@Valid @RequestBody BaseRequest<UserMaLoginRequest> request) {
-
-        UserMaLoginRequest data = request.getData();
-
-        String code = data.getCode();
-        //多app时 这里要改 当前不用
+    @GetMapping("/maLogin/{code}")
+    public Result maLogin(@PathVariable("code") String code) {
 
         String sessionKey;
         try {
@@ -90,11 +72,11 @@ public class WxMaUserController extends BaseController {
             if (sessionKey != null)
                 userDto.setSessionKey(sessionKey);
 
-            return Result.succeed(createCzToken(userDto));
+            return Result.succeed(tokenService.createCzToken(userDto));
         } catch (Exception e) {
             log.error("wx小程序登陆异常:{}", e.getMessage(), e);
         }
-        return Result.failed();
+        return Result.failed("123");
 
     }
 
@@ -106,7 +88,7 @@ public class WxMaUserController extends BaseController {
      */
     @GetMapping("/loginOut")
     public Result<Boolean> loginOut(@Token CzToken czToken) {
-        czTokenService.destroy(czToken.getToken());
+        tokenService.destroy(czToken.getToken());
         return Result.succeed();
     }
 
@@ -119,7 +101,7 @@ public class WxMaUserController extends BaseController {
      */
 
    /* @PostMapping("/maUserInfo")
-    public Result<CzToken> maUserInfo(@VtdToken CzToken token, @Valid @RequestBody BaseRequest<MaInfoQuery> request) {
+    public Result<CzToken> maUserInfo(@Token CzToken token, @Valid @RequestBody BaseRequest<MaInfoQuery> request) {
 
         MaInfoQuery data = request.getData();
         data.setBizUserId(token.getBizUserId());
@@ -137,19 +119,18 @@ public class WxMaUserController extends BaseController {
      */
 
     @PostMapping("/maBindPhone")
-    public Result<CzToken> maBindPhone(@VtdToken CzToken token, @Valid @RequestBody BaseRequest<MaPhoneQuery> request) {
+    public Result<CzToken> maBindPhone(@Token CzToken token, @Valid @RequestBody BaseRequest<MaPhoneQuery> request) {
 
         MaPhoneQuery data = request.getData();
         data.setBizUserId(token.getBizUserId());
 
-        String appId = data.getAppId();
         String sessionKey = data.getSessionKey();
         String encryptedData = data.getEncryptedData();
         String iv = data.getIv();
         String bizUserId = data.getBizUserId();
 
         // 解密
-        WxMaPhoneNumberInfo phoneNoInfo = WxMaConfiguration.getMaService().getUserService().getPhoneNoInfo(sessionKey, encryptedData, iv);
+        WxMaPhoneNumberInfo phoneNoInfo = WxMaConfiguration.getMaService(appId).getUserService().getPhoneNoInfo(sessionKey, encryptedData, iv);
 
         TalentThird userThird = talentThirdMapper.selectOne(new LambdaQueryWrapper<>(TalentThird.class)
                 .eq(TalentThird::getOpenId, data.getBizUserId()).eq(TalentThird::getAppId, appId));
@@ -172,7 +153,6 @@ public class WxMaUserController extends BaseController {
             //创建一个新的达人用户
             TalentUser talentUser = new TalentUser();
             talentUser.setPhone(userThird.getPhone());
-            talentUser.setState(UserAuthState.AUTH_WAIT);
             talentUser.setFirstTime(userThird.getCreateTime());
             talentUser.setRegisterTime(new Date());
             if (ObjectUtil.isNotNull(userThird.getAvatar()))
@@ -199,7 +179,7 @@ public class WxMaUserController extends BaseController {
         //后置头像 防止授权信息的时候 没有了
         userDto.setBizUserId(userThird.getOpenId());
 
-        return Result.succeed(createCzToken(userDto));
+        return Result.succeed(tokenService.createCzToken(userDto));
     }
 
 
@@ -229,36 +209,6 @@ public class WxMaUserController extends BaseController {
         userDto.setBizUserId(userThird.getOpenId());
 
         return userDto;
-    }
-
-
-    public CzToken getCzToken(String key) {
-        if (redisTemplate.hasKey(key)) {
-            //序列化优化 后端获取数据 多一个userId
-            CzToken czToken = BeanUtil.toBean(redisTemplate.opsForValue().get(key), CzToken.class);
-            czToken.setToken(key);
-            //免权限token 刷新缓存处
-            //refresh(key);
-            return czToken;
-        }
-        throw new RuntimeException("获取token失败");
-    }
-
-    /**
-     * 创建Token
-     * Token
-     */
-    public CzToken createCzToken(UserDto userDto) {
-
-        Assert.notNull(userDto);
-        //前缀 和 权限
-        String tokenKey = "CZ-" + IdUtil.getSnowflake(1L, 3L).nextIdStr();
-        //base
-        CzToken token = BeanUtil.toBean(userDto,CzToken.class);
-        token.setToken(tokenKey);
-        //缓存token 后端userId
-        redisTemplate.opsForValue().set(tokenKey, userDto, 120, TimeUnit.MINUTES);
-        return token;
     }
 
 

@@ -1,11 +1,13 @@
 package com.github.lujs.model;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.lujs.commmon.BaseEntity;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Accessors(chain = true)
 @Data
+@TableName("tb_talent_third")
 public class TalentThird extends BaseEntity {
 
     /**

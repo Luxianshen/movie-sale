@@ -1,8 +1,16 @@
 package com.github.lujs.model;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.github.lujs.commmon.BaseEntity;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
 import java.util.Date;
 
-public class TalentUser {
+@Accessors(chain = true)
+@Data
+@TableName("tb_talent_user")
+public class TalentUser extends BaseEntity {
 
     /*微信信息*/
     /**
