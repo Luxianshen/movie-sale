@@ -11,7 +11,7 @@ export default class Person extends Component {
     super(props);
     this.state={
       currentTab:0,
-      listItems:["美团账号登录","手机验证登录"]
+      listItems:["微信一键登录"]
     }
   }
   componentDidMount () { }
@@ -28,6 +28,23 @@ export default class Person extends Component {
     console.log(e)
   }
   login(url){
+    //微信登录逻辑
+    wx.login({
+      success (res) {
+        if (res.code) {
+          debugger
+          //发起网络请求
+          wx.request({
+            url: 'https://example.com/onLogin',
+            data: {
+              code: res.code
+            }
+          })
+        } else {
+          console.log('登录失败！' + res.errMsg)
+        }
+      }
+    })
     Taro.navigateTo({
       url:url
     })
@@ -43,13 +60,9 @@ export default class Person extends Component {
         })}
         </View>
         <Form onSubmit="formSubmit" onReset="formReset" className="meituan" hidden={this.state.currentTab == 0?false:true}>
-            <Label className=''>
-              <Input type="text" placeholder="账户名/手机号/Email"></Input>
-            </Label>
-            <Label className="">
-              <Input type="password" placeholder="请输入您的密码"></Input>
-            </Label>
+            <center>
             <Button className="login" size="default" onClick={this.login.bind(this,'../user/user')}>登陆</Button>
+            </center>
         </Form>
         <Form onSubmit="formSubmit" onReset="formReset" className="mobile" hidden={this.state.currentTab == 1?false:true}>
             <Label className='phone' for="phone">
@@ -62,11 +75,7 @@ export default class Person extends Component {
             <Button  className="login" size="default" onClick={this.login.bind(this,'../user/user')}>登陆</Button>
         </Form>
         <View className="copyright">
-            <View className="operate">
-                <View className="register">注册</View>
-                <View className="findPass">找回密码</View>
-            </View>
-            <View className="company">© 阿刘电影 客服电话：400-670-5335</View>
+            <View className="company">© 阿刘电影 客服电话：12345</View>
         </View>
       </View>
     )

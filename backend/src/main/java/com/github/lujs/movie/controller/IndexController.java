@@ -59,7 +59,7 @@ public class IndexController {
     public String schedule(@PathVariable("cityCode") String cityCode, @PathVariable("showId") String showId,
                            @PathVariable("dateStr") String dateStr, @PathVariable("page") Integer page) {
 
-        String schedule = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/schedule/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&cityCode=440100&page=" + page + "&limit=10&showId="
+        String schedule = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/schedule/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&cityCode=440100&page=" + page + "&limit=20&showId="
                 + showId + "&date=" + dateStr + "&area=&brand=&cinemaOrAddress=");
 
         return schedule;
