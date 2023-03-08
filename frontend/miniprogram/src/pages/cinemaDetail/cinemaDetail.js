@@ -41,7 +41,7 @@ export default class CinemasDetail extends Component {
         title:"加载数据中"
       });
       Taro.request({
-        url:`http://42.192.250.192:8088/index/cinemas/${cinemaId}/${movieId}`,
+        url:`baseUrl/index/cinemas/${cinemaId}/${movieId}`,
         method:'GET'
       }).then(res=>{
         if(res.statusCode == 200){
@@ -69,7 +69,7 @@ export default class CinemasDetail extends Component {
 
   }
   selected(item,index,e){
-    debugger
+    
     const self = this;
     this.setState({
       reqList:{
@@ -130,7 +130,7 @@ export default class CinemasDetail extends Component {
     if(typeof(dataList) == 'undefined'){
       dataList = [];
     }
-    debugger
+    
     //小吃
     let dealList = this.state.movieData? this.state.dealList:{};
     let reqList = this.state.reqList;

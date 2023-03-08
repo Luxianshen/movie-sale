@@ -54,17 +54,19 @@ export default class Detail extends Component {
     let cityId = this.state.params.cityId;
 
     Taro.request({
-      url: `http://42.192.250.192:8088/index/schedule/123/${this.state.params.id}/${this.state.queryDates[this.state.active]}/${this.state.offset}`
+      url: `baseUrl/index/schedule/123/${this.state.params.id}/${this.state.queryDates[this.state.active]}/${this.state.offset}`
     }).then(res => {
 
       if (res.statusCode == 200) {
         let data = res.data.data;
         if (data.hasMore > 0) {
           if (this.state.offset < 2) {
+            this.state.offset = 2;
             this.setState({
               allData: data,
-              cinemas: data.list
+              cinemas: data.list,
             });
+            this.getfilterCinemas();
           } else {
             data.list.map((item) => {
               this.state.cinemas.push(item);
@@ -82,7 +84,7 @@ export default class Detail extends Component {
   }
   getDetailData() {
     Taro.request({
-      url: `http://42.192.250.192:8088/index/movieDetail/440100/${this.state.params.id}`
+      url: `baseUrl/index/movieDetail/440100/${this.state.params.id}`
     }).then(res => {
       if (res.statusCode == 200) {
         let data = res.data.data;
@@ -124,7 +126,7 @@ export default class Detail extends Component {
       title: "加载数据中"
     });
     Taro.request({
-      url: `http://42.192.250.192:8088/index/query/440100`,
+      url: `baseUrl/index/query/440100`,
       method: 'GET'
     }).then(res => {
       if (res.statusCode == 200) {
@@ -164,7 +166,7 @@ export default class Detail extends Component {
   selectDate(item, index, e) {
     this.setState({
       active: index,
-      offset: 0,
+      offset: 1,
       showDate: item.date,
       scrollLeft: e.target.offsetLeft
     }, () => {
@@ -172,21 +174,8 @@ export default class Detail extends Component {
     });
   }
   getAddrByDay(item) {
-    Taro.showLoading({
-      title: "加载数据中"
-    });
-    Taro.request({
-      url: `http://42.192.250.192:8088/index/schedule/123/${this.state.params.id}/` + item+'/1'
-    }).then(res => {
-      if (res.statusCode == 200) {
-        Taro.hideLoading();
-        let data = res.data.data;
-        this.setState({
-          cinemas: data.list,
-          offset:1
-        });
-      }
-    })
+    this.state.offset = 1;
+    this.getfilterCinemas();
   }
   load(e) {
     let offset = this.state.offset
@@ -203,14 +192,14 @@ export default class Detail extends Component {
     })
   }
   scroll(e) {
-    if (e.detail.scrollTop >= 185 && this.state.flag) {
+    if (e.detail.scrollTop >= 150 && this.state.flag) {
       let hide = true;
       this.setState({
         hide: hide,
         flag: false
       })
     }
-    if (e.detail.scrollTop < 185 && !this.state.flag) {
+    if (e.detail.scrollTop < 150 && !this.state.flag) {
       let hide = false;
       this.setState({
         hide: hide,

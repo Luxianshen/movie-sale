@@ -40,10 +40,10 @@ export default class Content extends Component {
       title:"加载中"
     });
     Taro.request({
-      url:`http://42.192.250.192:8088/index/movieDetail/440100/${this.state.params.id}`
+      url:`baseUrl/index/movieDetail/440100/${this.state.params.id}`
     }).then(res=>{
       if(res.statusCode == 200){
-		  debugger
+		  
         Taro.hideLoading();
         let data = res.data.detailMovie;
         let arr = data["img"].split("w.h");

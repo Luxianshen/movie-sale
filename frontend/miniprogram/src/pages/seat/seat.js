@@ -39,7 +39,7 @@ export default class Seat extends Component {
       title: "加载中..."
     });
     Taro.request({
-      url: `http://42.192.250.192:8088/index/seat/${cinemaName}/${showId}`,
+      url: `baseUrl/index/seat/${cinemaName}/${showId}`,
       method: 'get'
     }).then(res => {
       if (res.statusCode == 200) {

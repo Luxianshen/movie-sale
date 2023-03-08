@@ -32,22 +32,22 @@ export default class Person extends Component {
     wx.login({
       success (res) {
         if (res.code) {
-          debugger
+          
           //发起网络请求
-          wx.request({
-            url: 'https://example.com/onLogin',
-            data: {
-              code: res.code
-            }
+         wx.request({
+            url: 'http://127.0.0.1:8080/wx/maLogin/'+res.code
           })
+          success:{
+            Taro.navigateTo({
+              url:url
+            })
+          }
         } else {
           console.log('登录失败！' + res.errMsg)
         }
       }
     })
-    Taro.navigateTo({
-      url:url
-    })
+    
   }
   render () {
     return (
