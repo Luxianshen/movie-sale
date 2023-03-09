@@ -16,7 +16,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
-    password: root
+    password: a6699As
     driver-class-name: com.mysql.jdbc.Driver
   redis:
     database: 0

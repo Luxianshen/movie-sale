@@ -6,6 +6,7 @@ class App extends Component {
     pages: [
       "pages/movies/movies",
       "pages/person/person",
+      "pages/position/position",
       "pages/cinema/cinema",
       "pages/search/search",
       "pages/detail/detail",

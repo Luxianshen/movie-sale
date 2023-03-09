@@ -27,27 +27,44 @@ export default class Person extends Component {
   formReset = e => {
     console.log(e)
   }
-  login(url){
-    //微信登录逻辑
-    wx.login({
-      success (res) {
-        if (res.code) {
-          
-          //发起网络请求
-         wx.request({
-            url: 'http://127.0.0.1:8080/wx/maLogin/'+res.code
-          })
-          success:{
-            Taro.navigateTo({
-              url:url
+getTel = (e) => {
+    console.log(e.detail);
+    this.setState({ isNum: true })
+    let { encryptedData, iv } = e.detail
+    wx.checkSession({
+      success: function () {
+        console.log('有session，已登陆');
+        //session_key 未过期，并且在本生命周期一直有效
+      },
+      fail: function () {
+        // session_key 已经失效，需要重新执行登录流程
+        console.log('未登陆');
+        //重新登录
+        Taro.login({
+          success (res) {
+            console.log(res);
+            let code = res.code
+            Taro.request({
+              url: 'url',//后端url
+              method: 'GET',
+              data: {
+                code,//login获取到的code
+                encryptedData,
+                iv
+              },
+              success (phoneNumber) {
+                console.log(phoneNumber)
+              }
             })
           }
-        } else {
-          console.log('登录失败！' + res.errMsg)
-        }
+        })
       }
     })
-    
+  }
+  login(url){
+    Taro.navigateTo({
+      url:url
+    })
   }
   render () {
     return (
@@ -60,9 +77,7 @@ export default class Person extends Component {
         })}
         </View>
         <Form onSubmit="formSubmit" onReset="formReset" className="meituan" hidden={this.state.currentTab == 0?false:true}>
-            <center>
-            <Button className="login" size="default" onClick={this.login.bind(this,'../user/user')}>登陆</Button>
-            </center>
+            <Button type='primary' openType='getPhoneNumber' onGetPhoneNumber={this.getTel}>微信获取手机号</Button>
         </Form>
         <Form onSubmit="formSubmit" onReset="formReset" className="mobile" hidden={this.state.currentTab == 1?false:true}>
             <Label className='phone' for="phone">

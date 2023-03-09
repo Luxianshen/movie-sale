@@ -15,7 +15,7 @@ export default class Cinema extends Component {
     super(props);
     this.state = {
       type:'',
-      cityData:{},
+      cityName:'',
       allData:[],
       selectItems:[{nm:'全城',type:'city'},{nm:'品牌',type:'brand'},{nm:'特色',type:'special'}],
       reqList:{
@@ -47,9 +47,9 @@ export default class Cinema extends Component {
   }
   getStorageData(){
     let self = this;
-    let cityData = Taro.getStorageSync('cities');
+    let cityName = Taro.getStorageSync('cityName');
     this.setState({
-      cityData:cityData.geoCity
+      cityName:cityName
     },()=>{
       self.filterCinemasList();
       self.getCinemasList();
@@ -128,7 +128,7 @@ export default class Cinema extends Component {
       >
         <View className="navHeader">
           <View className="location" onClick={this.navigate.bind(this,'../position/position')}>
-            {this.state.cityData.nm}
+            {this.state.cityName}
             <View className="tangle"></View>
           </View>
           <View className="search" onClick={this.navigate.bind(this,'../search/search')}>

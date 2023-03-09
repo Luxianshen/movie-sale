@@ -10,24 +10,45 @@ export default class Movies extends Component {
     super(props);
   }
   componentDidMount() {
+    this.autoLogin();
     this.getCities();
   }
   getCities() {
-    Taro.request({
+    /* Taro.request({
       url:
-        "https://www.easy-mock.com/mock/5ba0a7f92e49497b37162e32/example_copy/cities_copy_1541385673090",
-      method: "GET",
-      header: {
-        Accept: "application/json, */*",
-        "Content-Type": "application/json"
-      }
+        'http://127.0.0.1:8080/index/getCity',
+      method: "GET"
     }).then(res => {
       if (res.statusCode == 200) {
-        let data = res.data.data.data.data;
-        Taro.setStorageSync("cities", data);
+        debugger
+        let data = res.data;
+        Taro.setStorageSync("cityName", data.cityName);
+        Taro.setStorageSync("cityCode", data.cityCode);
+        Taro.setStorageSync("lat", data.lat);
+        Taro.setStorageSync("lon", data.lon);
       }
-    });
+    }); */
   }
+
+  autoLogin(){
+    //微信登录逻辑
+    wx.login({
+      success (res) {
+        if (res.code) {
+          //发起网络请求
+         wx.request({
+            url: 'http://127.0.0.1:8080/wx/maLogin/'+res.code
+          })
+          success:{
+
+          }
+        } else {
+          console.log('登录失败！' + res.errMsg)
+        }
+      }
+    })
+  }
+
   render() {
     return (
       <View className="movies">

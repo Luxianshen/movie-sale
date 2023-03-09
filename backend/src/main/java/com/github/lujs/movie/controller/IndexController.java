@@ -1,16 +1,17 @@
 package com.github.lujs.movie.controller;
 
+import cn.hutool.core.net.NetUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.github.lujs.model.Response;
-import com.github.lujs.model.Seat;
-import com.github.lujs.model.SeatData;
+import com.github.lujs.model.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import sun.net.util.IPAddressUtil;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,6 @@ public class IndexController {
     public String movieList(@PathParam("cityCode") String cityCode) {
 
         String post = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/film/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=afab2bd7a7984fc18231f8619ce7a11c&v=&isCouponPop=&ci=8&cityCode=440100&page=1&limit=30&showType=1");
-        String a = "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&cityCode=" + cityCode + "&page=5&limit=30&showType=2";
         return post;
     }
 
@@ -111,6 +111,28 @@ public class IndexController {
 
         String post = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/region/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&cityCode=440100");
         return post;
+    }
+
+    @GetMapping("getCity")
+    public Result<WxLocation> getCity(HttpServletRequest request){
+
+        String rep = HttpUtil.get("https://apis.map.qq.com/ws/location/v1/ip?ip="+request.getRemoteAddr()+"&key=5EPBZ-Y6563-EEG3O-3GBDE-G3XZO-AZBCI");
+        JSONObject jsonObject = JSONUtil.parseObj(rep);
+        WxLocation wxLocation = new WxLocation();
+        wxLocation.setLon("113.34");
+        wxLocation.setLat("23.01");
+        wxLocation.setCityName("广州市");
+        wxLocation.setCityCode("440100");
+        if (jsonObject.getStr("status").equals("0")){
+            JSONObject result = JSONUtil.parseObj(jsonObject.getStr("result"));
+            wxLocation.setLat(JSONUtil.parseObj(result.getStr("location")).getStr("lat"));
+            wxLocation.setLat(JSONUtil.parseObj(result.getStr("location")).getStr("lon"));
+            wxLocation.setCityName(JSONUtil.parseObj(result.getStr("ad_info")).getStr("city"));
+            wxLocation.setCityCode(JSONUtil.parseObj(result.getStr("ad_info")).getStr("adcode"));
+        }
+
+        return Result.succeed(wxLocation);
+
     }
 
 

@@ -8,19 +8,29 @@ import "./Toptab.scss"
 export default class Toptab extends Component{
   constructor(props){
     super(...arguments);
-    let data = Taro.getStorageSync("cities");
-    this.state = {
-      currentNavtab:0,
-      name:data.geoCity?data.geoCity.nm:'广州',
-      id:data.geoCity?data.geoCity.id:'440100',
-      navTab:["正在热映","即将上映"],
-      onList:[],
-      movieIds:[],
-      expectData:[],
-      startIndex:0,
-      lastIndex:0,
-      offset:0,
-    }
+
+    Taro.request({
+      url:
+        'http://127.0.0.1:8080/index/getCity',
+      method: "GET"
+    }).then(res => {
+      if (res.statusCode == 200) {
+        let data = res.data.data;
+        Taro.setStorageSync("cityName", data.cityName);
+        debugger
+        this.state = {
+          currentNavtab:0,
+          name: data.cityName,
+          navTab:["正在热映","即将上映"],
+          onList:[],
+          movieIds:[],
+          expectData:[],
+          startIndex:0,
+          lastIndex:0,
+          offset:0,
+        }
+      }
+    });
   }
   switchTab(index,e){
     this.setState({
@@ -134,10 +144,11 @@ export default class Toptab extends Component{
   render(){
     let expectData = this.state.expectData?this.state.expectData:[];
     let cityId = this.state.id;
+    debugger
     return (
       <View>
         <View className='top-tab flex-wrp flex-tab' >
-            <View className="location" onClick={this.navigate.bind(this,"../position/position")}>
+            <View className="location" /* onClick={this.navigate.bind(this,"../position/position")} */>
               {this.state.name}
               <View className="cityArrow"></View>
             </View>
@@ -158,7 +169,7 @@ export default class Toptab extends Component{
               return (
                 <View className="dataItem" key={index} onClick={this.navigateDetail.bind(this,'../detail/detail',item,cityId)}>
                   <View className="leftItem">
-                    <Image src={item.poster}></Image>
+                    <Image src={item.backgroundPicture}></Image>
                   </View>
                   <View className="rightItem">
                     <View className="itemContent">
@@ -189,7 +200,7 @@ export default class Toptab extends Component{
                   return (
                     <View className="picItem" key={item.id} onClick={this.navigateDetail.bind(this,'../content/content',item,)}>
                       <Image src={heart}  className="bg"></Image>
-                      <Image src={item.poster} className="poster"></Image>
+                      <Image src={item.backgroundPicture} className="poster"></Image>
                       <View className='wish'>{item.wish}人想看</View>
                       <View className='title'>{item.showName}</View>
                       <View className="time">{item.comingTitle}</View>
