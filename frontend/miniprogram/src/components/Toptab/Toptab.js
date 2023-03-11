@@ -8,26 +8,37 @@ import "./Toptab.scss"
 export default class Toptab extends Component{
   constructor(props){
     super(...arguments);
-
-    Taro.request({
-      url:
-        'http://127.0.0.1:8080/index/getCity',
-      method: "GET"
-    }).then(res => {
-      if (res.statusCode == 200) {
-        let data = res.data.data;
-        Taro.setStorageSync("cityName", data.cityName);
-        debugger
-        this.state = {
+    this.state = {
           currentNavtab:0,
-          name: data.cityName,
-          navTab:["正在热映","即将上映"],
+          name: '',
+          navTab:["正在热映"],
           onList:[],
           movieIds:[],
           expectData:[],
           startIndex:0,
           lastIndex:0,
           offset:0,
+    }
+  }
+  autoLogin(){
+    //微信登录逻辑
+    wx.login({
+      success (res) {
+        if (res.code) {
+          //发起网络请求
+         Taro.request({
+            url: 'baseUrl/wx/maLogin/'+res.code,
+            method: 'GET'
+          }).then(res=>{
+            if(res.statusCode =="200"){
+              console.log(res)
+              let token = res.data.data;
+              this.state.name = token.cityName;
+              Taro.setStorageSync("token",token);
+            }
+          });
+        } else {
+          console.log('登录失败！' + res.errMsg)
         }
       }
     });
@@ -45,31 +56,32 @@ export default class Toptab extends Component{
     Taro.navigateTo({ url: url })
   }
   getMoviesOnList(){
-    let cityId = this.state.id
-    Taro.showLoading({
-      title:"加载中"
-    });
-    Taro.request({
-      url: 'baseUrl/index/movie',
-      method:"GET"
-    }).then(res=>{
-      if(res.statusCode == 200){
-        Taro.hideLoading();
-        res.data.data.list.forEach((value)=>{
-          this.state.movieIds.push(value["showId"]);
-        });
-        this.setState({
-          onList:res.data.data.list,
-          startIndex:0,
-          lastIndex:30
-        });
-      }else{
-        this.setState({
-          onList:null,
-          movieIds:null
-        })
-      }
-    })
+
+      Taro.showLoading({
+        title:"加载中"
+      });
+      Taro.request({
+        url: 'baseUrl/index/movie',
+        method:"GET"
+      }).then(res=>{
+        if(res.statusCode == 200){
+          Taro.hideLoading();
+          res.data.data.list.forEach((value)=>{
+            this.state.movieIds.push(value["showId"]);
+          });
+          this.setState({
+            onList:res.data.data.list,
+            startIndex:0,
+            lastIndex:30
+          });
+        }else{
+          this.setState({
+            onList:null,
+            movieIds:null
+          })
+        }
+      })
+
   }
   appendToList(){
     Taro.showLoading({title: '加载中'})
@@ -144,7 +156,7 @@ export default class Toptab extends Component{
   render(){
     let expectData = this.state.expectData?this.state.expectData:[];
     let cityId = this.state.id;
-    debugger
+
     return (
       <View>
         <View className='top-tab flex-wrp flex-tab' >

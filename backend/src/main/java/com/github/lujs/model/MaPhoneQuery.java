@@ -7,12 +7,6 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class MaPhoneQuery {
 
-    /**
-     * 小程序APPID
-     */
-    @NotEmpty(message = "appId不为空")
-    private String appId;
-
     @NotEmpty(message = "encryptedData不为空")
     private String encryptedData;
 

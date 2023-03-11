@@ -40,6 +40,14 @@ public class CzToken {
      */
     private String bizUserId;
 
+    private String lat;
+
+    private String lon;
+
+    private String cityName;
+
+    private String cityCode;
+
     /**
      * sessionKey
      */

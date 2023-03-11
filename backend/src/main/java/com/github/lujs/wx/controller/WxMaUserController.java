@@ -4,6 +4,9 @@ import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.lujs.commmon.CzToken;
 import com.github.lujs.commmon.annotation.Token;
@@ -14,12 +17,12 @@ import com.github.lujs.community.service.mapper.TalentThirdMapper;
 import com.github.lujs.community.service.mapper.TalentUserMapper;
 import com.github.lujs.model.*;
 import com.github.lujs.service.CzTokenService;
-import com.github.lujs.wx.controller.request.UserMaLoginRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Date;
 
@@ -54,7 +57,7 @@ public class WxMaUserController extends BaseController {
      * @return
      */
     @GetMapping("/maLogin/{code}")
-    public Result maLogin(@PathVariable("code") String code) {
+    public Result maLogin(@PathVariable("code") String code, HttpServletRequest request) {
 
         String sessionKey;
         try {
@@ -72,12 +75,33 @@ public class WxMaUserController extends BaseController {
             if (sessionKey != null)
                 userDto.setSessionKey(sessionKey);
 
-            return Result.succeed(tokenService.createCzToken(userDto));
+            WxLocation location = getCity(request);
+
+            return Result.succeed(tokenService.createCzToken(userDto, location));
         } catch (Exception e) {
             log.error("wx小程序登陆异常:{}", e.getMessage(), e);
         }
         return Result.failed("123");
 
+    }
+
+    private WxLocation getCity(HttpServletRequest request) {
+
+        String rep = HttpUtil.get("https://apis.map.qq.com/ws/location/v1/ip?ip=" + request.getRemoteAddr() + "&key=5EPBZ-Y6563-EEG3O-3GBDE-G3XZO-AZBCI");
+        JSONObject jsonObject = JSONUtil.parseObj(rep);
+        WxLocation wxLocation = new WxLocation();
+        wxLocation.setLon("113.34");
+        wxLocation.setLat("23.01");
+        wxLocation.setCityName("广州市");
+        wxLocation.setCityCode("440100");
+        if ("0".equals(jsonObject.getStr("status"))) {
+            JSONObject result = JSONUtil.parseObj(jsonObject.getStr("result"));
+            wxLocation.setLat(JSONUtil.parseObj(result.getStr("location")).getStr("lat"));
+            wxLocation.setLat(JSONUtil.parseObj(result.getStr("location")).getStr("lon"));
+            wxLocation.setCityName(JSONUtil.parseObj(result.getStr("ad_info")).getStr("city"));
+            wxLocation.setCityCode(JSONUtil.parseObj(result.getStr("ad_info")).getStr("adcode"));
+        }
+        return wxLocation;
     }
 
     /**
@@ -119,9 +143,9 @@ public class WxMaUserController extends BaseController {
      */
 
     @PostMapping("/maBindPhone")
-    public Result<CzToken> maBindPhone(@Token CzToken token, @Valid @RequestBody BaseRequest<MaPhoneQuery> request) {
+    public Result<CzToken> maBindPhone(@Token CzToken token, @Valid @RequestBody MaPhoneQuery query, HttpServletRequest orginRequest) {
 
-        MaPhoneQuery data = request.getData();
+        MaPhoneQuery data = query;
         data.setBizUserId(token.getBizUserId());
 
         String sessionKey = data.getSessionKey();
@@ -179,7 +203,7 @@ public class WxMaUserController extends BaseController {
         //后置头像 防止授权信息的时候 没有了
         userDto.setBizUserId(userThird.getOpenId());
 
-        return Result.succeed(tokenService.createCzToken(userDto));
+        return Result.succeed(tokenService.createCzToken(userDto, getCity(orginRequest)));
     }
 
 

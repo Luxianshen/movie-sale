@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 @Component
 public class CzTokenMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final static String CZ_TOKEN_HEADER_KEY = "CZ-Token";
+    private final static String CZ_TOKEN_HEADER_KEY = "token";
 
     @Resource
     private CzTokenService tokenService;

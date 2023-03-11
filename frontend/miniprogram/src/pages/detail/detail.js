@@ -52,9 +52,11 @@ export default class Detail extends Component {
   }
   getfilterCinemas() {
     let cityId = this.state.params.cityId;
-
+    let token = Taro.getStorageSync("token");
     Taro.request({
-      url: `baseUrl/index/schedule/123/${this.state.params.id}/${this.state.queryDates[this.state.active]}/${this.state.offset}`
+      url: `baseUrl/index/schedule/${this.state.params.id}/${this.state.queryDates[this.state.active]}/${this.state.offset}`,
+      method: "GET",
+      header: {'token': token.token}
     }).then(res => {
 
       if (res.statusCode == 200) {
@@ -83,8 +85,13 @@ export default class Detail extends Component {
     })
   }
   getDetailData() {
+
+    let token = Taro.getStorageSync("token");
     Taro.request({
-      url: `baseUrl/index/movieDetail/440100/${this.state.params.id}`
+      url: `baseUrl/index/movieDetail/${this.state.params.id}`,
+      header: {
+          "token": token.token
+        },
     }).then(res => {
       if (res.statusCode == 200) {
         let data = res.data.data;
@@ -125,9 +132,11 @@ export default class Detail extends Component {
     Taro.showLoading({
       title: "加载数据中"
     });
+    let token = Taro.getStorageSync("token");
     Taro.request({
-      url: `baseUrl/index/query/440100`,
-      method: 'GET'
+      url: `baseUrl/index/query`,
+      method: 'GET',
+      header:{'token':token.token}
     }).then(res => {
       if (res.statusCode == 200) {
         let self = this
