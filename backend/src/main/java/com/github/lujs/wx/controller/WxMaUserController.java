@@ -98,10 +98,16 @@ public class WxMaUserController extends BaseController {
         if ("1".equals(result.getStr("status"))) {
 
             String[] rectangles = result.getStr("rectangle").split(";");
-            String[] location1 = rectangles[0].split(",");
-            String[] location2 = rectangles[1].split(",");
-            wxLocation.setLon(NumberUtil.roundStr((Double.parseDouble(location1[0])+Double.parseDouble(location2[0]))/2,6));
-            wxLocation.setLat(NumberUtil.roundStr((Double.parseDouble(location1[1])+Double.parseDouble(location2[1]))/2,6));
+            if (rectangles.length == 2) {
+                String[] location1 = rectangles[0].split(",");
+                String[] location2 = rectangles[1].split(",");
+                wxLocation.setLon(NumberUtil.roundStr((Double.parseDouble(location1[0]) + Double.parseDouble(location2[0])) / 2, 6));
+                wxLocation.setLat(NumberUtil.roundStr((Double.parseDouble(location1[1]) + Double.parseDouble(location2[1])) / 2, 6));
+            } else {
+                String[] location1 = rectangles[0].split(",");
+                wxLocation.setLon(location1[0]);
+                wxLocation.setLat(location1[1]);
+            }
             wxLocation.setCityName(result.getStr("city"));
             wxLocation.setCityCode(result.getStr("adcode"));
         }
