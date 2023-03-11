@@ -1,5 +1,6 @@
 package com.github.lujs.movie.controller;
 
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -50,19 +52,22 @@ public class IndexController {
 
     private WxLocation getCity(HttpServletRequest request) {
 
-        String rep = HttpUtil.get("https://apis.map.qq.com/ws/location/v1/ip?ip=" + request.getRemoteAddr() + "&key=5EPBZ-Y6563-EEG3O-3GBDE-G3XZO-AZBCI");
-        JSONObject jsonObject = JSONUtil.parseObj(rep);
+        String rep = HttpUtil.get("https://restapi.amap.com/v3/ip?ip=" + request.getRemoteAddr() + "&key=1b85b506f2995558684577af0ac1a273");
+        JSONObject result = JSONUtil.parseObj(rep);
         WxLocation wxLocation = new WxLocation();
         wxLocation.setLon("113.34");
         wxLocation.setLat("23.01");
         wxLocation.setCityName("广州市");
         wxLocation.setCityCode("440100");
-        if ("0".equals(jsonObject.getStr("status"))) {
-            JSONObject result = JSONUtil.parseObj(jsonObject.getStr("result"));
-            wxLocation.setLat(JSONUtil.parseObj(result.getStr("location")).getStr("lat"));
-            wxLocation.setLat(JSONUtil.parseObj(result.getStr("location")).getStr("lon"));
-            wxLocation.setCityName(JSONUtil.parseObj(result.getStr("ad_info")).getStr("city"));
-            wxLocation.setCityCode(JSONUtil.parseObj(result.getStr("ad_info")).getStr("adcode"));
+        if ("1".equals(result.getStr("status"))) {
+
+            String[] rectangles = result.getStr("rectangle").split(";");
+            String[] location1 = rectangles[0].split(",");
+            String[] location2 = rectangles[1].split(",");
+            wxLocation.setLon(NumberUtil.roundStr((Double.parseDouble(location1[0])+Double.parseDouble(location2[0]))/2,6));
+            wxLocation.setLat(NumberUtil.roundStr((Double.parseDouble(location1[1])+Double.parseDouble(location2[1]))/2,6));
+            wxLocation.setCityName(result.getStr("city"));
+            wxLocation.setCityCode(result.getStr("adcode"));
         }
         return wxLocation;
     }
