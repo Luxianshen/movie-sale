@@ -15,6 +15,7 @@ export default class Seat extends Component {
     super(props);
     this.state = {
       seatData: [],
+      seatRow:[],
       seatRunTime: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
       statusMap: {
         can: "https://p1.meituan.net/movie/9dfff6fd525a7119d44e5734ab0e9fb41244.png",
@@ -28,6 +29,7 @@ export default class Seat extends Component {
 
   }
   initParams() {
+    this.state.buySeat=[];
     const params = this.$router.params;
     const cinemaName = params.cinemaName;
     const showId = params.showId;
@@ -47,6 +49,7 @@ export default class Seat extends Component {
 
         const seatData = res.data.data;
         const seatArray = [];
+        this.state.seatRow = [];
         this.state.seatRunTime.map(i => {
           let runData = seatData[i] ? seatData[i] : [];
           if (runData.length > 0) {
@@ -59,6 +62,7 @@ export default class Seat extends Component {
               }
             })
             seatArray.push(arr);
+            this.state.seatRow.push(i);
           }
         })
         self.setState({
@@ -147,11 +151,12 @@ export default class Seat extends Component {
     this.initParams();
   }
   render() {
-    
+
     const show = this.state.seatData.show;
     const hall = this.state.seatData.hall;
     const movie = this.state.seatData.movie;
     const seatInfo = this.state.seatData ? this.state.seatData : [];
+    const seatRow = this.state.seatRow;
     const seatTypeList = this.state.seatData.seat ? this.state.seatData.seat.seatTypeList : [];
     const seatMap = this.state.statusMap;
     const seatArray = this.state.seatArray;
@@ -189,7 +194,7 @@ export default class Seat extends Component {
       View className = "seatMore" >
       <
       View className = "rowList" > {
-        seatInfo[1].map((item, index) => {
+        seatRow.map((item, index) => {
           return ( <
             View className = "numberId"
             key = {
@@ -259,7 +264,7 @@ export default class Seat extends Component {
         View className = "title" > 推荐 < /View> <
         View className = "btn"
         className = {
-          this.state.buySeat.length == 0 ? 'btn' : 'hide btn'
+          'hide btn'
         } >
         <
         View className = "btnItem"

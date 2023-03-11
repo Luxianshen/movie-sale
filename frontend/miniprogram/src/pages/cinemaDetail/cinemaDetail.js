@@ -8,7 +8,9 @@ export default class CinemasDetail extends Component {
   }
   constructor(props){
     super(props);
+    let token = Taro.getStorageSync("token");
     this.state = {
+      token:token,
       reqList:{
         cinemaId:'',
         movieId:''
@@ -42,7 +44,8 @@ export default class CinemasDetail extends Component {
       });
       Taro.request({
         url:`baseUrl/index/cinemas/${cinemaId}/${movieId}`,
-        method:'GET'
+        method:'GET',
+        header:{'token':this.state.token.token}
       }).then(res=>{
         if(res.statusCode == 200){
           Taro.hideLoading();
@@ -68,8 +71,8 @@ export default class CinemasDetail extends Component {
     })
 
   }
-  selected(item,index,e){
-    
+  selected(item,index,viewId){
+
     const self = this;
     this.setState({
       reqList:{
@@ -77,7 +80,7 @@ export default class CinemasDetail extends Component {
       },
       bg:item.pic,
       activeIndex:index,
-      viewId:e.currentTarget.id
+      viewId:viewId
     });
   }
   chooseItem(index){
@@ -122,6 +125,12 @@ export default class CinemasDetail extends Component {
   render () {
     let cinemaData = this.state.movieData?this.state.cinemaData:{};
     let showData = this.state.movieData?this.state.movieData:[];
+    showData.map((item,index)=>{
+      if(item.filmId == this.state.reqList.movieId){
+        this.state.activeIndex = index;
+        this.selected(item,index,'view'+item.filmId);
+      }
+    });
     let activeIndex = this.state.activeIndex;
     let dataLists = this.state.movieData?this.state.dataList:[];
     let dateLists = this.state.dates;
@@ -130,7 +139,7 @@ export default class CinemasDetail extends Component {
     if(typeof(dataList) == 'undefined'){
       dataList = [];
     }
-    
+
     //小吃
     let dealList = this.state.movieData? this.state.dealList:{};
     let reqList = this.state.reqList;
@@ -158,7 +167,7 @@ export default class CinemasDetail extends Component {
           >
                         {showData.map((item,index)=>{
                           return (
-                              <Image  src={item.pic} key={item.filmId}  id={'view'+item.filmId} onClick={this.selected.bind(this,item,index,e)} className={ item.filmId ==  this.state.reqList.movieId?'active img':'img'}></Image>
+                              <Image  src={item.pic} key={item.filmId}  id={'view'+item.filmId} onClick={this.selected.bind(this,item,index,e.currentTarget.id)} className={ item.filmId ==  this.state.reqList.movieId?'active img':'img'}></Image>
                           );
                         })}
             </ScrollView>

@@ -36,12 +36,16 @@ export default class Movies extends Component {
       success (res) {
         if (res.code) {
           //发起网络请求
-         wx.request({
-            url: 'http://127.0.0.1:8080/wx/maLogin/'+res.code
-          })
-          success:{
-
-          }
+         Taro.request({
+            url: 'baseUrl/wx/maLogin/'+res.code,
+            method: 'GET'
+          }).then(res=>{
+            if(res.statusCode =="200"){
+              console.log(res)
+              let token = res.data.data;
+              Taro.setStorageSync("token",token);
+            }
+          });
         } else {
           console.log('登录失败！' + res.errMsg)
         }

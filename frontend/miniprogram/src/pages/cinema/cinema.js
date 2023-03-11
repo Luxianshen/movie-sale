@@ -13,7 +13,9 @@ export default class Cinema extends Component {
   }
   constructor(props){
     super(props);
+    let token = Taro.getStorageSync("token");
     this.state = {
+      token:token,
       type:'',
       cityName:'',
       allData:[],
