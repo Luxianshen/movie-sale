@@ -8,47 +8,37 @@ export default class Specialbar extends Component {
 
     }
   }
+  setBrand(brand){
+    Taro.setStorageSync('brand',brand);
+    console.log(brand);
+  };
+  navigateCinema(e){
+    wx.switchTab({
+        url: '/pages/cinema/cinema'
+    })
+  }
+
 
   render() {
-    let service = this.props.data.service;
-    let hallType = this.props.data.hallType;
-    let serviceList = service?service.subItems:[];
-    let hallTypeList = hallType?hallType.subItems:[];
+    let data = this.props.data;
     return (
       <View className={this.props.type =='special'?'specialBar':'specialBar hide'}>
         <ScrollView
-         scrollY
-         style='height: 200Px;'
-         scrollWithAnimation
+        scrollY
+        style='height: 250Px;'
+        scrollWithAnimation
         >
-          <View className="serviceContainer">
-            <View className="title">特色功能</View>
-            <View className='container'>
-              {serviceList.map((item,index) =>{
-                return (
-                  <View className={index == 0?'serviceItem choosen':'serviceItem'} key={index}>
-                    {item.name}
-                  </View>
-                )
-              })}
-            </View>
-          </View>
-          <View className="hallTypeContainer">
-            <View className="title">特殊厅</View>
-            <View className='container'>
-            {hallTypeList.map((item,index) =>{
+          {
+            data.map((item,index)=>{
               return (
-                <View className={index == 0?'hallTypeItem choosen':'hallTypeItem'} key={index}>
-                  {item.name}
-                </View>
+                <View className="brandItem" onClick={this.setBrand.bind(this,item)} key={index}>{item}<Text className="count"></Text></View>
               )
-            })}
-            </View>
-          </View>
+            })
+          }
         </ScrollView>
         <View className="selectCertian">
             <View className="reset">重置</View>
-            <View className="certain">确定</View>
+            <View className="certain" onClick={this.navigateCinema.bind(this,e)}>确定</View>
         </View>
       </View>
     )

@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 import {View,Image,ScrollView,Text} from '@tarojs/components'
-import "./Selectbar.scss"
+import "./Selectbar.scss";
 export default class Selectbar extends Component{
   constructor(props){
     super(props);
@@ -38,8 +38,7 @@ export default class Selectbar extends Component{
     return (
       <View className={this.props.type == 'city'?'selectBar':'selectBar hide'}>
         <View className="toolBar">
-          <View className={this.state.kind == 'district'?'district active':'district'} onClick={this.selectKind.bind(this,'district')}>商区</View>
-          <View className={this.state.kind == 'subway'?'subway active':'subway'} onClick={this.selectKind.bind(this,'subway')}>地铁站</View>
+          <View className={this.state.kind == 'district'?'district active':'district'} onClick={this.selectKind.bind(this,'district')}>地区</View>
         </View>
         <View className="kindContianer">
           <ScrollView
@@ -48,38 +47,12 @@ export default class Selectbar extends Component{
             scrollWithAnimation
             className={this.state.kind == 'district'?'kind':'kind hide'}
           >
-            {district.map((item,index)=>{
+            {data.map((item,index)=>{
               return (
-                <View className={this.state.activeIndex == index?'kindItem selected':'kindItem'} key={item.id} onClick={this.selectIndex.bind(this,index)}>{item.name} ({item.count})</View>
+                <View className={this.state.activeIndex == index?'kindItem selected':'kindItem'} key={item.id} onClick={this.selectIndex.bind(this,index)}>{item.areaName} </View>
               )
             })}
           </ScrollView>
-          <ScrollView
-            scrollY
-            style='height: 250Px;'
-            scrollWithAnimation
-            className={this.state.kind == 'subway'?'kind':'kind hide'}
-          >
-            {subway.map((item,index)=>{
-              return (
-                <View className={this.state.subIndex == index?'kindItem selected':'kindItem'} key={item.id} onClick={this.selectOther.bind(this,index)}>{item.name} ({item.count})</View>
-              )
-            })}
-          </ScrollView>
-          <View className= {this.state.kind == 'district'?'listDetail':'listDetail hide'}>
-            {renderList.map(item=>{
-              return (
-                <View className="addrItem" key={item.id}>{item.name}<Text className="count">{item.count}</Text></View>
-              )
-            })}
-          </View>
-          <View className= {this.state.kind == 'subway'?'listDetail':'listDetail hide'}>
-            {station.map(item=>{
-              return (
-                <View className="addrItem" key={item.id}>{item.name}<Text className="count">{item.count}</Text></View>
-              )
-            })}
-          </View>
 
         </View>
       </View>

@@ -1,6 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View,Text} from '@tarojs/components'
-import Selectbar from "../../components/Selectbar/Selectbar";
 import Brandbar from "../../components/Brandbar/Brandbar";
 import Specialbar from "../../components/Specialbar/Specialbar";
 import searchPng from "../../assets/images/search2.png";
@@ -16,22 +15,14 @@ export default class Cinema extends Component {
     let token = Taro.getStorageSync("token");
     this.state = {
       token:token,
+      brand:'123',
+      area:'123',
       type:'',
       cityName:'',
-      allData:[],
-      selectItems:[{nm:'全城',type:'city'},{nm:'品牌',type:'brand'},{nm:'特色',type:'special'}],
-      reqList:{
-        offset:'0',
-        day:this.getFormatTime(),
-        districtId:'-1',
-        lineId:'-1',
-        hallType:'-1',
-        brandId:'-1',
-        serviceId:'-1',
-        areaId:'-1',
-        stationId:'-1',
-        reqId:Date.now(),
-      },
+      areaData:[],
+      brandData:[],
+      selectItems:[{nm:'全城',type:'brand'},{nm:'品牌',type:'special'}],
+      offset:1,
       cinemas:[]
     }
   }
@@ -49,6 +40,7 @@ export default class Cinema extends Component {
   }
   getStorageData(){
     let self = this;
+
     let cityName = Taro.getStorageSync('cityName');
     this.setState({
       cityName:cityName
@@ -60,11 +52,11 @@ export default class Cinema extends Component {
   filterCinemasList(){
     let cityObj = Taro.getStorageSync('cities');
     Taro.request({
-      url:`https://m.maoyan.com/ajax/filterCinemas?ci=${cityObj.geoCity.id}`
+      url:`baseUrl/index/house`,
     }).then(res=>{
       if(res.statusCode == 200){
         this.setState({
-          allData:res.data
+          cinemas:res.data.data.list
         });
       }
     })
@@ -77,42 +69,68 @@ export default class Cinema extends Component {
     let day = date.getDate() >=10?'-'+date.getDate():'-0'+date.getDate();
     return year+month+day;
   }
+  getSelectData(){
+    Taro.showLoading({
+      title:"加载中"
+    });
+    Taro.request({
+      method:'GET',
+      url:`baseUrl/index/house`,
+    }).then(res=>{
+      if(res.statusCode == 200){
+        Taro.hideLoading();
+        let data = res.data.data;
+        this.setState({
+          areaData:data.area,
+          brandData:data.brand
+        });
+      }
+    })
+
+  }
   getCinemasList(){
-    let reqList = this.state.reqList;
-    let cityObj = Taro.getStorageSync('cities');
+    let offset = this.state.offset;
+    let area = Taro.getStorageSync('area') == ''?'123':Taro.getStorageSync('area');
+    let brand = Taro.getStorageSync('brand') == ''?'123':Taro.getStorageSync('brand');
     let self = this;
     Taro.showLoading({
       title:"加载中"
     });
     Taro.request({
       method:'GET',
-      url:`https://m.maoyan.com/ajax/cinemaList?day=${reqList.day}&offset=${reqList.offset}&limit=20&districtId=${reqList.districtId}&lineId=${reqList.lineId}&hallType=${reqList.hallType}&brandId=${reqList.brandId}&serviceId=${reqList.serviceId}&areaId=${reqList.areaId}&stationId=${reqList.stationId}&item=&updateShowDay=true&reqId=${reqList.reqId}&cityId=${cityObj.geoCity.id}`,
+      url:`baseUrl/index/cinemaList/`+offset+'/'+area+'/'+brand,
     }).then(res=>{
       if(res.statusCode == 200){
         Taro.hideLoading();
-        let data = res.data;
-        self.setState({
-          cinemas:self.state.cinemas.concat(data.cinemas)
-        });
+        let data = res.data.data;
+        if(data.hasMore > 0){
+          if(typeof(self.state.cinemas) == 'undefined'){
+            self.state.cinemas = [];
+          }
+          self.setState({
+            cinemas:self.state.cinemas.concat(data.list)
+          });
+        }
       }
     })
   }
   loadMore(){
     let self = this;
     this.setState({
-      offset:self.state.offset+20
+      offset:self.state.offset+1
     },()=>{
       self.getCinemasList();
     })
   }
   componentDidMount () {
+    this.getSelectData();
     this.getStorageData();
   }
   navigate(url){
     Taro.navigateTo({url:url});
   }
   navigateToCinema(url,item){
-    let cinemaId = item.id;
+    let cinemaId = item.cinemaId;
     url = url+`?cinemaId=${cinemaId}`
     Taro.navigateTo({
       url:url
@@ -147,27 +165,18 @@ export default class Cinema extends Component {
               </View>
             )
           })}
-          <Selectbar data={this.state.allData} type={this.state.type}/>
-          <Specialbar data={this.state.allData} type={this.state.type}/>
-          <Brandbar data={this.state.allData} type={this.state.type}/>
+
+          <Specialbar data={this.state.brandData} type={this.state.type}/>
+          <Brandbar data={this.state.areaData} type={this.state.type}/>
         </View>
         <View className="cinemasContainer">
         {cinemas.map(item =>{
           return(
             <View className="cinemasItem" key={item.id} onClick={this.navigateToCinema.bind(this,'../cinemaDetail/cinemaDetail',item)}>
               <View className="leftCinemas">
-                <View className="cinemaName">{item.nm}<Text className="price">{item.sellPrice}</Text><Text className="smallText">元起</Text></View>
-                <View className="cinemaAddr">{item.addr}</View>
-                <View className="cinemaTag">
-                  <View className="tag">小吃</View>
-                  {item.tag.vipTag?<View className="tag">{item.tag.vipTag}</View>:""}
-                  {item.tag.hallType.map((type,index)=>{
-                    return (
-                      <View className="other" key={index}>{type}</View>
-                    )
-                  })}
-                </View>
-                {item.promotion.cardPromotionTag?<View className="cinemaDiscount"><Text className="card">卡</Text>{item.promotion.cardPromotionTag}</View>:""}
+                <View className="cinemaName">{item.cinemaName}<Text className="price">{item.minPrice}</Text><Text className="smallText">元起</Text></View>
+                <View className="cinemaAddr">{item.address}</View>
+                <View className="cinemaTag"></View>
               </View>
               <View className="cinemasDis">{item.distance}</View>
             </View>

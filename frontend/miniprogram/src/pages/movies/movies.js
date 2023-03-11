@@ -10,7 +10,7 @@ export default class Movies extends Component {
     super(props);
   }
   componentDidMount() {
-    this.autoLogin();
+    //this.autoLogin();
     this.getCities();
   }
   getCities() {
@@ -42,6 +42,7 @@ export default class Movies extends Component {
           }).then(res=>{
             if(res.statusCode =="200"){
               console.log(res)
+              debugger
               let token = res.data.data;
               Taro.setStorageSync("token",token);
             }

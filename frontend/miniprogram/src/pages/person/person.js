@@ -28,7 +28,7 @@ export default class Person extends Component {
 
   componentDidMount() {
     let token = Taro.getStorageSync("token");
-    if (token.phone != '') {
+    if (typeof(token.phone) != 'undefined') {
       this.state.currentTab ==1;
       this.switchTab(1);
     }

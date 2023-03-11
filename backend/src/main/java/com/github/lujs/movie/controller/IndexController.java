@@ -122,6 +122,7 @@ public class IndexController {
         String cacheKey = DEFAULT_PREFIX + cinemaId + movieId;
         if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)))
             return redisTemplate.opsForValue().get(cacheKey);
+        if ("123".equals(movieId)) movieId = "";
         String cinemas = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/schedule/schedules-list-qmm", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=" + token.getLat() + "&longitude=" + token.getLon() + "&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&cinemaId=" + cinemaId + "&movieId=" + movieId);
         if (!cinemas.equals(FAIL_STR))
             redisTemplate.opsForValue().set(cacheKey, cinemas);
@@ -150,11 +151,61 @@ public class IndexController {
     }
 
     @GetMapping("/house")
-    public String house(@PathVariable("cityCode") String cityCode) {
+    public String house(HttpServletRequest request) {
 
-        String post = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/region/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&cityCode=440100");
+        WxLocation location = getCity(request);
+        String cacheKey = DEFAULT_PREFIX + "house";
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)))
+            return redisTemplate.opsForValue().get(cacheKey);
+        String post = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/region/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&cityCode=" + location.getCityCode());
+        if (!post.equals(FAIL_STR))
+            redisTemplate.opsForValue().set(cacheKey, post);
         return post;
     }
 
+    @GetMapping("/cinemaList/{offset}/{area}/{brand}")
+    public String cinemaList(HttpServletRequest request, @PathVariable("offset") String offset,
+                             @PathVariable("area") String area, @PathVariable("brand") String brand) {
 
+        WxLocation location = getCity(request);
+        String cacheKey = DEFAULT_PREFIX + "cinemaList" + offset;
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)))
+            return redisTemplate.opsForValue().get(cacheKey);
+        if ("123".equals(area))
+            area = "";
+        if ("123".equals(brand))
+            brand = "";
+        String cinemaList = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/cinema/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=27164025&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=afab2bd7a7984fc18231f8619ce7a11c&v=&isCouponPop=&cityCode=440100&ci=8&page=" + offset + "&limit=20&area=" + area + "&brand=" + brand);
+        if (!cinemaList.equals(FAIL_STR))
+            redisTemplate.opsForValue().set(cacheKey, cinemaList);
+        return cinemaList;
+    }
+
+
+    /**
+     * 搜索
+     */
+    @GetMapping("/search/{key}/{cityId}")
+    public String search(HttpServletRequest request, @PathVariable("key") String key, @PathVariable("cityId") String cityId) {
+
+        WxLocation location = getCity(request);
+        String cacheKey = DEFAULT_PREFIX + "search" + key;
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)))
+            return redisTemplate.opsForValue().get(cacheKey);
+        String search = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/cinema/queryCinema", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&kw=" + key);
+        if (!search.equals(FAIL_STR))
+            redisTemplate.opsForValue().set(cacheKey, search);
+        return search;
+    }
+
+    /**
+     * 地址
+     * https://yp-api.taototo.cn/yp-api/movie/address/get
+     * lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=27164025&latitude=23.15653812&longitude=113.3893937&cityId=8&evnType=h5&envType=h5&userUUID=afab2bd7a7984fc18231f8619ce7a11c&v=&isCouponPop=
+     */
+
+    @GetMapping("/getNowCity")
+    public String getNowCity(HttpServletRequest request) {
+        return getCity(request).getCityName();
+    }
 }

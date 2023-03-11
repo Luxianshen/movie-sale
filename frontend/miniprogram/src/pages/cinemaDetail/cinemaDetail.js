@@ -8,13 +8,13 @@ export default class CinemasDetail extends Component {
   }
   constructor(props){
     super(props);
-    let token = Taro.getStorageSync("token");
+
     this.state = {
-      token:token,
       reqList:{
         cinemaId:'',
-        movieId:''
+        movieId:'123'
       },
+      movieIds:[],
       movieData:null,
       bg:"",
       left:0,
@@ -29,7 +29,7 @@ export default class CinemasDetail extends Component {
   }
   getCinemaDetail(){
     let params = this.$router.params;
-    let movieId = params.movieId?params.movieId:'';
+    let movieId = params.movieId?params.movieId:'123';
     let cinemaId = params.cinemaId?params.cinemaId:"";
     const self = this;
     this.setState({
@@ -42,17 +42,18 @@ export default class CinemasDetail extends Component {
       Taro.showLoading({
         title:"加载数据中"
       });
+      let token = Taro.getStorageSync("token");
       Taro.request({
         url:`baseUrl/index/cinemas/${cinemaId}/${movieId}`,
         method:'GET',
-        header:{'token':this.state.token.token}
+        header:{'token':token.token}
       }).then(res=>{
         if(res.statusCode == 200){
           Taro.hideLoading();
           let data = res.data.data;
           data.dates.map((item,index)=>{
             this.state.showDateList.push(this.formatDateString(item));
-          })
+          });
           self.setState({
             cinemaData: data.cinema,
             movieData: data.movies,
@@ -123,6 +124,7 @@ export default class CinemasDetail extends Component {
     }
   }
   render () {
+    let movieIds = [];
     let cinemaData = this.state.movieData?this.state.cinemaData:{};
     let showData = this.state.movieData?this.state.movieData:[];
     showData.map((item,index)=>{
@@ -130,12 +132,22 @@ export default class CinemasDetail extends Component {
         this.state.activeIndex = index;
         this.selected(item,index,'view'+item.filmId);
       }
+      movieIds.push(item.filmId);
     });
     let activeIndex = this.state.activeIndex;
     let dataLists = this.state.movieData?this.state.dataList:[];
     let dateLists = this.state.dates;
     let tabIndex = this.state.tabIndex;
-    let dataList = dataLists.length == 0?[]:dataLists[this.state.reqList.movieId][dateLists[tabIndex]];
+    let dataList = [];
+    if(this.state.reqList.movieId != "123"){
+      dataList = dataLists.length == 0?[]:dataLists[this.state.reqList.movieId][dateLists[tabIndex]];
+    }else{
+      if(movieIds.length > 0){
+        this.state.reqList.movieId = movieIds[activeIndex];
+        dataList = dataLists.length == 0?[]:dataLists[movieIds[activeIndex]][dateLists[tabIndex]];
+      }
+    }
+
     if(typeof(dataList) == 'undefined'){
       dataList = [];
     }

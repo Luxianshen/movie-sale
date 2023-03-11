@@ -33,7 +33,6 @@ export default class Toptab extends Component{
             if(res.statusCode =="200"){
               console.log(res)
               let token = res.data.data;
-              this.state.name = token.cityName;
               Taro.setStorageSync("token",token);
             }
           });
@@ -117,9 +116,6 @@ export default class Toptab extends Component{
       let self = this;
       if(res.statusCode == 200){
         Taro.hideLoading();
-        res.data.coming.forEach((value)=>{
-
-        });
         this.setState({
           onList:self.state.onList.concat(res.data.coming),
           startIndex :startIndex,
@@ -147,20 +143,45 @@ export default class Toptab extends Component{
     })
   }
   do(){
-    this.getFutureMovies();
+    //this.getFutureMovies();
   }
   componentDidMount(){
+    this.getNowCity();
+    this.autoLogin();
     this.getMoviesOnList();
-    this.getFutureMovies();
+    //this.getFutureMovies();
+  }
+  getNowCity(){
+
+    Taro.request({
+      url: 'baseUrl/index/getNowCity',
+      method:"GET"
+    }).then(res=>{
+      if(res.statusCode == 200){
+       this.state.name = res.data;
+       Taro.setStorageSync("cityName",res.data);
+      }
+    })
+  }
+  toPosition(){
+    Taro.showToast({
+      title: '暂不支持选择',
+      icon: 'success',
+      duration: 2000
+    });
+    return false;
+    Taro.navigateTo({
+      url: '../position/position'
+    })
   }
   render(){
     let expectData = this.state.expectData?this.state.expectData:[];
     let cityId = this.state.id;
-
+    let cityName = Taro.getStorageSync("token").cityName;
     return (
       <View>
         <View className='top-tab flex-wrp flex-tab' >
-            <View className="location" /* onClick={this.navigate.bind(this,"../position/position")} */>
+            <View className="location"  onClick={this.toPosition.bind()} >
               {this.state.name}
               <View className="cityArrow"></View>
             </View>
@@ -171,9 +192,7 @@ export default class Toptab extends Component{
                 </View>)
               })
             }
-            <View className="search" onClick={this.navigate.bind(this,'../search/search')}>
-              <Image src={searchPng}></Image>
-            </View>
+
         </View>
         <ScrollView scroll-y scroll-top="45" lowerThreshold='30' style='height:100vh' onScrolltolower={this.appendToList.bind(this)} scrollWithAnimation>
           <View className="tabItemContent" hidden={this.state.currentNavtab === 0?false:true}>

@@ -1,6 +1,6 @@
-import Taro, { Component } from '@tarojs/taro'
-import { View, ScrollView, Text } from '@tarojs/components'
-import "./Brandbar.scss"
+import Taro, { Component } from '@tarojs/taro';
+import { View, ScrollView, Text } from '@tarojs/components';
+import "./Brandbar.scss";
 export default class Brandbar extends Component {
   constructor(props) {
     super(props);
@@ -9,9 +9,14 @@ export default class Brandbar extends Component {
     }
   }
 
+  setArea(area){
+    Taro.setStorageSync('area',area);
+     console.log(area);
+  }
+
+
   render() {
     let data = this.props.data;
-    let cinemaData = data.brand?data.brand.subItems:[];
     return (
       <ScrollView
       scrollY
@@ -20,13 +25,14 @@ export default class Brandbar extends Component {
       className={this.props.type =='brand'?'brandBar':'brandBar hide'}
       >
         {
-          cinemaData.map(item=>{
+          data.map((item,index)=>{
             return (
-              <View className="brandItem" key={item.id}>{item.name}<Text className="count">{item.count}</Text></View>
+              <View className="brandItem" onClick={this.setArea.bind(this,item.areaName)}  key={item.id}>{item.areaName}<Text className="count"></Text></View>
             )
           })
         }
       </ScrollView>
+
     )
   }
 }
