@@ -14,6 +14,7 @@ export default class Seat extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      cinemaName:'',
       seatData: [],
       seatRow:[],
       seatRunTime: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
@@ -22,9 +23,11 @@ export default class Seat extends Component {
         No: "https://p1.meituan.net/movie/bdb0531259ae1188b9398520f9692cbd1249.png",
         select: "https://p0.meituan.net/movie/585588bd86828ed54eed828dcb89bfdd1401.png"
       },
+      price: '0',
       active: '0',
       seatArray: [],
-      buySeat: []
+      buySeat: [],
+      item:{}
     }
 
   }
@@ -33,6 +36,10 @@ export default class Seat extends Component {
     const params = this.$router.params;
     const cinemaName = params.cinemaName;
     const showId = params.showId;
+    this.state.price = params.price;
+    this.state.cinemaName = cinemaName;
+    let item = JSON.parse(decodeURIComponent(params.item));
+    this.state.item = item;
     const self = this;
     Taro.setNavigationBarTitle({
       title: cinemaName
@@ -143,6 +150,12 @@ export default class Seat extends Component {
     this.selectSeat(row, column, status);
   }
   navigate(url) {
+
+    let item = this.state.item;
+    let price = this.state.price;
+    let buyNum = this.state.buySeat.length;
+    let cinemaName = this.state.cinemaName;
+    url = url+`?cinemaName=${cinemaName}&buyNum=${buyNum}&price=${price}&item=${encodeURIComponent(JSON.stringify(item))}`
     Taro.navigateTo({
       url: url
     });
@@ -152,7 +165,7 @@ export default class Seat extends Component {
   }
   render() {
 
-    const show = this.state.seatData.show;
+    const show = this.state.item;
     const hall = this.state.seatData.hall;
     const movie = this.state.seatData.movie;
     const seatInfo = this.state.seatData ? this.state.seatData : [];
@@ -161,25 +174,22 @@ export default class Seat extends Component {
     const seatMap = this.state.statusMap;
     const seatArray = this.state.seatArray;
     const recomment = this.state.seatData.seat ? this.state.seatData.seat.bestRecommendation : [];
-    const price = this.state.seatData.price ? Math.floor(this.state.seatData.price.seatsPriceDetail[1].originPrice) :
-      [];
+    const price = Math.floor(this.state.price);
     return ( <
       View className = "selectSeat" >
       <
       View className = "header" >
       <
       View className = "title" > {
-        movie.movieName
+        show.filmName
       } < /View> <
       View className = "desc" >
       <
-      Text className = "time" > {
-        show.showDate
-      } {
+      Text className = "time" >  {
         show.showTime
       } < /Text> <
       Text classname = "lang" > < Text className = "language" > {
-        show.lang
+        show.language
       } < /Text><Text className="dim">{show.dim}</Text > < /Text> < /
       View > <
       /View> <
@@ -261,7 +271,7 @@ export default class Seat extends Component {
         /View> <
         View className = "comment" >
         <
-        View className = "title" > 推荐 < /View> <
+        View className = "title" > 我的选择 < /View> <
         View className = "btn"
         className = {
           'hide btn'

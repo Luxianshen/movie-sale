@@ -8,6 +8,10 @@ export default class Map extends Component {
   constructor(props){
     super(props);
     this.state = {
+      cinemaName:'',
+      item:{},
+      price:'0',
+      buyNum:0
     }
   }
   config = {
@@ -18,9 +22,25 @@ export default class Map extends Component {
       url:url
     })
   }
+  initParams() {
+
+    const params = this.$router.params;
+    let item = JSON.parse(decodeURIComponent(params.item));
+
+    this.setState({
+      cinemaName:params.cinemaName,
+      item:item,
+      price:params.price,
+      buyNum:params.buyNum
+    })
+  }
   componentDidMount () {
+    this.initParams();
   }
   render () {
+    let showData = this.state.item? this.state.item:{};
+    let money = Math.floor(this.state.price) * this.state.buyNum;
+    let cinemaName = this.state.cinemaName;
     return (
       <View className="order">
         <View className="timeDown">
@@ -28,10 +48,10 @@ export default class Map extends Component {
           <View className="restTime">14:00</View>
         </View>
         <View className="movieInfo">
-          <View className="movieName">西红柿首富</View>
-          <View className="movieTime">今天8月13日 11:10 (英语3D)</View>
-          <View className="cinemas">中影凤凰影城(同和店) </View>
-          <View className="station">Dmax 全景声2厅</View>
+          <View className="movieName">{showData.filmName}</View>
+          <View className="movieTime">{showData.showTime}</View>
+          <View className="cinemas">{cinemaName} </View>
+          <View className="station">{showData.hallName}</View>
         </View>
         <View className="discountInfo">
           <View className="card">
@@ -50,7 +70,7 @@ export default class Map extends Component {
           <View className="totalMoney">
             <View className="name">小计</View>
             <View className="total">
-              ￥41.9
+              ￥{money}
             </View>
           </View>
         </View>
@@ -58,7 +78,7 @@ export default class Map extends Component {
         <View className="afford">
           <View className="tickerInfo">
             <View className="info">不支持退票、改签</View>
-            <View className="moneyAll">￥41.9</View>
+            <View className="moneyAll">￥{money}</View>
           </View>
           <View className="affordBtn" onClick={this.navigateToUser.bind(this,'../user/user')}>确认支付</View>
         </View>

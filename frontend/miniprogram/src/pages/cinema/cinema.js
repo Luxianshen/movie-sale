@@ -54,6 +54,8 @@ export default class Cinema extends Component {
     Taro.setStorageSync('brand','');
     this.state.area = '';
     this.state.brand = '';
+    this.state.selectItems[0].nm = '全城';
+    this.state.selectItems[1].nm = '品牌';
     this.state.offset = 1;
     this.getCinemasList();
   }

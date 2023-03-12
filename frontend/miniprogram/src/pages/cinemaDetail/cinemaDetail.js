@@ -98,8 +98,9 @@ export default class CinemasDetail extends Component {
   navigateSeat(url,item){
     const cinemaName = this.state.cinemaData.cinemaName;
     const showId =  item.showId;
+    const price = item.settlePrice;
     const reqList = this.state.reqList;
-    url = url+`?cinemaName=${cinemaName}&showId=${showId}`;
+    url = url+`?cinemaName=${cinemaName}&showId=${showId}&price=${price}&item=${encodeURIComponent(JSON.stringify(item))}`;
     Taro.navigateTo({
       url:url
     })
