@@ -11,7 +11,7 @@ export default class Brandbar extends Component {
 
   setArea(area){
     Taro.setStorageSync('area',area);
-     console.log(area);
+    this.$root.selectItem('brand');
   }
 
 

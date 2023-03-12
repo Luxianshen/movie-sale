@@ -155,6 +155,7 @@ export default class CinemasDetail extends Component {
     //小吃
     let dealList = this.state.movieData? this.state.dealList:{};
     let reqList = this.state.reqList;
+
     return(
       <View className="cinemaDetail">
         <View className="header">

@@ -83,45 +83,7 @@ export default class Toptab extends Component{
 
   }
   appendToList(){
-    Taro.showLoading({title: '加载中'})
-    let url = "https://m.maoyan.com/ajax/moreComingList?token=&movieIds=";
-    let startIndex = this.state.startIndex;
-    let lastIndex = this.state.lastIndex;
-    if(startIndex >= lastIndex){
-      Taro.showToast({
-        title: '没有更多数据了',
-        icon: 'success',
-        duration: 2000
-      });
-      return false;
-    }
-    for(let i = 0;i<29;i++){
-      if(startIndex <= lastIndex && this.state.movieIds[startIndex]){
-        if(i == 29){
-          url = url +this.state.movieIds[startIndex];
-        }else{
-          if(this.state.movieIds[startIndex+1]){
-            url = url +this.state.movieIds[startIndex]+',';
-          }else{
-            url = url +this.state.movieIds[startIndex];
-          }
-        }
-        startIndex ++;
-      }
-    }
-    Taro.request({
-      url:url,
-      method:'GET'
-    }).then(res=>{
-      let self = this;
-      if(res.statusCode == 200){
-        Taro.hideLoading();
-        this.setState({
-          onList:self.state.onList.concat(res.data.coming),
-          startIndex :startIndex,
-        });
-      }
-    })
+    
   }
   getFutureMovies(){
     let self = this;

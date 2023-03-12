@@ -1,20 +1,16 @@
 package com.github.lujs.movie.controller;
 
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.github.lujs.commmon.CzToken;
 import com.github.lujs.commmon.annotation.Token;
-import com.github.lujs.model.Response;
-import com.github.lujs.model.Seat;
-import com.github.lujs.model.SeatData;
-import com.github.lujs.model.WxLocation;
+import com.github.lujs.model.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/index")
 public class IndexController {
@@ -54,12 +51,14 @@ public class IndexController {
 
         String rep = HttpUtil.get("https://restapi.amap.com/v3/ip?ip=" + request.getRemoteAddr() + "&key=1b85b506f2995558684577af0ac1a273");
         JSONObject result = JSONUtil.parseObj(rep);
+
+        log.info(rep);
         WxLocation wxLocation = new WxLocation();
         wxLocation.setLon("113.34");
         wxLocation.setLat("23.01");
         wxLocation.setCityName("广州市");
         wxLocation.setCityCode("440100");
-        if ("1".equals(result.getStr("status"))) {
+        if ("1".equals(result.getStr("status")) && !"[]".equals(result.getStr("rectangle"))) {
 
             String[] rectangles = result.getStr("rectangle").split(";");
             if (rectangles.length == 2) {
@@ -67,10 +66,6 @@ public class IndexController {
                 String[] location2 = rectangles[1].split(",");
                 wxLocation.setLon(NumberUtil.roundStr((Double.parseDouble(location1[0]) + Double.parseDouble(location2[0])) / 2, 6));
                 wxLocation.setLat(NumberUtil.roundStr((Double.parseDouble(location1[1]) + Double.parseDouble(location2[1])) / 2, 6));
-            } else {
-                String[] location1 = rectangles[0].split(",");
-                wxLocation.setLon(location1[0]);
-                wxLocation.setLat(location1[1]);
             }
             wxLocation.setCityName(result.getStr("city"));
             wxLocation.setCityCode(result.getStr("adcode"));
@@ -96,15 +91,15 @@ public class IndexController {
     /**
      * 电影详情
      */
-    @GetMapping("/schedule/{showId}/{dateStr}/{page}")
+    @PostMapping("/schedule/{showId}/{dateStr}")
     public String schedule(@Token CzToken token, @PathVariable("showId") String showId,
-                           @PathVariable("dateStr") String dateStr, @PathVariable("page") Integer page) {
+                           @PathVariable("dateStr") String dateStr, @RequestBody NormalQuery query) {
 
-        String cacheKey = DEFAULT_PREFIX + token.getCityCode() + showId + dateStr + page;
+        String cacheKey = DEFAULT_PREFIX + token.getCityCode() + showId + dateStr + query.getArea() + query.getBrand() + query.getOffset();
         if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)))
             return redisTemplate.opsForValue().get(cacheKey);
-        String schedule = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/schedule/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=" + token.getLat() + "&longitude=" + token.getLon() + "&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&cityCode=" + token.getCityCode() + "&page=" + page + "&limit=20&showId="
-                + showId + "&date=" + dateStr + "&area=&brand=&cinemaOrAddress=");
+        String schedule = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/schedule/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=" + token.getLat() + "&longitude=" + token.getLon() + "&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&cityCode=" + token.getCityCode() + "&page=" + query.getOffset() + "&limit=20&showId="
+                + showId + "&date=" + dateStr + "&area=" + query.getArea() + "&brand=" + query.getBrand() + "&cinemaOrAddress=");
         if (!schedule.equals(FAIL_STR))
             redisTemplate.opsForValue().set(cacheKey, schedule);
         return schedule;
@@ -174,19 +169,15 @@ public class IndexController {
         return post;
     }
 
-    @GetMapping("/cinemaList/{offset}/{area}/{brand}")
-    public String cinemaList(HttpServletRequest request, @PathVariable("offset") String offset,
-                             @PathVariable("area") String area, @PathVariable("brand") String brand) {
+    @PostMapping("/cinemaList")
+    public String cinemaList(HttpServletRequest request, @RequestBody NormalQuery query) {
 
         WxLocation location = getCity(request);
-        String cacheKey = DEFAULT_PREFIX + "cinemaList" + offset;
+        String cacheKey = DEFAULT_PREFIX + "cinemaList" + query.getOffset() + query.getArea() + query.getBrand();
         if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)))
             return redisTemplate.opsForValue().get(cacheKey);
-        if ("123".equals(area))
-            area = "";
-        if ("123".equals(brand))
-            brand = "";
-        String cinemaList = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/cinema/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=27164025&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=afab2bd7a7984fc18231f8619ce7a11c&v=&isCouponPop=&cityCode=440100&ci=8&page=" + offset + "&limit=20&area=" + area + "&brand=" + brand);
+
+        String cinemaList = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/cinema/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=27164025&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=afab2bd7a7984fc18231f8619ce7a11c&v=&isCouponPop=&cityCode=440100&ci=8&page=" + query.getOffset() + "&limit=20&area=" + query.getArea() + "&brand=" + query.getBrand());
         if (!cinemaList.equals(FAIL_STR))
             redisTemplate.opsForValue().set(cacheKey, cinemaList);
         return cinemaList;

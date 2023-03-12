@@ -15,8 +15,8 @@ export default class Cinema extends Component {
     let token = Taro.getStorageSync("token");
     this.state = {
       token:token,
-      brand:'123',
-      area:'123',
+      brand:'',
+      area:'',
       type:'',
       cityName:'',
       areaData:[],
@@ -26,17 +26,36 @@ export default class Cinema extends Component {
       cinemas:[]
     }
   }
-  selectItem(item){
-    if(this.state.type == item.type){
+  selectItem(itemType){
+    if(this.state.type == itemType){
       this.setState({
         type:""
       });
     }else{
       this.setState({
-        type:item.type
+        type:itemType
       });
     }
-
+    let area = Taro.getStorageSync('area');
+    let brand = Taro.getStorageSync('brand');
+    if(area != this.state.area || brand != this.state.brand){
+      this.state.area = area;
+      let showAreaName = area == '' ? '全城':area;
+      this.state.selectItems[0].nm = showAreaName;
+      this.state.brand = brand;
+      let showBrandName = brand == '' ? '品牌':brand;
+      this.state.selectItems[1].nm = showBrandName;
+      this.state.offset = 1;
+      this.getCinemasList();
+    }
+  }
+  restAreaAndBrand(){
+    Taro.setStorageSync('area','');
+    Taro.setStorageSync('brand','');
+    this.state.area = '';
+    this.state.brand = '';
+    this.state.offset = 1;
+    this.getCinemasList();
   }
   getStorageData(){
     let self = this;
@@ -45,7 +64,7 @@ export default class Cinema extends Component {
     this.setState({
       cityName:cityName
     },()=>{
-      self.filterCinemasList();
+      //self.filterCinemasList();
       self.getCinemasList();
     });
   }
@@ -55,6 +74,7 @@ export default class Cinema extends Component {
       url:`baseUrl/index/house`,
     }).then(res=>{
       if(res.statusCode == 200){
+        debugger
         this.setState({
           cinemas:res.data.data.list
         });
@@ -90,22 +110,31 @@ export default class Cinema extends Component {
   }
   getCinemasList(){
     let offset = this.state.offset;
-    let area = Taro.getStorageSync('area') == ''?'123':Taro.getStorageSync('area');
-    let brand = Taro.getStorageSync('brand') == ''?'123':Taro.getStorageSync('brand');
+    let area = this.state.area;
+    let brand = this.state.brand;
     let self = this;
     Taro.showLoading({
       title:"加载中"
     });
     Taro.request({
-      method:'GET',
-      url:`baseUrl/index/cinemaList/`+offset+'/'+area+'/'+brand,
+      method:'POST',
+      url:`baseUrl/index/cinemaList`,
+      data:{
+        offset: offset,
+        area: area,
+        brand:brand
+      }
     }).then(res=>{
       if(res.statusCode == 200){
         Taro.hideLoading();
         let data = res.data.data;
-        if(data.hasMore > 0){
+        if(typeof(data.list) != 'undefined'){
           if(typeof(self.state.cinemas) == 'undefined'){
             self.state.cinemas = [];
+          }
+          if(this.state.offset == 1){
+            self.state.cinemas = [];
+            this.forceUpdate();
           }
           self.setState({
             cinemas:self.state.cinemas.concat(data.list)
@@ -129,6 +158,15 @@ export default class Cinema extends Component {
   navigate(url){
     Taro.navigateTo({url:url});
   }
+  navigatePostion(url){
+    Taro.showToast({
+      title: '暂不支持选择',
+      icon: 'success',
+      duration: 2000
+    });
+    return false;
+    Taro.navigateTo({url:url});
+  }
   navigateToCinema(url,item){
     let cinemaId = item.cinemaId;
     url = url+`?cinemaId=${cinemaId}`
@@ -147,7 +185,7 @@ export default class Cinema extends Component {
         lowerThreshold='20'
       >
         <View className="navHeader">
-          <View className="location" onClick={this.navigate.bind(this,'../position/position')}>
+          <View className="location" onClick={this.navigatePostion.bind(this,'../position/position')}>
             {this.state.cityName}
             <View className="tangle"></View>
           </View>
@@ -159,12 +197,16 @@ export default class Cinema extends Component {
         <View className="ToolBar">
           {this.state.selectItems.map((item,index)=>{
             return (
-              <View className={this.state.type == item.type?'actived selectItem':'selectItem'} key={index} onClick={this.selectItem.bind(this,item)}>
+              <View className={this.state.type == item.type?'actived selectItem':'selectItem'} key={index} onClick={this.selectItem.bind(this,item.type)}>
                 {item.nm}
                 <View className="tangle"></View>
               </View>
             )
           })}
+          <View className='selectItem' onClick={this.restAreaAndBrand.bind(this)}>
+            重置条件
+          </View>
+
 
           <Specialbar data={this.state.brandData} type={this.state.type}/>
           <Brandbar data={this.state.areaData} type={this.state.type}/>

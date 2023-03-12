@@ -10,13 +10,8 @@ export default class Specialbar extends Component {
   }
   setBrand(brand){
     Taro.setStorageSync('brand',brand);
-    console.log(brand);
+    this.$root.selectItem('special');
   };
-  navigateCinema(e){
-    wx.switchTab({
-        url: '/pages/cinema/cinema'
-    })
-  }
 
 
   render() {
@@ -36,10 +31,6 @@ export default class Specialbar extends Component {
             })
           }
         </ScrollView>
-        <View className="selectCertian">
-            <View className="reset">重置</View>
-            <View className="certain" onClick={this.navigateCinema.bind(this,e)}>确定</View>
-        </View>
       </View>
     )
   }

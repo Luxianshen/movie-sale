@@ -20,8 +20,8 @@ export default class Search extends Component {
   searchList(){
     //let cityId = Taro.getStorageSync('cities').geoCity.id;
     let cityId = 8;
-    //let keyWord = this.state.keyWord;
-    let keyWord = '万达';
+    let keyWord = this.state.keyWord;
+    //let keyWord = '万达';
     let self = this;
     if(keyWord != ''){
       Taro.request({
@@ -63,7 +63,7 @@ export default class Search extends Component {
   }
   navigateToCinema(url,item){
     console.log(item);
-    const cinemaId = item.id;
+    const cinemaId = item.cinemaId;
     url = url+`?cinemaId=${cinemaId}`
     Taro.navigateTo({
       url:url

@@ -5,7 +5,6 @@ import {
   View,
   Image
 } from '@tarojs/components'
-import Selectbar from "../../components/Selectbar/Selectbar";
 import Brandbar from "../../components/Brandbar/Brandbar";
 import Specialbar from "../../components/Specialbar/Specialbar";
 import './detail.scss'
@@ -17,6 +16,8 @@ export default class Detail extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      area:'',
+      brand:'',
       active: 0,
       params: {},
       offset: 1,
@@ -28,7 +29,9 @@ export default class Detail extends Component {
       dates: [],
       queryDates: [],
       cinemas: [],
-      allData: {},
+      areaData: [],
+      brandData:[],
+      selectItems:[{nm:'全城',type:'brand'},{nm:'品牌',type:'special'}],
       scrollLeft: '0',
     }
   }
@@ -49,26 +52,38 @@ export default class Detail extends Component {
 
   componentDidMount() {
     this.getDetailData();
+    this.getSelectData();
   }
   getfilterCinemas() {
     let cityId = this.state.params.cityId;
+    let offset = this.state.offset;
+    let area = this.state.area;
+    let brand = this.state.brand;
     let token = Taro.getStorageSync("token");
     Taro.request({
-      url: `baseUrl/index/schedule/${this.state.params.id}/${this.state.queryDates[this.state.active]}/${this.state.offset}`,
-      method: "GET",
+      url: `baseUrl/index/schedule/${this.state.params.id}/${this.state.queryDates[this.state.active]}`,
+      method: "POST",
+      data:{
+        offset:offset,
+        area:area,
+        brand:brand
+      },
       header: {'token': token.token}
     }).then(res => {
 
       if (res.statusCode == 200) {
         let data = res.data.data;
-        if (data.hasMore > 0) {
+        if (typeof(data.list) != 'undefined') {
           if (this.state.offset < 2) {
+
             this.state.offset = 2;
             this.setState({
-              allData: data,
-              cinemas: data.list,
+              cinemas: data.list
             });
-            this.getfilterCinemas();
+            this.forceUpdate();
+            if(data.hasMore >0){
+              this.getfilterCinemas();
+            }
           } else {
             data.list.map((item) => {
               this.state.cinemas.push(item);
@@ -84,6 +99,26 @@ export default class Detail extends Component {
       }
     })
   }
+  getSelectData(){
+    Taro.showLoading({
+      title:"加载中"
+    });
+    Taro.request({
+      method:'GET',
+      url:`baseUrl/index/house`,
+    }).then(res=>{
+      if(res.statusCode == 200){
+        Taro.hideLoading();
+        let data = res.data.data;
+        this.setState({
+          areaData:data.area,
+          brandData:data.brand
+        });
+      }
+    })
+
+  }
+
   getDetailData() {
 
     let token = Taro.getStorageSync("token");
@@ -231,6 +266,39 @@ export default class Detail extends Component {
       });
     }
   }
+  selectItem(itemType){
+    if(this.state.type == itemType){
+      this.setState({
+        type:""
+      });
+    }else{
+      this.setState({
+        type:itemType
+      });
+    }
+    let area = Taro.getStorageSync('area');
+    let brand = Taro.getStorageSync('brand');
+    if(area != this.state.area || brand != this.state.brand){
+      this.state.area = area;
+      let showAreaName = area == '' ? '全城':area;
+      this.state.selectItems[0].nm = showAreaName;
+      this.state.brand = brand;
+      let showBrandName = brand == '' ? '品牌':brand;
+      this.state.selectItems[1].nm = showBrandName;
+      this.state.offset = 1;
+      this.getfilterCinemas();
+    }
+  }
+  restAreaAndBrand(){
+    Taro.setStorageSync('area','');
+    Taro.setStorageSync('brand','');
+    this.state.area = '';
+    this.state.brand = '';
+    this.state.selectItems[0].nm ='全城';
+    this.state.selectItems[1].nm ='品牌';
+    this.state.offset = 1;
+    this.getfilterCinemas();
+  }
   navigateContent(url, item) {
     let cityId = this.state.cityId;
     url = url + `?id=${item.id}&title=${item.nm}&cityId=${cityId}`
@@ -299,14 +367,7 @@ export default class Detail extends Component {
     View className = "time" > {
       itemData.pubDesc
     } < /View> < /
-    View > <
-      View className = "arrow"
-    onClick = {
-        this.navigateContent.bind(this, '../content/content', itemData)
-      } >
-      <
-      View className = "icon" > < /View> < /
-    View > <
+    View >  <
       /View> < /
     View > <
       /View> <
@@ -335,46 +396,38 @@ export default class Detail extends Component {
       } <
       /ScrollView> <
       View className = "dateSelect" >
+
       <
-      View className = {
-        this.state.type == 'city' ? 'scroll-item itemActive' : 'scroll-item '
-      }
-      onClick = {
-        this.showArea.bind(this, 'city')
-      } > 全城 < View className = "arrow" > < /View></View >
-      <
-      View className = "line" > | < /View> <
-      View className = {
+      View className = "line" > | < /View> <View className = {
         this.state.type == 'brand' ? 'scroll-item itemActive' : 'scroll-item'
       }
       onClick = {
-        this.showArea.bind(this, 'brand')
-      } > 品牌 < View className = "arrow" > < /View></View >
-      <
-      View className = "line" > | < /View> <
-      View className = {
+        this.selectItem.bind(this, 'brand')
+      } > {selectItems[0].nm} < View className = "arrow" > < /View></View >
+      <View className = "line" > | < /View>
+      <View className = {
         this.state.type == 'special' ? 'scroll-item itemActive' : 'scroll-item'
       }
       onClick = {
-        this.showArea.bind(this, 'special')
-      } > 特色 < View className = "arrow" > < /View></View >
+        this.selectItem.bind(this, 'special')
+      } > {selectItems[1].nm} < View className = "arrow" > < /View></View >
+      <View className = "line" > | < /View>
+      <View className = {
+        this.state.type == 'special' ? 'scroll-item itemActive' : 'scroll-item'
+      }
+      onClick = {
+        this.restAreaAndBrand.bind(this)
+      } > 重置条件 </View >
       <
-      Selectbar data = {
-        this.state.allData
-      }
-      type = {
-        this.state.type
-      }
-      /> <
       Specialbar data = {
-        this.state.allData
+        this.state.brandData
       }
       type = {
         this.state.type
       }
       /> <
       Brandbar data = {
-        this.state.allData
+        this.state.areaData
       }
       type = {
         this.state.type
