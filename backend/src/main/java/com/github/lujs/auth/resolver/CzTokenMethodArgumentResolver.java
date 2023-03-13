@@ -2,7 +2,7 @@ package com.github.lujs.auth.resolver;
 
 import com.github.lujs.commmon.CzToken;
 import com.github.lujs.commmon.annotation.Token;
-import com.github.lujs.service.CzTokenService;
+import com.github.lujs.service.ITokenService;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -24,7 +24,7 @@ public class CzTokenMethodArgumentResolver implements HandlerMethodArgumentResol
     private final static String CZ_TOKEN_HEADER_KEY = "token";
 
     @Resource
-    private CzTokenService tokenService;
+    private ITokenService tokenService;
 
     @Override
     public boolean supportsParameter(MethodParameter methodParameter) {
@@ -36,7 +36,7 @@ public class CzTokenMethodArgumentResolver implements HandlerMethodArgumentResol
     public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
         String token = nativeWebRequest.getHeader(CZ_TOKEN_HEADER_KEY);
         if (StringUtils.hasText(token)) {
-            return tokenService.getCzToken(token);
+            return tokenService.getToken(token);
         }
         throw new RuntimeException("系统报错了");
     }
