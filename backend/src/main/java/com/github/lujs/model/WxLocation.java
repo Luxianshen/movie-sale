@@ -2,8 +2,10 @@ package com.github.lujs.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class WxLocation {
+public class WxLocation implements Serializable {
 
     /**
      * {

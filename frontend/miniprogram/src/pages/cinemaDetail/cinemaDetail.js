@@ -98,7 +98,7 @@ export default class CinemasDetail extends Component {
   navigateSeat(url,item){
     const cinemaName = this.state.cinemaData.cinemaName;
     const showId =  item.showId;
-    const price = item.settlePrice;
+    const price = item.settlePrice>40? item.settlePrice-6:item.settlePrice-5;
     const reqList = this.state.reqList;
     url = url+`?cinemaName=${cinemaName}&showId=${showId}&price=${price}&item=${encodeURIComponent(JSON.stringify(item))}`;
     Taro.navigateTo({
@@ -216,11 +216,11 @@ export default class CinemasDetail extends Component {
                   </View>
                   <View className="station">
                     <View className="lang">{item.language}{item.planType}</View>
-                    <View className="hall">{item.hallName}</View>
+                    <View className="hall">{item.hallName.substring(0,5)}</View>
                   </View>
                   <View className="sellPrice">
-                      <View className="price"><Text className="mark">￥{item.settlePrice}</Text> {item.settlePrice}</View>
-                      <View className="discount">{item.cutPrice}</View>
+                      <View className="price"><Text className="mark">￥{item.settlePrice > 40? item.settlePrice-6:item.settlePrice-5}</Text> {item.settlePrice}</View>
+                      <View className="discount">已减￥{item.settlePrice >40 ? 6:5}</View>
                   </View>
                   <View className="button" onClick={this.navigateSeat.bind(this,'../seat/seat',item)}>
                     购票

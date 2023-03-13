@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class CzTokenService {
 
     @Resource
-    private RedisTemplate<String,Object> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 创建Token
@@ -34,7 +34,7 @@ public class CzTokenService {
         String tokenKey = "CZ-" + IdUtil.getSnowflake(1L, 3L).nextIdStr();
 
         //base
-        CzToken token = BeanUtil.toBean(userDto,CzToken.class);
+        CzToken token = BeanUtil.toBean(userDto, CzToken.class);
         token.setToken(tokenKey);
         userDto.setLat(location.getLat());
         userDto.setLon(location.getLon());
@@ -51,10 +51,14 @@ public class CzTokenService {
             CzToken czToken = BeanUtil.toBean(redisTemplate.opsForValue().get(key), CzToken.class);
             czToken.setToken(key);
             //免权限token 刷新缓存处
-            //refresh(key);
+            refresh(key);
             return czToken;
         }
         throw new RuntimeException("获取token失败");
+    }
+
+    private void refresh(String key) {
+        redisTemplate.expire(key, 120, TimeUnit.MINUTES);
     }
 
 

@@ -26,7 +26,6 @@ export default class Map extends Component {
 
     const params = this.$router.params;
     let item = JSON.parse(decodeURIComponent(params.item));
-
     this.setState({
       cinemaName:params.cinemaName,
       item:item,
@@ -39,7 +38,7 @@ export default class Map extends Component {
   }
   render () {
     let showData = this.state.item? this.state.item:{};
-    let money = Math.floor(this.state.price) * this.state.buyNum;
+    let money = this.state.price * this.state.buyNum;
     let cinemaName = this.state.cinemaName;
     return (
       <View className="order">

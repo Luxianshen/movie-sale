@@ -27,7 +27,7 @@ export default class Cinema extends Component {
     }
   }
   selectItem(itemType){
-    if(this.state.type == itemType){
+    if(this.state.type == itemType || itemType == ''){
       this.setState({
         type:""
       });
@@ -54,6 +54,7 @@ export default class Cinema extends Component {
     Taro.setStorageSync('brand','');
     this.state.area = '';
     this.state.brand = '';
+	this.selectItem('');
     this.state.selectItems[0].nm = '全城';
     this.state.selectItems[1].nm = '品牌';
     this.state.offset = 1;
