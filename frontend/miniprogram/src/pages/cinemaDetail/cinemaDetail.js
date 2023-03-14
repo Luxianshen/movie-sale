@@ -219,7 +219,7 @@ export default class CinemasDetail extends Component {
                     <View className="hall">{item.hallName.substring(0,5)}</View>
                   </View>
                   <View className="sellPrice">
-                      <View className="price"><Text className="mark">￥{item.settlePrice > 40? item.settlePrice-6:item.settlePrice-5}</Text> {item.settlePrice}</View>
+                      <View className="price"><Text className="mark">￥{item.settlePrice > 40? Math.floor(item.settlePrice*100-600)/100:Math.floor(item.settlePrice*100-500)/100}</Text> {item.settlePrice}</View>
                       <View className="discount">已减￥{item.settlePrice >40 ? 6:5}</View>
                   </View>
                   <View className="button" onClick={this.navigateSeat.bind(this,'../seat/seat',item)}>

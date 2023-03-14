@@ -9,6 +9,12 @@ export default class Map extends Component {
     super(props);
     this.state = {
       cinemaName:'',
+      cinemaAddress:'',
+      hallName:'',
+      showTime:'',
+      buyNum:0,
+      price:0,
+      seatInfo:'',
       item:{},
       price:'0',
       buyNum:0
@@ -32,6 +38,52 @@ export default class Map extends Component {
       price:params.price,
       buyNum:params.buyNum
     })
+  }
+  createOrder(){
+
+    debugger
+   let token = Taro.getStorageInfoSync('token');
+   Taro.request({
+     url: `baseUrl/order/createOrder`,
+     method: 'post',
+     data: {
+       cinemaName:this.state.cinemaName,
+       cinemaAddress: this.state.cinemaAddress,
+       hallName: this.state.hallName,
+       showTime: this.state.showTime,
+       buyNum: this.state.buyNum,
+       price: this.state.price,
+       seatInfo: this.state.seatInfo
+     },
+     header: {'token': token.token}
+   }).then(res => {
+     if (res.statusCode == 200) {
+       Taro.hideLoading();
+
+       const seatData = res.data.data;
+       const seatArray = [];
+       this.state.seatRow = [];
+       this.state.seatRunTime.map(i => {
+         let runData = seatData[i] ? seatData[i] : [];
+         if (runData.length > 0) {
+           let arr = [];
+           runData.map(seat => {
+             if (seat["status"] == "N") {
+               arr.push('0');
+             } else {
+               arr.push('E')
+             }
+           })
+           seatArray.push(arr);
+           this.state.seatRow.push(i);
+         }
+       })
+       self.setState({
+         seatData: seatData,
+         seatArray: seatArray
+       });
+     }
+   })
   }
   componentDidMount () {
     this.initParams();
@@ -79,7 +131,7 @@ export default class Map extends Component {
             <View className="info">不支持退票、改签</View>
             <View className="moneyAll">￥{money}</View>
           </View>
-          <View className="affordBtn" onClick={this.navigateToUser.bind(this,'../user/user')}>确认支付</View>
+          <View className="affordBtn" onClick={this.createOrder.bind(this)}>确认支付</View>
         </View>
       </View>
     )

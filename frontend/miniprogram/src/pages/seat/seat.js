@@ -154,6 +154,12 @@ export default class Seat extends Component {
     let item = this.state.item;
     let price = this.state.price;
     let buyNum = this.state.buySeat.length;
+    debugger
+    let seatInfo = '';
+    this.state.buySeat.map(item=>{
+      seatInfo =  seatInfo + item.row * 1 + 1 +'排' +item.column +'座;';
+    })
+    
     let cinemaName = this.state.cinemaName;
     url = url+`?cinemaName=${cinemaName}&buyNum=${buyNum}&price=${price}&item=${encodeURIComponent(JSON.stringify(item))}`
     Taro.navigateTo({

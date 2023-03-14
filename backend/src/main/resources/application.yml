@@ -39,4 +39,4 @@ mybatis-plus:
     map-underscore-to-camel-case: true
     cache-enabled: false
 
-
+domain: 123

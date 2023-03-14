@@ -83,7 +83,7 @@ export default class Toptab extends Component{
 
   }
   appendToList(){
-    
+
   }
   getFutureMovies(){
     let self = this;
@@ -112,6 +112,7 @@ export default class Toptab extends Component{
     this.autoLogin();
     this.getMoviesOnList();
     //this.getFutureMovies();
+    this.getLocation();
   }
   getNowCity(){
 
@@ -136,6 +137,90 @@ export default class Toptab extends Component{
       url: '../position/position'
     })
   }
+  getLocation(){
+
+     var _this = this;
+      wx.getLocation({
+            type: 'wgs84',
+            success(res) {
+              console.log("-----success location-----")
+              console.log(res)
+
+              //var latitude = res.latitude
+              //var longitude = res.longitude
+              // wx.openLocation({
+              //   latitude,
+              //   longitude,
+              //   scale: 18
+              // })
+            },
+            fail(res) {
+              console.log("-----fail location-----")
+              console.log(res);
+              Taro.showModal({
+                content: '需要授权定位才能提供更好的服务哦！',
+                confirmText: '确定',
+                cancelText: '取消',
+                success: function (res) {
+                          if (res.confirm) {
+                             console.log('用户点击确定')
+                             _this.getAddres();
+                          } else if (res.cancel) {
+                             console.log('用户点击取消')
+                          }
+                }
+              });
+            }
+          });
+  }
+  getAddres() {
+      let that = this;
+      wx.openSetting({ // 打开设置界面
+        success: res => {
+          if (res.authSetting['scope.userLocation'] || res.authSetting['scope.userLocationBackground']) {
+            // 授权成功，用户点击了使用时可获取或者使用时离开后都可获取
+            wx.getLocation({ // 获取用户定位，返回经纬度等信息
+              isHighAccuracy: true,
+              type: 'gcj02',
+              success: res => {
+                let latitude = res.latitude
+                let longitude = res.longitude
+                let url = "https://api.map.baidu.com/geocoder/v2/";
+                let params = {
+                  ak: "h4uqXwClsa84XjNKvS4******", //免费去百度地图上申请一个
+                  output: "json",
+                  location: latitude + "," + longitude
+                }
+                wx.request({
+                  url: url,
+                  data: params,
+                  success: function (res1) {
+                    if (res1.errMsg == "request:ok") { // 获取位置信息成功
+                      wx.setStorageSync('location', res1);
+                      wx.setStorageSync('openAdd', true);
+                      wx.showToast({
+                        title: '授权成功',
+                      })
+                    } else {
+                      wx.showToast({
+                        title: '授权失败，请从新授权',
+                        icon: 'none'
+                      })
+                    }
+                  },
+                })
+              }
+            })
+          } else {
+            // 没有允许定位权限
+            wx.showToast({
+              title: '您拒绝了定位权限，请从新授权',
+                          icon: 'none'
+                        });
+                      }
+                    }
+                  });
+                }
   render(){
     let expectData = this.state.expectData?this.state.expectData:[];
     let cityId = this.state.id;
