@@ -61,7 +61,7 @@ public class OrderController {
      * @return
      */
     @RequestMapping("/createOrder")
-    public Result<Long> createOrder(@Token CzToken token, @RequestBody OrderSaveRequest request) {
+    public Result<String> createOrder(@Token CzToken token, @RequestBody OrderSaveRequest request) {
 
         BigDecimal price = new BigDecimal(request.getPrice());
         Integer buyNum = request.getBuyNum();
@@ -75,10 +75,10 @@ public class OrderController {
         BigDecimal total = NumberUtil.round(price.multiply(new BigDecimal(buyNum)), 2);
         order.setOrderState(0).setOrderType(0).setUserId(token.getId()).setUserMobile(token.getPhone())
                 .setActualAmount(total).setCouponAmount(new BigDecimal(0)).setPayType(0)
-                .setTotalAmount(total);
+                .setTotalAmount(total).setTransactionId(IdWorker.getIdStr());
 
         orderService.createOrder(order, orderDetail);
-        return Result.succeed(order.getId());
+        return Result.succeed(order.getId().toString());
     }
 
     @PostMapping("/payOrder/{orderId}")
