@@ -51,8 +51,8 @@ debugger
      data: {
        cinemaName:this.state.cinemaName,
        cinemaAddress: this.state.cinemaAddress,
-       hallName: this.state.hallName,
-       showTime: this.state.showTime,
+       hallName: this.state.item.hallName,
+       showTime: this.state.item.showTime,
        buyNum: this.state.buyNum,
        price: this.state.price,
        seatInfo: this.state.seatInfo
