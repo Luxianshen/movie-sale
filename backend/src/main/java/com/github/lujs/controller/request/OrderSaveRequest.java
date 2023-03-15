@@ -33,7 +33,7 @@ public class OrderSaveRequest {
     /**
      * 座位数
      */
-    private Integer buySeat;
+    private Integer buyNum;
 
     /**
      * 单价

@@ -60,7 +60,8 @@ export default class Person extends Component {
       let encryptedData = e.detail.encryptedData;
       let iv = e.detail.iv;
 
-      let token = Taro.getStorageSync("token");
+      let token = Taro.getStorageInfoSync("token");
+      debugger
       let sessionKey = token.sessionKey;
 
       Taro.request({
@@ -77,6 +78,7 @@ export default class Person extends Component {
         }
       }).then(res => {
         if (res.statusCode == '200') {
+			debugger
           Taro.setStorageSync("token", res.data.data.token);
           console.log(token);
           this.state.currentTab = 1;

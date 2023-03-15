@@ -33,6 +33,7 @@ export default class Toptab extends Component{
             if(res.statusCode =="200"){
               console.log(res)
               let token = res.data.data;
+			  debugger
               Taro.setStorageSync("token",token);
             }
           });

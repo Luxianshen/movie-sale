@@ -30,22 +30,24 @@ export default class Map extends Component {
   }
   initParams() {
 
+debugger
     const params = this.$router.params;
     let item = JSON.parse(decodeURIComponent(params.item));
     this.setState({
       cinemaName:params.cinemaName,
       item:item,
+      seatInfo: params.seatInfo,
       price:params.price,
       buyNum:params.buyNum
     })
   }
   createOrder(){
 
-    debugger
-   let token = Taro.getStorageInfoSync('token');
+   let token = Taro.getStorageSync("token");
+   debugger
    Taro.request({
      url: `baseUrl/order/createOrder`,
-     method: 'post',
+     method: 'POST',
      data: {
        cinemaName:this.state.cinemaName,
        cinemaAddress: this.state.cinemaAddress,
@@ -55,33 +57,28 @@ export default class Map extends Component {
        price: this.state.price,
        seatInfo: this.state.seatInfo
      },
-     header: {'token': token.token}
+     header: { 'token': token.token }
    }).then(res => {
      if (res.statusCode == 200) {
        Taro.hideLoading();
-
-       const seatData = res.data.data;
-       const seatArray = [];
-       this.state.seatRow = [];
-       this.state.seatRunTime.map(i => {
-         let runData = seatData[i] ? seatData[i] : [];
-         if (runData.length > 0) {
-           let arr = [];
-           runData.map(seat => {
-             if (seat["status"] == "N") {
-               arr.push('0');
-             } else {
-               arr.push('E')
+       const orderId = res.data.data;
+       Taro.request({
+         url: `baseUrl/order/payOrder/${orderId}`,
+         method: 'get'
+       }).then(res => {
+         let payParams = res.data.data;
+             wx.chooseWXPay({
+                 timestamp: payParams.timestamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+                 nonceStr: payParams.nonceStr, // 支付签名随机串，不长于 32 位
+                 package: payParams.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
+                 signType: payParams.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+                 paySign: payParams.paySign, // 支付签名
+             success: function (res) {
+             // 支付成功后的回调函数
              }
-           })
-           seatArray.push(arr);
-           this.state.seatRow.push(i);
-         }
-       })
-       self.setState({
-         seatData: seatData,
-         seatArray: seatArray
+        });
        });
+
      }
    })
   }
@@ -92,6 +89,7 @@ export default class Map extends Component {
     let showData = this.state.item? this.state.item:{};
     let money = this.state.price * this.state.buyNum;
     let cinemaName = this.state.cinemaName;
+    let seatInfo = this.state.seatInfo;
     return (
       <View className="order">
         <View className="timeDown">
@@ -103,6 +101,7 @@ export default class Map extends Component {
           <View className="movieTime">{showData.showTime}</View>
           <View className="cinemas">{cinemaName} </View>
           <View className="station">{showData.hallName}</View>
+          <View className="station">{seatInfo}</View>
         </View>
         <View className="discountInfo">
           <View className="card">

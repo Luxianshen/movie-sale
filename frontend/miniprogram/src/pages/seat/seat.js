@@ -161,7 +161,7 @@ export default class Seat extends Component {
     })
     
     let cinemaName = this.state.cinemaName;
-    url = url+`?cinemaName=${cinemaName}&buyNum=${buyNum}&price=${price}&item=${encodeURIComponent(JSON.stringify(item))}`
+    url = url+`?cinemaName=${cinemaName}&buyNum=${buyNum}&price=${price}&seatInfo=${seatInfo}&item=${encodeURIComponent(JSON.stringify(item))}`
     Taro.navigateTo({
       url: url
     });
