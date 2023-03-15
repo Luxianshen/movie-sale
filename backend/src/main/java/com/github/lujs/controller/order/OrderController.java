@@ -70,7 +70,7 @@ public class OrderController {
         OrderDetail orderDetail = new OrderDetail();
         orderDetail.init();
         orderDetail.setOrderId(order.getId()).setCinemaName(request.getCinemaName()).setCinemaAddress(request.getCinemaAddress())
-                .setBuyNum(request.getBuyNum()).setPrice(price).setSeatInfo(request.getSeatInfo());
+                .setBuyNum(request.getBuyNum()).setPrice(price).setSeatInfo(request.getSeatInfo()).setHallName(request.getHallName());
 
         BigDecimal total = NumberUtil.round(price.multiply(new BigDecimal(buyNum)), 2);
         order.setOrderState(0).setOrderType(0).setUserId(token.getId()).setUserMobile(token.getPhone())
@@ -91,6 +91,7 @@ public class OrderController {
             WxPayUnifiedOrderRequest apiRequest = new WxPayUnifiedOrderRequest();
             apiRequest.setBody("订单支付");
             apiRequest.setOpenid(token.getBizUserId());
+            apiRequest.setAppid(wxPayService.getConfig().getAppId());
             apiRequest.setMchId(wxPayService.getConfig().getMchId());
             apiRequest.setOutTradeNo(byId.getTransactionId());
             apiRequest.setTotalFee(NumberUtil.round(byId.getActualAmount().multiply(new BigDecimal(100)),0).intValue());

@@ -33,7 +33,6 @@ export default class Toptab extends Component{
             if(res.statusCode =="200"){
               console.log(res)
               let token = res.data.data;
-			  debugger
               Taro.setStorageSync("token",token);
             }
           });
@@ -146,14 +145,18 @@ export default class Toptab extends Component{
             success(res) {
               console.log("-----success location-----")
               console.log(res)
+              let token = Taro.getStorageSync("token");
+              Taro.request({
+                url: 'baseUrl/wx/refresh/'+res.latitude+'/'+res.longitude,
+                method:"GET",
+                header:{'token':token.token}
+              }).then(res=>{
+                if(res.statusCode == 200){
+                 _this.state.name = res.data.data.cityName;
+                 Taro.setStorageSync("token",res.data.data);
+                }
+              })
 
-              //var latitude = res.latitude
-              //var longitude = res.longitude
-              // wx.openLocation({
-              //   latitude,
-              //   longitude,
-              //   scale: 18
-              // })
             },
             fail(res) {
               console.log("-----fail location-----")

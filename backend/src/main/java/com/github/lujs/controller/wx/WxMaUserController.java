@@ -2,6 +2,7 @@ package com.github.lujs.controller.wx;
 
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -87,11 +88,11 @@ public class WxMaUserController extends BaseController {
 
     private WxLocation getCity(HttpServletRequest request) {
 
-        String rep = HttpUtil.get("https://restapi.amap.com/v3/ip?ip=" + request.getRemoteAddr() + "&key=5EPBZ-Y6563-EEG3O-3GBDE-G3XZO-AZBCI");
+        String rep = HttpUtil.get("https://restapi.amap.com/v3/ip?ip=" + request.getRemoteAddr() + "&key=1b85b506f2995558684577af0ac1a273");
         JSONObject result = JSONUtil.parseObj(rep);
         WxLocation wxLocation = new WxLocation();
-        wxLocation.setLon("113.34");
-        wxLocation.setLat("23.01");
+        wxLocation.setLon("113.34123");
+        wxLocation.setLat("23.01234");
         wxLocation.setCityName("广州市");
         wxLocation.setCityCode("440100");
         if ("1".equals(result.getStr("status"))) {
@@ -102,15 +103,48 @@ public class WxMaUserController extends BaseController {
                 String[] location2 = rectangles[1].split(",");
                 wxLocation.setLon(NumberUtil.roundStr((Double.parseDouble(location1[0]) + Double.parseDouble(location2[0])) / 2, 6));
                 wxLocation.setLat(NumberUtil.roundStr((Double.parseDouble(location1[1]) + Double.parseDouble(location2[1])) / 2, 6));
-            } else {
-                String[] location1 = rectangles[0].split(",");
-                wxLocation.setLon(location1[0]);
-                wxLocation.setLat(location1[1]);
+                wxLocation.setCityName(result.getStr("city"));
+                wxLocation.setCityCode(result.getStr("adcode"));
             }
-            wxLocation.setCityName(result.getStr("city"));
-            wxLocation.setCityCode(result.getStr("adcode"));
+
         }
         return wxLocation;
+    }
+
+    private WxLocation getCity(String lat, String lon) {
+
+        String rep = HttpUtil.get("https://restapi.amap.com/v3/geocode/regeo?location=" + lon + "," + lat + "&poitype=&radius=100&extensions=base&batch=false&roadlevel=1&key=1b85b506f2995558684577af0ac1a273");
+        JSONObject result = JSONUtil.parseObj(rep);
+        WxLocation wxLocation = new WxLocation();
+        wxLocation.setLon("113.34123");
+        wxLocation.setLat("23.01234");
+        wxLocation.setCityName("广州市");
+        wxLocation.setCityCode("440100");
+        if ("1".equals(result.getStr("status"))) {
+            String province = result.getJSONObject("regeocode").getJSONObject("addressComponent").getStr("province");
+            String city = result.getJSONObject("regeocode").getJSONObject("addressComponent").getStr("city");
+            String adcode = result.getJSONObject("regeocode").getJSONObject("addressComponent").getStr("adcode");
+            adcode = adcode.substring(0,4) +"00";
+            wxLocation.setLat(lat);
+            wxLocation.setLon(lon);
+            wxLocation.setCityName(ObjectUtil.isEmpty(city) ? province : city);
+            wxLocation.setCityCode(adcode);
+            System.out.println("123");
+        }
+        return wxLocation;
+    }
+
+    /**
+     * 更新token 定位
+     *
+     * @param czToken
+     * @return
+     */
+    @GetMapping("/refresh/{lat}/{lon}")
+    public Result<CzToken> refresh(@Token CzToken czToken, @PathVariable("lat") String lat,
+                                   @PathVariable("lon") String lon) {
+        UserDto userDto = BeanUtil.toBean(czToken, UserDto.class);
+        return Result.succeed(tokenService.createToken(userDto, getCity(lat, lon)));
     }
 
     /**

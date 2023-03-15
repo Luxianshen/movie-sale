@@ -56,8 +56,8 @@ public class IndexController {
 
         log.info(rep);
         WxLocation wxLocation = new WxLocation();
-        wxLocation.setLon("113.34");
-        wxLocation.setLat("23.01");
+        wxLocation.setLon("113.34123");
+        wxLocation.setLat("23.01234");
         wxLocation.setCityName("广州市");
         wxLocation.setCityCode("440100");
         if ("1".equals(result.getStr("status")) && !"[]".equals(result.getStr("rectangle"))) {
@@ -68,9 +68,10 @@ public class IndexController {
                 String[] location2 = rectangles[1].split(",");
                 wxLocation.setLon(NumberUtil.roundStr((Double.parseDouble(location1[0]) + Double.parseDouble(location2[0])) / 2, 6));
                 wxLocation.setLat(NumberUtil.roundStr((Double.parseDouble(location1[1]) + Double.parseDouble(location2[1])) / 2, 6));
+                wxLocation.setCityName(result.getStr("city"));
+                wxLocation.setCityCode(result.getStr("adcode"));
             }
-            wxLocation.setCityName(result.getStr("city"));
-            wxLocation.setCityCode(result.getStr("adcode"));
+
         }
         return wxLocation;
     }
@@ -167,14 +168,13 @@ public class IndexController {
     }
 
     @PostMapping("/cinemaList")
-    public String cinemaList(HttpServletRequest request, @RequestBody NormalQuery query) {
+    public String cinemaList(@Token CzToken token, @RequestBody NormalQuery query) {
 
-        WxLocation location = getCity(request);
         String cacheKey = DEFAULT_PREFIX + "cinemaList" + query.getOffset() + query.getArea() + query.getBrand();
         if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)))
             return redisTemplate.opsForValue().get(cacheKey);
 
-        String cinemaList = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/cinema/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=27164025&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=afab2bd7a7984fc18231f8619ce7a11c&v=&isCouponPop=&cityCode=440100&ci=8&page=" + query.getOffset() + "&limit=20&area=" + query.getArea() + "&brand=" + query.getBrand());
+        String cinemaList = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/cinema/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=27164025&latitude="+token.getLat()+"&longitude="+token.getLon()+"&cityId=8&evnType=h5&envType=h5&userUUID=afab2bd7a7984fc18231f8619ce7a11c&v=&isCouponPop=&cityCode=440100&ci=8&page=" + query.getOffset() + "&limit=20&area=" + query.getArea() + "&brand=" + query.getBrand());
         if (!cinemaList.equals(FAIL_STR))
             redisTemplate.opsForValue().set(cacheKey, cinemaList, DateUtil.between(new Date(), DateUtil.endOfDay(new Date()), DateUnit.MINUTE), TimeUnit.MINUTES);
         return cinemaList;
@@ -185,13 +185,12 @@ public class IndexController {
      * 搜索
      */
     @GetMapping("/search/{key}/{cityId}")
-    public String search(HttpServletRequest request, @PathVariable("key") String key, @PathVariable("cityId") String cityId) {
+    public String search(HttpServletRequest request,@Token CzToken token, @PathVariable("key") String key, @PathVariable("cityId") String cityId) {
 
-        WxLocation location = getCity(request);
         String cacheKey = DEFAULT_PREFIX + "search" + key;
         if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)))
             return redisTemplate.opsForValue().get(cacheKey);
-        String search = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/cinema/queryCinema", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&kw=" + key);
+        String search = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/cinema/queryCinema", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude="+token.getLat()+"&longitude="+token.getLon()+"&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&kw=" + key);
         if (!search.equals(FAIL_STR))
             redisTemplate.opsForValue().set(cacheKey, search, DateUtil.between(new Date(), DateUtil.endOfDay(new Date()), DateUnit.MINUTE), TimeUnit.MINUTES);
         return search;

@@ -351,7 +351,8 @@ export default class Detail extends Component {
           itemData.showName
         } < /View> <
         View className = "star" > {
-          itemData.leadingRole.substring(0, 15)
+			itemData.leadingRole?
+          itemData.leadingRole.substring(0, 15):''
         } < /View> {
         itemData.globalReleased ? < View className = "comment" > 观众评 {
           itemData.remakr

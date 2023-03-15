@@ -151,10 +151,21 @@ export default class Seat extends Component {
   }
   navigate(url) {
 
+     Taro.showModal({
+       title: '提示',
+       content: "",
+       success: function (res) {
+         if (res.confirm) {
+           console.log('用户点击确定')
+         } else if (res.cancel) {
+           console.log('用户点击取消')
+         }
+       }
+     })
+
     let item = this.state.item;
     let price = this.state.price;
     let buyNum = this.state.buySeat.length;
-    debugger
     let seatInfo = '';
     this.state.buySeat.map(item=>{
       seatInfo =  seatInfo + (item.row * 1 + 1) +'排' +item.column +'座;';
@@ -169,7 +180,8 @@ export default class Seat extends Component {
   componentDidMount() {
     this.initParams();
   }
-  render() {
+ 
+ render() {
 
     const show = this.state.item;
     const hall = this.state.seatData.hall;
@@ -326,17 +338,13 @@ export default class Seat extends Component {
         View > <
         View className = {
           this.state.buySeat.length == 0 ? 'buyBtn' : 'hide buyBtn'
-        } > 请先选座 < /View> <
-        View className = {
-          this.state.buySeat.length == 0 ? 'hide buyBtn' : 'buyBtn active'
-        }
-        onClick = {
-          this.navigate.bind(this, '../order/order')
-        } > ￥{
-          this.state.buySeat.length * price
-        }
-        确认选座 < /View> < /
-        View >
+        } > 请先选座 < /View>
+
+        <View className = {
+          this.state.buySeat.length == 0 ? 'hide buyBtn' : 'buyBtn active'} onClick = {
+          this.navigate.bind(this, '../order/order')} > ￥{this.state.buySeat.length * price}
+        确认选座 < /View>
+        < /View >
       );
     }
   }

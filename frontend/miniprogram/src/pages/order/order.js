@@ -30,7 +30,6 @@ export default class Map extends Component {
   }
   initParams() {
 
-debugger
     const params = this.$router.params;
     let item = JSON.parse(decodeURIComponent(params.item));
     this.setState({
@@ -43,8 +42,12 @@ debugger
   }
   createOrder(){
 
-   let token = Taro.getStorageSync("token");
-   debugger
+    let token = Taro.getStorageSync("token");
+    if(token.phone == ''){
+
+    }
+
+
    Taro.request({
      url: `baseUrl/order/createOrder`,
      method: 'POST',
@@ -62,7 +65,6 @@ debugger
      if (res.statusCode == 200) {
        Taro.hideLoading();
        const orderId = res.data.data;
-       debugger
        Taro.request({
          url: `baseUrl/order/payOrder/${orderId}`,
          method: 'POST',
@@ -85,6 +87,7 @@ debugger
      }
    })
   }
+ 
   componentDidMount () {
     this.initParams();
   }
@@ -93,6 +96,7 @@ debugger
     let money = this.state.price * this.state.buyNum;
     let cinemaName = this.state.cinemaName;
     let seatInfo = this.state.seatInfo;
+    let token = Taro.getStorageSync("token");
     return (
       <View className="order">
         <View className="timeDown">
@@ -117,7 +121,7 @@ debugger
           <View className="phone">
             <View className="name">手机号码</View>
             <View className="number">
-              13415334317
+              {token.phone}
             </View>
           </View>
           <View className="totalMoney">

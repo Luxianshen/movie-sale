@@ -77,7 +77,6 @@ export default class Cinema extends Component {
       url:`baseUrl/index/house`,
     }).then(res=>{
       if(res.statusCode == 200){
-        debugger
         this.setState({
           cinemas:res.data.data.list
         });
@@ -116,6 +115,7 @@ export default class Cinema extends Component {
     let area = this.state.area;
     let brand = this.state.brand;
     let self = this;
+    let token = Taro.getStorageSync("token");
     Taro.showLoading({
       title:"加载中"
     });
@@ -126,7 +126,8 @@ export default class Cinema extends Component {
         offset: offset,
         area: area,
         brand:brand
-      }
+      },
+      header:{'token':token.token}
     }).then(res=>{
       if(res.statusCode == 200){
         Taro.hideLoading();
