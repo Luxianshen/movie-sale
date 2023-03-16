@@ -31,9 +31,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Long createOrder(Order order, OrderDetail orderDetail) {
-        baseMapper.insert(order);
+        save(order);
         Long orderId = order.getId();
-        orderDetail.setId(orderId);
+        orderDetail.setOrderId(orderId);
         orderDetailMapper.insert(orderDetail);
         return orderId;
     }

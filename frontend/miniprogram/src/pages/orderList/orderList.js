@@ -69,11 +69,50 @@ export default class OrderList extends Component {
     this.getStorageData();
   }
   navigate(url){
-    Taro.navigateTo({url:url});
+    Taro.downloadFile({
+      url: 'https://res.wx.qq.com/wxdoc/dist/assets/img/demo.ef5c5bef.jpg',
+      success: (res) => {
+        wx.showShareImageMenu({
+          path: res.tempFilePath
+        })
+      }
+    })
+    //Taro.navigateTo({url:url});
+  }
+  payOrder(orderId){
+    let token = Taro.getStorageInfoSync('token');
+    Taro.request({
+      url: `baseUrl/order/payOrder/${orderId}`,
+      method: 'POST',
+      header: { 'token': token.token }
+    }).then(res => {
+      let payParams = res.data.data;
+          wx.chooseWXPay({
+              timestamp: payParams.timestamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+              nonceStr: payParams.nonceStr, // 支付签名随机串，不长于 32 位
+              package: payParams.prepayId, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
+              signType: 'MD5', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+              paySign: payParams.sign, // 支付签名
+          success: function (res) {
+          // 支付成功后的回调函数
+          }
+     });
+    });
+  }
+  showQrCode(img){
+    let a = img;
+    Taro.downloadFile({
+      url: img,
+      success: (res) => {
+        wx.showShareImageMenu({
+          path: res.tempFilePath
+        })
+      }
+    })
   }
 
   navigateToOrderDetail(url,item){
-    
+
     Taro.navigateTo({
       url:url
     });
@@ -92,16 +131,24 @@ export default class OrderList extends Component {
       >
 
         <View className="orderContainer">
+
         {orders.map(item =>{
           return(
-            <View className="orderItem" key={item.id} onClick={this.navigateToOrderDetail.bind(this,'../qrcode/qdcode',item)}>
+            <View className="orderItem" key={item.id} >
               <View className="leftOrders">
-                <View className="orderName">{item.cinemaName}<Text className="price">厅号:{item.hallName}</Text>
-                <Text className="smallText">位置:{item.seatInfo}</Text></View>
+                <View className="orderName">{item.cinemaName}
+                <Text className="price">厅号:{item.hallName}</Text>
+                </View>
+                <View className="orderAddr">位置:{item.seatInfo}</View>
                 <View className="orderAddr">开场时间:{item.showTime}</View>
                 <View className="orderTag">
-                 <Text>出票中...</Text>
-                 <Button>兑票码</Button> <Button>支付订单</Button>
+                 <Text hidden={item.orderState == 2 ? false : true}>出票中...</Text>
+                 <View className="operate"  onClick={this.showQrCode.bind(this,item.ticketPic)} >
+                   <view className="preBuy" hidden={item.orderState == 3 ? false : true}>兑票码</view>
+                 </View>
+                 <View className="operate"  onClick={this.payOrder.bind(this,item.id)} >
+                   <view className="buyTicket" hidden={item.orderState == 1?false:true} >支付订单</view>
+                 </View>
                 </View>
               </View>
             </View>

@@ -93,13 +93,22 @@ export default class Person extends Component {
       url: '../user/user'
     })
   }
-  
+
+  navigateToWait(){
+    Taro.showToast({
+      title: '敬请期待！',
+      icon: 'success',
+      duration: 2000
+    });
+    return false;
+  }
+
   navigateToOrderList(){
     Taro.navigateTo({
       url:'../orderList/orderList'
     })
   }
-  
+
   render() {
     return (
     <view>
@@ -122,9 +131,9 @@ export default class Person extends Component {
             <Image src={moviePng}></Image>
             <Text className="item">电影</Text>
           </View>
-          <View className="shop">
+          <View className="shop" onClick = {this.navigateToWait.bind(this)}>
             <Image src={minePng}></Image>
-            <Text className="item">商城</Text>
+            <Text className="item" >小吃</Text>
           </View>
         </View>
         <View className="discount">

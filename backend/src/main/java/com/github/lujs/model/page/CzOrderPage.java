@@ -24,4 +24,6 @@ public class CzOrderPage {
 
     private String seatInfo;
 
+    private String ticketPic;
+
 }

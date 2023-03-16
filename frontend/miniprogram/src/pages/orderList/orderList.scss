@@ -156,6 +156,30 @@
           color: #59c0f8;
           border: 1px solid #59c0f8;
         }
+        .operate{
+          display: flex;
+          flex:1;
+          height: 100%;
+          justify-content: flex-end;
+          align-items: center;
+          .buyTicket,.preBuy{
+            width: 47Px;
+            height: 27Px;
+            line-height: 27Px;
+            text-align: center;
+            color: #fff;
+            border-radius: 4Px;
+            white-space: nowrap;
+            font-size: 12Px;
+            cursor: pointer;
+          }
+          .buyTicket{
+            background-color: #000000;
+          }
+          .preBuy{
+            background-color: #3c9fe6;
+          }
+        }
       }
       .orderRecent{
         color: #777;

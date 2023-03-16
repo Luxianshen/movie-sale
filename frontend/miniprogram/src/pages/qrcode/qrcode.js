@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View,Text, Button,Video,CoverView,CoverImage } from '@tarojs/components'
 import './qrcode.scss'
-export default class QrCode extends Components {
+export default class Qrcode extends Component {
   render () {
     return (
       <View className='container'>
