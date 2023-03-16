@@ -2,11 +2,8 @@ package com.github.lujs.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.lujs.mapper.OrderDetailMapper;
-import com.github.lujs.mapper.OrderMapper;
-import com.github.lujs.model.Order;
-import com.github.lujs.model.OrderDetail;
+import com.github.lujs.model.pojo.OrderDetail;
 import com.github.lujs.service.IOrderDetailService;
-import com.github.lujs.service.IOrderService;
 import org.springframework.stereotype.Service;
 
 /**

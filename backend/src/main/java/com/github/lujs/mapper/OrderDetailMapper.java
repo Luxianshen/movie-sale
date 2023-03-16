@@ -1,8 +1,7 @@
 package com.github.lujs.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.github.lujs.model.Order;
-import com.github.lujs.model.OrderDetail;
+import com.github.lujs.model.pojo.OrderDetail;
 
 /**
  * @author Lujs

@@ -2,7 +2,7 @@ package com.github.lujs.service;
 
 import com.github.lujs.commmon.CzToken;
 import com.github.lujs.model.UserDto;
-import com.github.lujs.model.WxLocation;
+import com.github.lujs.model.pojo.WxLocation;
 
 /**
  * @author Lujs

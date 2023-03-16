@@ -1,19 +1,11 @@
-package com.github.lujs.model;
+package com.github.lujs.model.query;
 
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 
 @Data
-public class MaInfoQuery {
-    /**
-     * 小程序APPID
-     */
-    @NotEmpty(message = "appId不为空")
-    private String appId;
-
-    @NotEmpty(message = "sessionKey不为空")
-    private String sessionKey;
+public class MaPhoneQuery {
 
     @NotEmpty(message = "encryptedData不为空")
     private String encryptedData;
@@ -21,6 +13,7 @@ public class MaInfoQuery {
     @NotEmpty(message = "iv不为空")
     private String iv;
 
+    private String sessionKey;
     /**
      * 绑定手机号时必填
      */

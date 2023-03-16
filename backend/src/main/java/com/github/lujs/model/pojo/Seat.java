@@ -1,4 +1,4 @@
-package com.github.lujs.model;
+package com.github.lujs.model.pojo;
 
 import lombok.Data;
 

@@ -2,7 +2,7 @@ package com.github.lujs.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.lujs.mapper.TalentThirdMapper;
-import com.github.lujs.model.TalentThird;
+import com.github.lujs.model.pojo.TalentThird;
 import com.github.lujs.service.ITalentThirdService;
 import org.springframework.stereotype.Service;
 

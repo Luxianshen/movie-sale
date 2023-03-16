@@ -2,7 +2,6 @@ package com.github.lujs.controller.order;
 
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
@@ -17,8 +16,9 @@ import com.github.lujs.commmon.config.WxPayConfiguration;
 import com.github.lujs.controller.request.OrderSaveRequest;
 import com.github.lujs.controller.request.OrderUploadRequest;
 import com.github.lujs.controller.util.WechatUtil;
-import com.github.lujs.model.Order;
-import com.github.lujs.model.OrderDetail;
+import com.github.lujs.model.enums.OrderState;
+import com.github.lujs.model.pojo.Order;
+import com.github.lujs.model.pojo.OrderDetail;
 import com.github.lujs.model.Result;
 import com.github.lujs.service.IOrderDetailService;
 import com.github.lujs.service.IOrderService;
@@ -69,23 +69,25 @@ public class OrderController {
         order.init();
         OrderDetail orderDetail = new OrderDetail();
         orderDetail.init();
-        orderDetail.setOrderId(order.getId()).setCinemaName(request.getCinemaName()).setCinemaAddress(request.getCinemaAddress())
-                .setBuyNum(request.getBuyNum()).setPrice(price).setSeatInfo(request.getSeatInfo()).setHallName(request.getHallName());
+        orderDetail.setCinemaName(request.getCinemaName()).setCinemaAddress(request.getCinemaAddress())
+                .setBuyNum(request.getBuyNum()).setPrice(price).setSeatInfo(request.getSeatInfo()).setHallName(request.getHallName())
+                .setShowTime(request.getShowTime());
 
         BigDecimal total = NumberUtil.round(price.multiply(new BigDecimal(buyNum)), 2);
-        order.setOrderState(0).setOrderType(0).setUserId(token.getId()).setUserMobile(token.getPhone())
+        order.setOrderState(OrderState.CREATE).setOrderType(0).setUserId(token.getId()).setUserMobile(token.getPhone())
                 .setActualAmount(total).setCouponAmount(new BigDecimal(0)).setPayType(0)
                 .setTotalAmount(total).setTransactionId(IdWorker.getIdStr());
 
-        orderService.createOrder(order, orderDetail);
-        return Result.succeed(order.getId().toString());
+        //todo 比对票价
+
+        return Result.succeed(orderService.createOrder(order, orderDetail).toString());
     }
 
     @PostMapping("/payOrder/{orderId}")
     public Result<Map<String, String>> payOrder(@Token CzToken token, @PathVariable("orderId") Long orderId, HttpServletRequest request) {
 
         Order byId = orderService.getById(orderId);
-        if (ObjectUtil.isNotNull(byId) && byId.getOrderState().equals(0)) {
+        if (ObjectUtil.isNotNull(byId) && byId.getOrderState().equals(OrderState.CREATE)) {
             WxPayService wxPayService = payConfiguration.wxPayService();
             //调起微信支付 必传下面参数
             WxPayUnifiedOrderRequest apiRequest = new WxPayUnifiedOrderRequest();
@@ -111,6 +113,9 @@ public class OrderController {
                 //返回成功
                 Map<String, String> resultMap = WechatUtil.weChatPayInfo(result.getPrepayId(), wxPayService.getConfig().getAppId(), wxPayService.getConfig().getMchKey(),
                         apiRequest.getNonceStr(), apiRequest.getOutTradeNo());
+                byId.setOrderState(OrderState.TO_PAY);
+                byId.setUpdateTime(new Date());
+                orderService.updateById(byId);
                 return Result.succeed(resultMap);
             } catch (WxPayException e) {
                 log.error("【TbPeccOrderServiceImpl - buildOrder】error: {}", e.getMessage(), e);

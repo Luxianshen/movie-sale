@@ -1,8 +1,7 @@
 package com.github.lujs.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.github.lujs.model.Order;
-import com.github.lujs.model.OrderDetail;
+import com.github.lujs.model.pojo.OrderDetail;
 
 /**
  * @author Lujs

@@ -93,6 +93,13 @@ export default class Person extends Component {
       url: '../user/user'
     })
   }
+  
+  navigateToOrderList(){
+    Taro.navigateTo({
+      url:'../orderList/orderList'
+    })
+  }
+  
   render() {
     return (
     <view>
@@ -111,7 +118,7 @@ export default class Person extends Component {
           <View className="tip">我的订单</View>
         </View>
         <View className="list">
-          <View className="movie">
+          <View className="movie" onClick = {this.navigateToOrderList.bind(this)}>
             <Image src={moviePng}></Image>
             <Text className="item">电影</Text>
           </View>

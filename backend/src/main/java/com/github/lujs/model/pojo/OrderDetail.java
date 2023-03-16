@@ -1,4 +1,4 @@
-package com.github.lujs.model;
+package com.github.lujs.model.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.Version;
@@ -44,6 +44,11 @@ public class OrderDetail extends BaseEntity {
      * 放映厅名称
      */
     private String hallName;
+
+    /**
+     * 开始时间
+     */
+    private String showTime;
 
     /**
      * 购买票数

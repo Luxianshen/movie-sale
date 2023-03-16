@@ -1,10 +1,11 @@
-package com.github.lujs.model;
+package com.github.lujs.model.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.Version;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.github.lujs.commmon.BaseEntity;
+import com.github.lujs.model.enums.OrderState;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -46,7 +47,7 @@ public class Order extends BaseEntity {
     /**
      * 订单状态 (-15=已退款 -10=退款进行中 -5=已取消 0=待支付 5=待使用 10=已核销 15=已评价)
      */
-    private Integer orderState;
+    private OrderState orderState;
 
     /**
      * 订单总金额

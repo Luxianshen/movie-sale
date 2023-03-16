@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.lujs.mapper.OrderMapper">
+
+
+    <select id="myOrderPage" resultType="com.github.lujs.model.page.CzOrderPage">
+        SELECT
+            o.id,
+            o.order_state,
+            o.actual_amount,
+            o.create_time,
+            d.cinema_name,
+            d.hall_name,
+            d.show_time,
+            d.seat_info
+        FROM
+            tb_order o
+                LEFT JOIN tb_order_detail d ON o.id = d.order_id
+        WHERE
+            o.user_id = #{userId}
+    </select>
+
+</mapper>

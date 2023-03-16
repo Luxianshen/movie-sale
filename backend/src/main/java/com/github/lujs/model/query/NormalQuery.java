@@ -1,4 +1,4 @@
-package com.github.lujs.model;
+package com.github.lujs.model.query;
 
 import lombok.Data;
 

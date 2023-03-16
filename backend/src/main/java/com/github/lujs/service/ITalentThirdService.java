@@ -1,7 +1,7 @@
 package com.github.lujs.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.github.lujs.model.TalentThird;
+import com.github.lujs.model.pojo.TalentThird;
 
 /**
  * @author Lujs

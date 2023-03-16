@@ -189,29 +189,25 @@ export default class Toptab extends Component{
               success: res => {
                 let latitude = res.latitude
                 let longitude = res.longitude
-                let url = "https://api.map.baidu.com/geocoder/v2/";
-                let params = {
-                  ak: "h4uqXwClsa84XjNKvS4******", //免费去百度地图上申请一个
-                  output: "json",
-                  location: latitude + "," + longitude
-                }
-                wx.request({
-                  url: url,
-                  data: params,
-                  success: function (res1) {
-                    if (res1.errMsg == "request:ok") { // 获取位置信息成功
-                      wx.setStorageSync('location', res1);
-                      wx.setStorageSync('openAdd', true);
-                      wx.showToast({
-                        title: '授权成功',
-                      })
-                    } else {
-                      wx.showToast({
-                        title: '授权失败，请从新授权',
-                        icon: 'none'
-                      })
-                    }
-                  },
+                
+                let token = Taro.getStorageSync("token");
+                Taro.request({
+                  url: 'baseUrl/wx/refresh/'+res.latitude+'/'+res.longitude,
+                  method:"GET",
+                  header:{'token':token.token}
+                }).then(res=>{
+                  if(res.statusCode == 200){
+                   _this.state.name = res.data.data.cityName;
+                   Taro.setStorageSync("token",res.data.data);
+                   wx.showToast({
+                     title: '授权成功',
+                   })
+                  }else{
+                    wx.showToast({
+                      title: '授权失败，请从新授权',
+                      icon: 'none'
+                    })
+                  }
                 })
               }
             })

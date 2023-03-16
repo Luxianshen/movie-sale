@@ -1,4 +1,4 @@
-package com.github.lujs.model;
+package com.github.lujs.model.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.lujs.commmon.BaseEntity;

@@ -5,7 +5,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.IdUtil;
 import com.github.lujs.commmon.CzToken;
 import com.github.lujs.model.UserDto;
-import com.github.lujs.model.WxLocation;
+import com.github.lujs.model.pojo.WxLocation;
 import com.github.lujs.service.ITokenService;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;

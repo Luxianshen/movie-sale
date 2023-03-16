@@ -151,18 +151,6 @@ export default class Seat extends Component {
   }
   navigate(url) {
 
-     Taro.showModal({
-       title: '提示',
-       content: "",
-       success: function (res) {
-         if (res.confirm) {
-           console.log('用户点击确定')
-         } else if (res.cancel) {
-           console.log('用户点击取消')
-         }
-       }
-     })
-
     let item = this.state.item;
     let price = this.state.price;
     let buyNum = this.state.buySeat.length;
@@ -180,7 +168,7 @@ export default class Seat extends Component {
   componentDidMount() {
     this.initParams();
   }
- 
+
  render() {
 
     const show = this.state.item;
