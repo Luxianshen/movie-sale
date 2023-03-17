@@ -1,7 +1,11 @@
 package com.github.lujs.controller.order;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
@@ -16,10 +20,10 @@ import com.github.lujs.commmon.config.WxPayConfiguration;
 import com.github.lujs.controller.request.OrderSaveRequest;
 import com.github.lujs.controller.request.OrderUploadRequest;
 import com.github.lujs.controller.util.WechatUtil;
+import com.github.lujs.model.Result;
 import com.github.lujs.model.enums.OrderState;
 import com.github.lujs.model.pojo.Order;
 import com.github.lujs.model.pojo.OrderDetail;
-import com.github.lujs.model.Result;
 import com.github.lujs.service.IOrderDetailService;
 import com.github.lujs.service.IOrderService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
@@ -54,6 +59,12 @@ public class OrderController {
 
     @Value("${domain}")
     private String domain;
+
+    @Value("${fileSavePath}")
+    private String fileSavePath;
+
+    @Value("${fileVisitPath}")
+    private String fileVisitPath;
 
     /**
      * 创建订单
@@ -96,7 +107,7 @@ public class OrderController {
             apiRequest.setAppid(wxPayService.getConfig().getAppId());
             apiRequest.setMchId(wxPayService.getConfig().getMchId());
             apiRequest.setOutTradeNo(byId.getTransactionId());
-            apiRequest.setTotalFee(NumberUtil.round(byId.getActualAmount().multiply(new BigDecimal(100)),0).intValue());
+            apiRequest.setTotalFee(NumberUtil.round(byId.getActualAmount().multiply(new BigDecimal(100)), 0).intValue());
             apiRequest.setSpbillCreateIp(request.getRemoteAddr());
             apiRequest.setTradeType("JSAPI");
             apiRequest.setNonceStr(IdWorker.getIdStr());
@@ -154,18 +165,17 @@ public class OrderController {
      * @return
      */
     @PostMapping("uploadTicketCode")
-    public Result<Void> uploadTicketCode(@Token CzToken token, OrderUploadRequest request) {
+    public Result<Void> uploadTicketCode(@Token CzToken token, @Valid @RequestBody OrderUploadRequest request) {
 
         OrderDetail byId = orderDetailService.getByOrderId(request.getOrderId());
         if (ObjectUtil.isNotNull(byId)) {
-            if (ObjectUtil.isNotEmpty(request.getTicketCode()))
-                byId.setTicketCode(request.getTicketCode());
-            if (ObjectUtil.isNotEmpty(request.getTicketNum()))
-                byId.setTicketNum(request.getTicketNum());
-            if (ObjectUtil.isNotEmpty(request.getTicketPic()))
-                byId.setTicketPic(request.getTicketPic());
+            String filePosition = fileSavePath + DateUtil.now() + RandomUtil.randomString(10) + ".jpg";
+            String visitUrl = domain + fileVisitPath + filePosition;
+            QrCodeUtil.generate(request.getTicketCode(), 300, 300, FileUtil.file(filePosition));
             byId.setUpdateTime(new Date());
             byId.setUploadTime(new Date());
+            byId.setTicketCode(request.getTicketCode());
+            byId.setTicketPic(visitUrl);
             orderService.updateOrderFinish(byId);
             return Result.succeed();
         }

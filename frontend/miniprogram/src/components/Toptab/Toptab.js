@@ -85,33 +85,13 @@ export default class Toptab extends Component{
   appendToList(){
 
   }
-  getFutureMovies(){
-    let self = this;
-    let offset = this.state.offset;
-    let expectData = self.state.expectData
-    let ci = self.state.id;
-    Taro.request({
-      url:`https://m.maoyan.com/ajax/mostExpected?ci=${ci}&limit=10&offset=${offset}&token=`,
-      method:'GET'
-    }).then(res=>{
-      if(res.statusCode == 200){
-        let data = res.data.coming;
-        offset +=10;
-        self.setState({
-          expectData:expectData.concat(data),
-          offset:offset
-        });
-      }
-    })
-  }
   do(){
-    //this.getFutureMovies();
+   
   }
   componentDidMount(){
     this.getNowCity();
     this.autoLogin();
     this.getMoviesOnList();
-    //this.getFutureMovies();
     this.getLocation();
   }
   getNowCity(){
@@ -189,7 +169,7 @@ export default class Toptab extends Component{
               success: res => {
                 let latitude = res.latitude
                 let longitude = res.longitude
-                
+
                 let token = Taro.getStorageSync("token");
                 Taro.request({
                   url: 'baseUrl/wx/refresh/'+res.latitude+'/'+res.longitude,
@@ -204,7 +184,7 @@ export default class Toptab extends Component{
                    })
                   }else{
                     wx.showToast({
-                      title: '授权失败，请从新授权',
+                      title: '授权失败，请重新授权',
                       icon: 'none'
                     })
                   }
@@ -214,7 +194,7 @@ export default class Toptab extends Component{
           } else {
             // 没有允许定位权限
             wx.showToast({
-              title: '您拒绝了定位权限，请从新授权',
+              title: '您拒绝了定位权限，请重新授权',
                           icon: 'none'
                         });
                       }

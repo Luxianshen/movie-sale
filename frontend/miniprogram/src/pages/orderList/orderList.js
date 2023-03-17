@@ -130,24 +130,24 @@ export default class OrderList extends Component {
         lowerThreshold='20'
       >
 
-        <View className="orderContainer">
-
+        <View className="orderContainer" hidden={orders.length>0?false:true}>
         {orders.map(item =>{
           return(
             <View className="orderItem" key={item.id} >
               <View className="leftOrders">
+              <View className="orderId">订单编号:   {item.id}</View>
                 <View className="orderName">{item.cinemaName}
-                <Text className="price">厅号:{item.hallName}</Text>
                 </View>
-                <View className="orderAddr">位置:{item.seatInfo}</View>
-                <View className="orderAddr">开场时间:{item.showTime}</View>
+                <View className="orderHallName">厅号:   {item.hallName}
+                </View>
+                <View className="orderAddr">位置:   {item.seatInfo}</View>
+                <View className="orderAddr">开场时间:   {item.showTime}</View>
                 <View className="orderTag">
-                 <Text hidden={item.orderState == 2 ? false : true}>出票中...</Text>
-                 <View className="operate"  onClick={this.showQrCode.bind(this,item.ticketPic)} >
-                   <view className="preBuy" hidden={item.orderState == 3 ? false : true}>兑票码</view>
-                 </View>
-                 <View className="operate"  onClick={this.payOrder.bind(this,item.id)} >
-                   <view className="buyTicket" hidden={item.orderState == 1?false:true} >支付订单</view>
+                 <View className="operate">
+                   <View className="waitCode" hidden={item.orderState == 2?false:true}  >出票中</View>
+                   <View className="closeOrder" hidden={item.orderState < 2?false:true} onClick={this.payOrder.bind(this,item.id)} >关闭订单</View>
+                   <View className="buyTicket" hidden={item.orderState == 1?false:true} onClick={this.payOrder.bind(this,item.id)} >支付订单</View>
+                   <View className="preBuy" hidden={item.orderState == 3 ? false : true} onClick={this.showQrCode.bind(this,item.id)}>兑票码</View>
                  </View>
                 </View>
               </View>
@@ -155,6 +155,8 @@ export default class OrderList extends Component {
           )})
         }
         </View>
+
+        <Text hidden={orders.length==0?false:true}>暂无记录呢</Text>
       </ScrollView>
     )
   }

@@ -106,10 +106,15 @@
     border-bottom:1px solid #b0b0b0;
     .leftOrders{
       flex:1;
+      .orderId{
+        font-size: 0.7rem;
+        color: #666;
+        margin-bottom: 10px;
+      }
       .orderName{
         height: 40px;
         line-height: 40px;
-        font-size: 0.9rem;
+        font-size: 1rem;
         color: #000;
         overflow: hidden;
         text-overflow:ellipsis;
@@ -123,10 +128,21 @@
           font-size: 0.6rem;
         }
       }
+      .orderHallName{
+        height: 40px;
+        line-height: 40px;
+        font-size: 0.9rem;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+        color: #f03d37;
+        font-size: 1rem;
+        margin-top: 10px;
+      }
       .orderAddr{
-        font-size: 0.7rem;
+        font-size: 0.8rem;
         color: #666;
-        margin-top:25px;
+        margin-top:20px;
       }
       .orderDiscount{
         color: #999;
@@ -142,28 +158,16 @@
         }
       }
       .orderTag{
-        .tag,.other{
-          display: inline-block;
-          margin-right:8px;
-          font-size: 0.6rem;
-          border-radius: 8px;
-        }
-        .tag{
-          color: #f90;
-          border: 1px solid #f90;
-        }
-        .other{
-          color: #59c0f8;
-          border: 1px solid #59c0f8;
-        }
         .operate{
+          pointer-events:none;
           display: flex;
           flex:1;
           height: 100%;
-          justify-content: flex-end;
+          justify-content: flex-start;
           align-items: center;
-          .buyTicket,.preBuy{
-            width: 47Px;
+          margin-top:10px;
+          .buyTicket,.preBuy,.closeOrder,.waitCode{
+            width: 55Px;
             height: 27Px;
             line-height: 27Px;
             text-align: center;
@@ -172,12 +176,19 @@
             white-space: nowrap;
             font-size: 12Px;
             cursor: pointer;
+            margin-left: 10px;
           }
           .buyTicket{
             background-color: #000000;
           }
           .preBuy{
             background-color: #3c9fe6;
+          }
+          .closeOrder{
+            background-color: #6666c4;
+          }
+          .waitCode{
+            background-color: rgba(0,0,0,.5);
           }
         }
       }

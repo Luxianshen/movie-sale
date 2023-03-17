@@ -2,6 +2,8 @@ package com.github.lujs.controller.request;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
+
 /**
  * @author Lujs
  * @desc TODO
@@ -18,16 +20,7 @@ public class OrderUploadRequest {
     /**
      * 兑换code 生成二维码
      */
+    @NotEmpty
     private String ticketCode;
-
-    /**
-     * 兑换码
-     */
-    private String ticketNum;
-
-    /**
-     * 二维码照片
-     */
-    private String ticketPic;
 
 }
