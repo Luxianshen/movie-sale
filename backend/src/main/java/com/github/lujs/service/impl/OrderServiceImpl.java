@@ -66,7 +66,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public Page<CzOrderPage> myOrderPage(Long userId, Integer offset) {
 
         Page<CzOrderPage> page = new Page<>();
-        page.setPages(offset);
+        page.setCurrent(offset);
         baseMapper.myOrderPage(page, userId);
 
         return page;

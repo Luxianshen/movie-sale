@@ -1,172 +1,97 @@
-.navHeader{
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 47Px;
-  background-color: #f5f5f5;
-  border-bottom:1Px solid #f8f8f8;
-  color: #666;
-  & .location{
-    width:15%;
-    height:47Px;
-    line-height: 47Px;
-    font-size: 0.8rem;
-    padding-left:50px;
-    .tangle{
-      width: 0;
-      height: 0;
-      border: 4Px solid #b0b0b0;
-      border-left-color: transparent;
-      border-right-color: transparent;
-      border-bottom-color: transparent;
-      display: inline-block;
-      margin-left: 4px;
-      margin-top: 5px;
-    }
-  }
-  & .search{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width: 70%;
-    height: 27Px;
-    line-height: 27Px;
-    margin: 10Px 0;
-    background-color: #fff;
-    border-radius: 0.4rem;
-    border: 3px solid #e6e6e6;
-    Image{
-      width: 27px;
-      height: 27px;
-    }
-    Text{
-      color: #b2b2b2;
-      font-size: 0.65rem;
-      padding-left:0.2rem;
-    }
-  }
+.container.order-list-page {
+  width: 100vw;
+  min-height: 100vh;
+  background: #f0f0f0;
+  padding-bottom: 50rpx;
+  box-sizing: border-box;
 }
-.ToolBar{
-  position:relative;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-  height: 40Px;
+
+.order-list-page .order-item {
   background-color: #fff;
-  border-top: 2px solid #f8f8f8;
-  border-bottom: 2px solid #f8f8f8;
-   .active{
-    color: #f03d37 !important;
-    border-bottom: 2px solid #f03d37 !important;
-  }
-  .selectItem{
-    flex: 1;
-    height: 20Px;
-    text-align: center;
-    line-height: 20Px;
-    color:#777;
-    margin:10Px 0;
-    border-right: 2px solid #eee;
-    font-size: 0.65rem;
-    .tangle{
-      width: 0;
-      height: 0;
-      border: 4Px solid #b0b0b0;
-      border-left-color: transparent;
-      border-right-color: transparent;
-      border-bottom-color: transparent;
-      display: inline-block;
-      margin-left: 4px;
-      margin-top: 5px;
-    }
-  }
-  .actived{
-    color: #f03d37 !important;
-    .tangle{
-      width: 0;
-      height: 0;
-      border: 4Px solid #f03d37 !important;
-      border-left-color: transparent;
-      border-right-color: transparent;
-      border-top-color: transparent;
-      display: inline-block;
-      margin-top:-20px;
-      margin-left: 4px;
-    }
-  }
+  margin-bottom: 20rpx;
 }
-.orderContainer{
-  .orderItem{
-    display: flex;
-    flex-direction: row;
-    margin-left: 25px;
-    padding:23px 25px 23px 0px;
-    border-bottom:1px solid #b0b0b0;
-    .leftOrders{
-      flex:1;
-      .orderId{
-        font-size: 0.7rem;
-        color: #666;
-        margin-bottom: 10px;
-      }
-      .orderName{
-        height: 40px;
-        line-height: 40px;
-        font-size: 1rem;
-        color: #000;
-        overflow: hidden;
-        text-overflow:ellipsis;
-        white-space: nowrap;
-        .price{
-          color: #f03d37;
-          font-size: 1rem;
-        }
-        .smallText{
-          color: #f03d37;
-          font-size: 0.6rem;
-        }
-      }
-      .orderHallName{
-        height: 40px;
-        line-height: 40px;
-        font-size: 0.9rem;
-        overflow: hidden;
-        text-overflow:ellipsis;
-        white-space: nowrap;
-        color: #f03d37;
-        font-size: 1rem;
-        margin-top: 10px;
-      }
-      .orderAddr{
-        font-size: 0.8rem;
-        color: #666;
-        margin-top:20px;
-      }
-      .orderDiscount{
-        color: #999;
-        font-size: 0.65rem;
-        margin-top:15px;
-        .card{
-          font-size:0.5rem;
-          background-color:#59c0f8;
-          color: #fff;
-          padding: 5px;
-          border-radius: 5px;
-          margin-right:8px;
-        }
-      }
-      .orderTag{
-        .operate{
-          pointer-events:none;
-          display: flex;
-          flex:1;
-          height: 100%;
-          justify-content: flex-start;
-          align-items: center;
-          margin-top:10px;
-          .buyTicket,.preBuy,.closeOrder,.waitCode{
+
+.order-list-page .order-title {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 30rpx 20rpx 0;
+  margin-left: 30rpx;
+  color: #666;
+  font-size: 28rpx;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.order-list-page .triangle {
+  width: 16rpx;
+  height: 16rpx;
+  border-left: 1px solid #999;
+  border-top: 1px solid #999;
+  margin-left: 5rpx;
+  transform: rotate(135deg) scale(0.8);
+}
+
+.order-list-page .order-info {
+  position: relative;
+  display: flex;
+  padding: 20rpx 30rpx 20rpx 0;
+  margin-left: 30rpx;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.order-list-page .order-info image {
+  width: 114rpx;
+  height: 160rpx;
+}
+
+.order-list-page .order-desc {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  justify-content: space-around;
+  margin-left: 24rpx;
+  padding: 20rpx 0;
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* showTime不继承order-desc？ */
+
+.order-list-page .showTime, .position {
+  /* 不继承上面的font-size，所以重新写 */
+  font-size: 24rpx;
+}
+
+.order-list-page .order-desc .delete-box {
+  /* 多写一个box的原因是增大点击面积 */
+  position: absolute;
+  padding: 30rpx;
+  top: 0;
+  right: 0;
+}
+
+.order-list-page .delete-box .delete {
+  font-size: 30rpx;
+  color: #999;
+}
+
+.order-list-page .movie-name {
+  font-size: 30rpx;
+  width: 80%;
+  color: #333;
+}
+
+.order-list-page .order-more {
+  display: flex;
+  justify-content: space-between;
+  padding: 20rpx 30rpx;
+  font-size: 28rpx;
+  color: #999;
+}
+.money{
+
+}
+.buyTicket,.preBuy,.closeOrder,.waitCode{
+            float: right;
             width: 55Px;
             height: 27Px;
             line-height: 27Px;
@@ -190,25 +115,12 @@
           .waitCode{
             background-color: rgba(0,0,0,.5);
           }
-        }
-      }
-      .orderRecent{
-        color: #777;
-        font-size:0.6rem;
-        margin-top:15px;
-      }
+
+ .things{
+   
+    .title{
+      font-size: 1.5rem;
+      padding: 20px 15px;
+      border-bottom: 1px solid #f0f0f0;
     }
-    .orderDis{
-      display: flex;
-      font-size: 0.65rem;
-      color: #666;
-      justify-content:center;
-      align-items:center;
     }
-  }
-}
-::-webkit-scrollbar {
- width: 0;
- height: 0;
- color: transparent;
-}

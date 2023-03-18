@@ -63,7 +63,7 @@ public class IndexController {
         String cacheKey = DEFAULT_PREFIX + token.getCityCode() + showId + token.getId();
         if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)))
             return redisTemplate.opsForValue().get(cacheKey);
-        String detail = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/film/detail", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=" + token.getLat() + "&longitude=" + token.getLat() + "&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&showId=" + showId);
+        String detail = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/film/detail", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=" + token.getLat() + "&longitude=" + token.getLat() + "&cityId=" + token.getCityId() + "&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&showId=" + showId);
         if (!detail.equals(FAIL_STR))
             redisTemplate.opsForValue().set(cacheKey, detail, DateUtil.between(new Date(), DateUtil.endOfDay(new Date()), DateUnit.MINUTE), TimeUnit.MINUTES);
         return detail;
@@ -77,12 +77,18 @@ public class IndexController {
                            @PathVariable("dateStr") String dateStr, @RequestBody NormalQuery query) {
 
         String cacheKey = DEFAULT_PREFIX + token.getCityCode() + showId + dateStr + query.getArea() + query.getBrand() + query.getOffset() + token.getId();
+
+        String schedule;
         if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)))
-            return redisTemplate.opsForValue().get(cacheKey);
-        String schedule = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/schedule/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=" + token.getLat() + "&longitude=" + token.getLon() + "&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&cityCode=" + token.getCityCode() + "&page=" + query.getOffset() + "&limit=20&showId="
-                + showId + "&date=" + dateStr + "&area=" + query.getArea() + "&brand=" + query.getBrand() + "&cinemaOrAddress=");
-        if (!schedule.equals(FAIL_STR))
-            redisTemplate.opsForValue().set(cacheKey, schedule, DateUtil.between(new Date(), DateUtil.endOfDay(new Date()), DateUnit.MINUTE), TimeUnit.MINUTES);
+            schedule = redisTemplate.opsForValue().get(cacheKey);
+        else {
+            schedule = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/schedule/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=" + token.getLat() + "&longitude=" + token.getLon() + "&cityId=" + token.getCityId() + "&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&cityCode=" + token.getCityCode() + "&page=" + query.getOffset() + "&limit=20&showId="
+                    + showId + "&date=" + dateStr + "&area=" + query.getArea() + "&brand=" + query.getBrand() + "&cinemaOrAddress=");
+
+            if (!schedule.equals(FAIL_STR))
+                redisTemplate.opsForValue().set(cacheKey, schedule, DateUtil.between(new Date(), DateUtil.endOfDay(new Date()), DateUnit.MINUTE), TimeUnit.MINUTES);
+        }
+
         return schedule;
     }
 
@@ -94,7 +100,7 @@ public class IndexController {
         String cacheKey = DEFAULT_PREFIX + "query:" + token.getCityCode() + token.getId();
         if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)))
             return redisTemplate.opsForValue().get(cacheKey);
-        String query = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/region/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=" + token.getLat() + "&longitude=" + token.getLon() + "&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&cityCode=" + token.getCityCode());
+        String query = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/region/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=" + token.getLat() + "&longitude=" + token.getLon() + "&cityId=" + token.getCityId() + "&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&cityCode=" + token.getCityCode());
         if (!query.equals(FAIL_STR))
             redisTemplate.opsForValue().set(cacheKey, query, DateUtil.between(new Date(), DateUtil.endOfDay(new Date()), DateUnit.MINUTE), TimeUnit.MINUTES);
         return query;
@@ -110,7 +116,7 @@ public class IndexController {
         if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)))
             return redisTemplate.opsForValue().get(cacheKey);
         if ("123".equals(movieId)) movieId = "";
-        String cinemas = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/schedule/schedules-list-qmm", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=" + token.getLat() + "&longitude=" + token.getLon() + "&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&cinemaId=" + cinemaId + "&movieId=" + movieId);
+        String cinemas = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/schedule/schedules-list-qmm", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=" + token.getLat() + "&longitude=" + token.getLon() + "&cityId=" + token.getCityId() + "&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&cinemaId=" + cinemaId + "&movieId=" + movieId);
         if (!cinemas.equals(FAIL_STR))
             redisTemplate.opsForValue().set(cacheKey, cinemas, DateUtil.between(new Date(), DateUtil.endOfDay(new Date()), DateUnit.MINUTE), TimeUnit.MINUTES);
         return cinemas;
@@ -122,7 +128,7 @@ public class IndexController {
     @GetMapping("/seat/{cinemaName}/{showId}")
     public String seat(@PathVariable("cinemaName") String cinemaName, @PathVariable("showId") String showId) {
 
-        String seat = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/seat-plan/from-qmm", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&cinemaName=" + cinemaName + "&showId=" + showId);
+        String seat = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/seat-plan/from-qmm", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=&longitude=&cityId=&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&cinemaName=" + cinemaName + "&showId=" + showId);
         Response response = JSONUtil.toBean(seat, Response.class);
         SeatData seatData = JSONUtil.toBean(((JSONObject) response.getData()).getStr("seatData"), SeatData.class);
         Map<String, List<Seat>> collect = seatData.getSeats().stream().collect(Collectors.groupingBy(Seat::getRowNo));
@@ -139,7 +145,7 @@ public class IndexController {
         String cacheKey = DEFAULT_PREFIX + "house" + location.getCityCode();
         if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)))
             return redisTemplate.opsForValue().get(cacheKey);
-        String post = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/region/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=&longitude=&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&cityCode=" + location.getCityCode());
+        String post = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/region/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=&longitude=&cityId=&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&cityCode=" + location.getCityCode());
         if (!post.equals(FAIL_STR))
             redisTemplate.opsForValue().set(cacheKey, post, DateUtil.between(new Date(), DateUtil.endOfDay(new Date()), DateUnit.MINUTE), TimeUnit.MINUTES);
         return post;
@@ -152,7 +158,7 @@ public class IndexController {
         if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)))
             return redisTemplate.opsForValue().get(cacheKey);
 
-        String cinemaList = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/cinema/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=27164025&latitude=" + token.getLat() + "&longitude=" + token.getLon() + "&cityId=8&evnType=h5&envType=h5&userUUID=afab2bd7a7984fc18231f8619ce7a11c&v=&isCouponPop=&cityCode=440100&ci=8&page=" + query.getOffset() + "&limit=20&area=" + query.getArea() + "&brand=" + query.getBrand());
+        String cinemaList = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/cinema/query", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=27164025&latitude=" + token.getLat() + "&longitude=" + token.getLon() + "&cityId=" + token.getCityId() + "&evnType=h5&envType=h5&userUUID=afab2bd7a7984fc18231f8619ce7a11c&v=&isCouponPop=&cityCode=440100&ci=8&page=" + query.getOffset() + "&limit=20&area=" + query.getArea() + "&brand=" + query.getBrand());
         if (!cinemaList.equals(FAIL_STR))
             redisTemplate.opsForValue().set(cacheKey, cinemaList, DateUtil.between(new Date(), DateUtil.endOfDay(new Date()), DateUnit.MINUTE), TimeUnit.MINUTES);
         return cinemaList;
@@ -162,13 +168,13 @@ public class IndexController {
     /**
      * 搜索
      */
-    @GetMapping("/search/{key}/{cityId}")
-    public String search(HttpServletRequest request, @Token CzToken token, @PathVariable("key") String key, @PathVariable("cityId") String cityId) {
+    @GetMapping("/search/{key}")
+    public String search(HttpServletRequest request, @Token CzToken token, @PathVariable("key") String key) {
 
         String cacheKey = DEFAULT_PREFIX + "search" + key + token.getId();
         if (Boolean.TRUE.equals(redisTemplate.hasKey(cacheKey)))
             return redisTemplate.opsForValue().get(cacheKey);
-        String search = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/cinema/queryCinema", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=" + token.getLat() + "&longitude=" + token.getLon() + "&cityId=8&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&kw=" + key);
+        String search = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/cinema/queryCinema", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=" + token.getLat() + "&longitude=" + token.getLon() + "&cityId=" + token.getCityId() + "&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&kw=" + key);
         if (!search.equals(FAIL_STR))
             redisTemplate.opsForValue().set(cacheKey, search, DateUtil.between(new Date(), DateUtil.endOfDay(new Date()), DateUnit.MINUTE), TimeUnit.MINUTES);
         return search;

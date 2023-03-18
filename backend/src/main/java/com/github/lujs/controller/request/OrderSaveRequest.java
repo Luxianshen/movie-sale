@@ -21,6 +21,16 @@ public class OrderSaveRequest {
     private String cinemaAddress;
 
     /**
+     * 电影名称
+     */
+    private String movieName;
+
+    /**
+     * 电影照片
+     */
+    private String movieImg;
+
+    /**
      * 电影开始时间
      */
     private String showTime;

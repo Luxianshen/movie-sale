@@ -60,6 +60,9 @@ export default class Detail extends Component {
     let area = this.state.area;
     let brand = this.state.brand;
     let token = Taro.getStorageSync("token");
+    Taro.showLoading({
+      title:"加载中"
+    });
     Taro.request({
       url: `baseUrl/index/schedule/${this.state.params.id}/${this.state.queryDates[this.state.active]}`,
       method: "POST",
@@ -72,10 +75,10 @@ export default class Detail extends Component {
     }).then(res => {
 
       if (res.statusCode == 200) {
+        Taro.hideLoading();
         let data = res.data.data;
         if (typeof(data.list) != 'undefined') {
           if (this.state.offset < 2) {
-
             this.state.offset = 2;
             this.setState({
               cinemas: data.list
@@ -110,6 +113,7 @@ export default class Detail extends Component {
       if(res.statusCode == 200){
         Taro.hideLoading();
         let data = res.data.data;
+        Taro.setStorageSync("cityId",data.area[0].cityId);
         this.setState({
           areaData:data.area,
           brandData:data.brand

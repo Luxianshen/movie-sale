@@ -3,12 +3,15 @@ package com.github.lujs.util;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.github.lujs.model.pojo.WxLocation;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.nio.charset.Charset;
 
 @Slf4j
 public class LocationUtil {
@@ -25,6 +28,7 @@ public class LocationUtil {
         wxLocation.setLat("23.01234");
         wxLocation.setCityName("广州市");
         wxLocation.setCityCode("440100");
+        wxLocation.setCityId(8);
         if ("1".equals(result.getStr("status")) && !"[]".equals(result.getStr("rectangle"))) {
 
             String[] rectangles = result.getStr("rectangle").split(";");
@@ -35,6 +39,7 @@ public class LocationUtil {
                 wxLocation.setLat(NumberUtil.roundStr((Double.parseDouble(location1[1]) + Double.parseDouble(location2[1])) / 2, 6));
                 wxLocation.setCityName(result.getStr("city"));
                 wxLocation.setCityCode(result.getStr("adcode"));
+                wxLocation.setCityId(getCityId(result.getStr("adcode")));
             }
 
         }
@@ -59,9 +64,22 @@ public class LocationUtil {
             wxLocation.setLon(lon);
             wxLocation.setCityName(ObjectUtil.isEmpty(city) ? province : city);
             wxLocation.setCityCode(adcode);
-            System.out.println("123");
+            wxLocation.setCityId(getCityId(adcode));
         }
         return wxLocation;
+    }
+
+
+    private static Integer getCityId(String adcode){
+
+        JSONArray array = JSONUtil.readJSONArray(new File("/Users/lulu/IdeaProjects/github/movie-sale/backend/doc/city.json"), Charset.defaultCharset());
+        for (Object x : array) {
+            JSONObject jsonObject = (JSONObject) x;
+            if (jsonObject.getStr("cityCode").equals(adcode)){
+                return jsonObject.getInt("cityId");
+            }
+        }
+        return 8;
     }
 
 }

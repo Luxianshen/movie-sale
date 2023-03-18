@@ -25,7 +25,13 @@ export default class Person extends Component {
       listItems: ["微信一键登录"]
     }
   }
-
+  componentDidShow() {
+     let token = Taro.getStorageSync("token");
+     if (typeof(token.phone) != 'undefined') {
+       this.state.currentTab ==1;
+       this.switchTab(1);
+     }
+  }
   componentDidMount() {
     let token = Taro.getStorageSync("token");
     if (typeof(token.phone) != 'undefined') {

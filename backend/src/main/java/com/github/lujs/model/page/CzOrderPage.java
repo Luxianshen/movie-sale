@@ -12,6 +12,18 @@ public class CzOrderPage {
 
     private Integer orderState;
 
+    /**
+     * 电影名称
+     */
+    private String movieName;
+
+    /**
+     * 电影照片
+     */
+    private String movieImg;
+
+    private Integer buyNum;
+
     private BigDecimal actualAmount;
 
     private Date createTime;

@@ -1,7 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View,Image,Text} from '@tarojs/components'
+import { View,Image,Text, Button} from '@tarojs/components'
 import './cinemaDetail.scss'
 import posPng from "../../assets/images/pos.png"
+import locationPng from "../../assets/images/location.png"
 export default class CinemasDetail extends Component {
   config={
     enablePullDownRefresh:false
@@ -24,7 +25,8 @@ export default class CinemasDetail extends Component {
       dates:[],
       dataList: {},
       showDateList:[],
-      dealList: []
+      dealList: [],
+      phoneButton: false
     }
   }
   getCinemaDetail(){
@@ -43,6 +45,9 @@ export default class CinemasDetail extends Component {
         title:"加载数据中"
       });
       let token = Taro.getStorageSync("token");
+      if(typeof(token.phone) != 'undefined'){
+        this.state.phoneButton = true;
+      }
       Taro.request({
         url:`baseUrl/index/cinemas/${cinemaId}/${movieId}`,
         method:'GET',
@@ -51,6 +56,7 @@ export default class CinemasDetail extends Component {
         if(res.statusCode == 200){
           Taro.hideLoading();
           let data = res.data.data;
+          this.state.showDateList = [];
           data.dates.map((item,index)=>{
             this.state.showDateList.push(this.formatDateString(item));
           });
@@ -99,6 +105,7 @@ export default class CinemasDetail extends Component {
     const cinemaName = this.state.cinemaData.cinemaName;
     const showId =  item.showId;
     const price = item.settlePrice>40? item.settlePrice-6:item.settlePrice-5;
+    item.bg =this.state.bg;
     const reqList = this.state.reqList;
     url = url+`?cinemaName=${cinemaName}&showId=${showId}&price=${price}&item=${encodeURIComponent(JSON.stringify(item))}`;
     Taro.navigateTo({
@@ -124,6 +131,48 @@ export default class CinemasDetail extends Component {
       return arr[weekday] + dateParam[1] + "月" + dateParam[2] + "日";
     }
   }
+  getTel = (e) => {
+    console.log(e.detail);
+    let self = this;
+    this.setState({
+      isNum: true
+    })
+    let {
+      encryptedData,
+      iv
+    } = e.detail;
+
+    if (e.detail.errMsg == "getPhoneNumber:ok") {
+      let code = e.detail.code;
+      let encryptedData = e.detail.encryptedData;
+      let iv = e.detail.iv;
+      let token = Taro.getStorageSync("token");
+      let sessionKey = token.sessionKey;
+
+      Taro.request({
+        url: 'baseUrl/wx/maBindPhone', //后端url
+        method: 'POST',
+        header: {
+          'token': token.token
+        },
+        data: {
+          code: code,
+          encryptedData: encryptedData,
+          iv: iv,
+          sessionKey: sessionKey
+        }
+      }).then(res => {
+        if (res.statusCode == '200') {
+          Taro.setStorageSync("token", res.data.data);
+          console.log(token);
+          this.state.phoneButton = true;
+          self.forceUpdate();
+        }
+      })
+    } else {
+    }
+  }
+
   render () {
     let movieIds = [];
     let cinemaData = this.state.movieData?this.state.cinemaData:{};
@@ -149,8 +198,21 @@ export default class CinemasDetail extends Component {
       }
     }
 
+
     if(typeof(dataList) == 'undefined'){
       dataList = [];
+    }else{
+      if(dataList.length > 0 && dataList[0].showDate == this.state.dates[0]){
+        debugger
+         let tempList = [];
+         dataList.map(item=>{
+             let flag = new Date(item.showTime)- Date.now()>1*60*60*1000;
+              if(flag){
+                tempList.push(item);
+              }
+         })
+         dataList = tempList;
+      }
     }
 
     //小吃
@@ -165,7 +227,7 @@ export default class CinemasDetail extends Component {
             <View className="addr">{cinemaData.address}</View>
           </View>
           <View className="locateIcon" onClick={this.navigateToMap.bind(this,"../map/map",cinemaData)}>
-            <Image src={cinemaData.pic}></Image>
+            <Image src={locationPng}></Image>
           </View>
         </View>
         <View className="showCon">
@@ -222,9 +284,12 @@ export default class CinemasDetail extends Component {
                       <View className="price"><Text className="mark">￥{item.settlePrice > 40? Math.floor(item.settlePrice*100-600)/100:Math.floor(item.settlePrice*100-500)/100}</Text> {item.settlePrice}</View>
                       <View className="discount">已减￥{item.settlePrice >40 ? 6:5}</View>
                   </View>
-                  <View className="button" onClick={this.navigateSeat.bind(this,'../seat/seat',item)}>
+                  <View className="button" hidden={!this.state.phoneButton} onClick={this.navigateSeat.bind(this,'../seat/seat',item)}>
                     购票
                   </View>
+                  <Button className="button" hidden={this.state.phoneButton} openType = 'getPhoneNumber' onGetPhoneNumber = {this.getTel}>
+                    登陆
+                  </Button>
                 </View>
               )
             })

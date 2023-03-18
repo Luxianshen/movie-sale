@@ -40,6 +40,7 @@ public class CzTokenService implements ITokenService {
         token.setToken(tokenKey);
         userDto.setLat(location.getLat());
         userDto.setLon(location.getLon());
+        userDto.setCityId(location.getCityId());
         userDto.setCityName(location.getCityName());
         userDto.setCityCode(location.getCityCode());
         //缓存token 后端userId

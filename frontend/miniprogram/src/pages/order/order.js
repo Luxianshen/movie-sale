@@ -43,11 +43,6 @@ export default class Map extends Component {
   createOrder(){
 
     let token = Taro.getStorageSync("token");
-    if(token.phone == ''){
-
-    }
-
-
    Taro.request({
      url: `baseUrl/order/createOrder`,
      method: 'POST',
@@ -58,7 +53,9 @@ export default class Map extends Component {
        showTime: this.state.item.showTime,
        buyNum: this.state.buyNum,
        price: this.state.price,
-       seatInfo: this.state.seatInfo
+       seatInfo: this.state.seatInfo,
+       movieName: this.state.item.filmName,
+       movieImg: this.state.item.bg
      },
      header: { 'token': token.token }
    }).then(res => {
@@ -71,6 +68,9 @@ export default class Map extends Component {
          header: { 'token': token.token }
        }).then(res => {
          debugger
+         Taro.redirectTo({
+           url:'../orderList/orderList'
+         })
          let payParams = res.data.data;
              wx.chooseWXPay({
                  timestamp: payParams.timestamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
@@ -87,7 +87,7 @@ export default class Map extends Component {
      }
    })
   }
- 
+
   componentDidMount () {
     this.initParams();
   }
@@ -100,8 +100,8 @@ export default class Map extends Component {
     return (
       <View className="order">
         <View className="timeDown">
-          支付剩余时间:
-          <View className="restTime">14:00</View>
+          请在15分钟内完成支付
+          <View className="restTime"></View>
         </View>
         <View className="movieInfo">
           <View className="movieName">{showData.filmName}</View>

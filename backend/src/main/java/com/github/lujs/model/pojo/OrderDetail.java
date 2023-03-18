@@ -41,6 +41,16 @@ public class OrderDetail extends BaseEntity {
     private String cinemaAddress;
 
     /**
+     * 电影名称
+     */
+    private String movieName;
+
+    /**
+     * 电影照片
+     */
+    private String movieImg;
+
+    /**
      * 放映厅名称
      */
     private String hallName;

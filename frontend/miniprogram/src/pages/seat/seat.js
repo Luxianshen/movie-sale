@@ -36,10 +36,13 @@ export default class Seat extends Component {
     const params = this.$router.params;
     const cinemaName = params.cinemaName;
     const showId = params.showId;
-    this.state.price = params.price;
-    this.state.cinemaName = cinemaName;
     let item = JSON.parse(decodeURIComponent(params.item));
-    this.state.item = item;
+
+    this.setState({
+      item: item,
+      price: params.price,
+      cinemaName: cinemaName
+    })
     const self = this;
     Taro.setNavigationBarTitle({
       title: cinemaName

@@ -1,6 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View,Text, Button} from '@tarojs/components'
 import './orderList.scss'
+import Nothing from "../../components/Nothing/Nothing";
 
 export default class OrderList extends Component {
   config = {
@@ -19,7 +20,8 @@ export default class OrderList extends Component {
       brandData:[],
       selectItems:[{nm:'全城',type:'brand'},{nm:'品牌',type:'special'}],
       offset:1,
-      orders:[]
+      orders:[],
+      loadFlag: true
     }
   }
 
@@ -42,7 +44,18 @@ export default class OrderList extends Component {
         Taro.hideLoading();
         let self = this;
         let data = res.data.data.records;
+
         if(typeof(data) != 'undefined'){
+          if(this.state.offset != 1 &&data.length == 0){
+            Taro.showToast({
+              title: '没有更多数据了',
+              icon: 'success',
+              duration: 2000
+            });
+            self.setState({
+              loadFlag:false
+            });
+          }
           if(typeof(self.state.orders) == 'undefined'){
             self.state.orders = [];
           }
@@ -58,12 +71,14 @@ export default class OrderList extends Component {
     })
   }
   loadMore(){
-    let self = this;
-    this.setState({
-      offset:self.state.offset+1
-    },()=>{
-      self.getOrderList();
-    })
+    if(this.state.loadFlag){
+      let self = this;
+      this.setState({
+        offset:self.state.offset+1
+      },()=>{
+        self.getOrderList();
+      })
+    }
   }
   componentDidMount () {
     this.getStorageData();
@@ -118,10 +133,38 @@ export default class OrderList extends Component {
     });
   }
 
+
+  warnOrder(){
+    Taro.showToast({
+      title: '订单出票需10-50分，请耐心等待',
+      icon: 'success',
+      duration: 2000
+    });
+  }
+  closeOrder(orderId){
+    let self = this;
+    let token = Taro.getStorageInfoSync('token');
+    Taro.request({
+      url: `baseUrl/order/closeOrder/${orderId}`,
+      method: 'GET',
+      header: { 'token': token.token }
+    }).then(res => {
+         if(res.statusCode == '200'){
+           Taro.showToast({
+             title: '订单删除成功！',
+             icon: 'success',
+             duration: 2000
+           });
+           self.forceUpdate();
+         }
+    });
+  }
+
   render () {
 
     let orders = this.state.orders ? this.state.orders :[];
     return (
+
       <ScrollView className='orders' scrollY
         scrollWithAnimation
         scrollTop='0'
@@ -129,34 +172,46 @@ export default class OrderList extends Component {
         onScrolltolower={this.loadMore.bind(this)}
         lowerThreshold='20'
       >
+     <View className="things">
+      <View className="title">订单列表</View>
+     </View>
 
-        <View className="orderContainer" hidden={orders.length>0?false:true}>
+        <View class='container order-list-page' hidden={orders.length==0?true:false}>
         {orders.map(item =>{
           return(
-            <View className="orderItem" key={item.id} >
-              <View className="leftOrders">
-              <View className="orderId">订单编号:   {item.id}</View>
-                <View className="orderName">{item.cinemaName}
+          <View class='order-item'>
+            <Navigator class='order-title line-ellipsis'  hover-class='none'>
+              <View>{item.cinemaName}</View>
+              <View class='triangle'></View>
+            </Navigator>
+            <View class='order-info' >
+              <Image src={item.movieImg}></Image>
+              <View class='order-desc'>
+                <View class='delete-box' catchtap='deleteOrder'>
+                  <View class='iconfont icon-del delete'></View>
                 </View>
-                <View className="orderHallName">厅号:   {item.hallName}
-                </View>
-                <View className="orderAddr">位置:   {item.seatInfo}</View>
-                <View className="orderAddr">开场时间:   {item.showTime}</View>
-                <View className="orderTag">
-                 <View className="operate">
-                   <View className="waitCode" hidden={item.orderState == 2?false:true}  >出票中</View>
-                   <View className="closeOrder" hidden={item.orderState < 2?false:true} onClick={this.payOrder.bind(this,item.id)} >关闭订单</View>
-                   <View className="buyTicket" hidden={item.orderState == 1?false:true} onClick={this.payOrder.bind(this,item.id)} >支付订单</View>
-                   <View className="preBuy" hidden={item.orderState == 3 ? false : true} onClick={this.showQrCode.bind(this,item.id)}>兑票码</View>
-                 </View>
-                </View>
+                <View class='movie-name line-ellipsis'>{item.movieName} {item.buyNum}张</View>
+                <View class='showTime line-ellipsis'>开场时间: {item.showTime}</View>
+                <View class='position line-ellipsis'>放映厅号: {item.hallName}</View>
+                <View class='position line-ellipsis'>座位信息: {item.seatInfo}</View>
               </View>
             </View>
+            <View class='order-more'>
+              <View className="money">总价：{item.actualAmount}元</View>
+              <View>
+               <View className="waitCode" hidden={item.orderState == 2?false:true}  onClick={this.warnOrder.bind(this)} >出票中</View>
+                <View className="closeOrder" hidden={item.orderState < 2?false:true} onClick={this.closeOrder.bind(this,item.id)} >关闭订单</View>
+                <View className="buyTicket" hidden={item.orderState == 1?false:true} onClick={this.payOrder.bind(this,item.id)} >支付订单</View>
+                <View className="preBuy" hidden={item.orderState == 3 ? false : true} onClick={this.showQrCode.bind(this,item.id)}>兑票码</View>
+              </View>
+              </View>
+          </View>
+
           )})
-        }
+          }
         </View>
 
-        <Text hidden={orders.length==0?false:true}>暂无记录呢</Text>
+      <Nothing data = '暂无记录呢' hideFlag = {orders.length == 0? false:true} />
       </ScrollView>
     )
   }

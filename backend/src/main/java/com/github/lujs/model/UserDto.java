@@ -50,6 +50,8 @@ public class UserDto implements Serializable {
 
     private String lon;
 
+    private Integer cityId;
+
     private String cityName;
 
     private String cityCode;

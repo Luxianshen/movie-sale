@@ -18,15 +18,16 @@ export default class Search extends Component {
     this.searchList();
   }
   searchList(){
-    //let cityId = Taro.getStorageSync('cities').geoCity.id;
-    let cityId = 8;
+  
     let keyWord = this.state.keyWord;
     //let keyWord = '万达';
+    let token  = Taro.getStorageSync('token');
     let self = this;
     if(keyWord != ''){
       Taro.request({
-        url:`baseUrl/index/search/${keyWord}/${cityId}`,
-        method:'GET'
+        url:`baseUrl/index/search/${keyWord}`,
+        method:'GET',
+        header:{'token':token.token}
       }).then(res=>{
         if(res.statusCode == 200){
             let data = res.data.data;

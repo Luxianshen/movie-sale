@@ -21,8 +21,9 @@ export default class Toptab extends Component{
     }
   }
   autoLogin(){
+    let self = this;
     //微信登录逻辑
-    wx.login({
+     wx.login({
       success (res) {
         if (res.code) {
           //发起网络请求
@@ -34,6 +35,9 @@ export default class Toptab extends Component{
               console.log(res)
               let token = res.data.data;
               Taro.setStorageSync("token",token);
+
+              self.getMoviesOnList();
+              self.getLocation();
             }
           });
         } else {
@@ -64,7 +68,7 @@ export default class Toptab extends Component{
         method:"GET"
       }).then(res=>{
         if(res.statusCode == 200){
-          Taro.hideLoading();
+
           res.data.data.list.forEach((value)=>{
             this.state.movieIds.push(value["showId"]);
           });
@@ -73,26 +77,25 @@ export default class Toptab extends Component{
             startIndex:0,
             lastIndex:30
           });
+
         }else{
           this.setState({
             onList:null,
             movieIds:null
           })
         }
+        Taro.hideLoading();
       })
-
   }
   appendToList(){
 
   }
   do(){
-   
+
   }
   componentDidMount(){
     this.getNowCity();
     this.autoLogin();
-    this.getMoviesOnList();
-    this.getLocation();
   }
   getNowCity(){
 
@@ -113,9 +116,6 @@ export default class Toptab extends Component{
       duration: 2000
     });
     return false;
-    Taro.navigateTo({
-      url: '../position/position'
-    })
   }
   getLocation(){
 

@@ -12,9 +12,7 @@ export default class Cinema extends Component {
   }
   constructor(props){
     super(props);
-    let token = Taro.getStorageSync("token");
     this.state = {
-      token:token,
       brand:'',
       area:'',
       type:'',
@@ -67,12 +65,10 @@ export default class Cinema extends Component {
     this.setState({
       cityName:cityName
     },()=>{
-      //self.filterCinemasList();
       self.getCinemasList();
     });
   }
   filterCinemasList(){
-    let cityObj = Taro.getStorageSync('cities');
     Taro.request({
       url:`baseUrl/index/house`,
     }).then(res=>{
@@ -102,6 +98,7 @@ export default class Cinema extends Component {
       if(res.statusCode == 200){
         Taro.hideLoading();
         let data = res.data.data;
+        Taro.setStorageSync("cityId",data.area[0].cityId);
         this.setState({
           areaData:data.area,
           brandData:data.brand
@@ -130,7 +127,7 @@ export default class Cinema extends Component {
       header:{'token':token.token}
     }).then(res=>{
       if(res.statusCode == 200){
-        Taro.hideLoading();
+        
         let data = res.data.data;
         if(typeof(data.list) != 'undefined'){
           if(typeof(self.state.cinemas) == 'undefined'){
@@ -144,6 +141,7 @@ export default class Cinema extends Component {
             cinemas:self.state.cinemas.concat(data.list)
           });
         }
+        Taro.hideLoading();
       }
     })
   }

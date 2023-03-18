@@ -81,6 +81,7 @@ public class OrderController {
         OrderDetail orderDetail = new OrderDetail();
         orderDetail.init();
         orderDetail.setCinemaName(request.getCinemaName()).setCinemaAddress(request.getCinemaAddress())
+                .setMovieName(request.getMovieName()).setMovieImg(request.getMovieImg())
                 .setBuyNum(request.getBuyNum()).setPrice(price).setSeatInfo(request.getSeatInfo()).setHallName(request.getHallName())
                 .setShowTime(request.getShowTime());
 
@@ -99,6 +100,8 @@ public class OrderController {
 
         Order byId = orderService.getById(orderId);
         if (ObjectUtil.isNotNull(byId) && byId.getOrderState().equals(OrderState.CREATE)) {
+            //比对演出剩余时间 要大于50分钟 不然 不让支付 浪费时间的订单
+
             WxPayService wxPayService = payConfiguration.wxPayService();
             //调起微信支付 必传下面参数
             WxPayUnifiedOrderRequest apiRequest = new WxPayUnifiedOrderRequest();

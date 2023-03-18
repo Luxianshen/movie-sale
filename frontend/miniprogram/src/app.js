@@ -16,8 +16,7 @@ class App extends Component {
       "pages/seat/seat",
       "pages/user/user",
       "pages/order/order",
-      "pages/orderList/orderList",
-      "pages/qrcode/qrcode"
+      "pages/orderList/orderList"
     ],
     permission: {
       "scope.userLocation": {

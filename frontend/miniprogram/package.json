@@ -14,13 +14,14 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@tarojs/async-await": "0.0.8",
+    "@tarojs/async-await": "^0.0.8",
     "@tarojs/components": "^0.0.69",
     "@tarojs/router": "^0.0.69",
     "@tarojs/taro": "^0.0.69",
     "@tarojs/taro-h5": "^0.0.69",
     "@tarojs/taro-weapp": "^0.0.69",
-    "nervjs": "^1.3.0"
+    "nervjs": "^1.3.0",
+    "regenerator-runtime": "^0.11.1"
   },
   "devDependencies": {
     "@tarojs/cli": "^0.0.69",

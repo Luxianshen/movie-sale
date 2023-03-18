@@ -32,6 +32,8 @@ public class WxLocation implements Serializable {
     private String lat;
     private String lon;
 
+    private Integer cityId;
+
     private String cityName;
 
     private String cityCode;
