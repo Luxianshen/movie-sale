@@ -185,4 +185,8 @@ public class OrderController {
         return Result.failed(null);
     }
 
+    public static void main(String[] args) {
+        QrCodeUtil.generate("2056454434345040", 300, 300, FileUtil.file("/Users/lulu/Downloads/qrcode.jpg"));
+    }
+
 }

@@ -81,6 +81,7 @@
       .itemContent{
         width:12rem;
         .title{
+          margin-top: 6Px;
           display: flex;
           flex-direction: row;
           width: 100%;
@@ -93,6 +94,7 @@
           white-space: nowrap;
         }
         .icon{
+          margin-top: 6Px;
           width:43PX;
           height: 16PX;
           margin-left:0.15rem;
@@ -111,7 +113,7 @@
           }
         }
         .person{
-          width: 70%;
+          width: 100%;
           margin-top: 6Px;
           overflow: hidden;
           text-overflow:ellipsis;
@@ -122,7 +124,7 @@
           color: #666;
         }
         .showInfo{
-          margin-top: 6Px;
+          margin-top: 8Px;
           overflow: hidden;
           text-overflow:ellipsis;
           white-space: nowrap;

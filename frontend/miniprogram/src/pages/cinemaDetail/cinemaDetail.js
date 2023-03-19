@@ -203,7 +203,6 @@ export default class CinemasDetail extends Component {
       dataList = [];
     }else{
       if(dataList.length > 0 && dataList[0].showDate == this.state.dates[0]){
-        debugger
          let tempList = [];
          dataList.map(item=>{
              let flag = new Date(item.showTime)- Date.now()>1*60*60*1000;

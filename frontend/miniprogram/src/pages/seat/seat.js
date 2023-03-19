@@ -64,12 +64,25 @@ export default class Seat extends Component {
           let runData = seatData[i] ? seatData[i] : [];
           if (runData.length > 0) {
             let arr = [];
-            runData.map(seat => {
-              if (seat["status"] == "N") {
-                arr.push('0');
-              } else {
-                arr.push('E')
+            let dealEmpty = true;
+            runData.map((seat, seatTemp) => {
+
+              let columnNo = seat["columnNo"] *1;
+              if(dealEmpty && columnNo > seatTemp+1){
+                //补不可选
+                let run = columnNo- seatTemp-1;
+                for(let i=0; i< run; i++){
+                		arr.push('E')
+                	}
+                  dealEmpty = false;
               }
+                if (seat["status"] == "N") {
+                  arr.push('0');
+                } else {
+                  arr.push('E')
+                }
+
+
             })
             seatArray.push(arr);
             this.state.seatRow.push(i);
@@ -211,44 +224,26 @@ export default class Seat extends Component {
       } < /View> < /
       View > <
       View className = "seatMore" >
-      <
-      View className = "rowList" > {
+      <View className = "rowList" > {
         seatRow.map((item, index) => {
-          return ( <
-            View className = "numberId"
-            key = {
-              key
-            } > {
-              index + 1
-            } < /View>
+          return (
+          <View className = "numberId" key = {key} > {index + 1} < /View>
           )
         })
       } <
       /View> <
       View className = "Container" > {
         Object.keys(seatArray).map(key => {
-            return ( <
-              View className = "rowWrap"
-              key = {
-                key
-              } > {
+            return (
+            <View className = "rowWrap" key = {key} > {
                 seatArray[key].map((item, index) => {
-                    return ( <
-                      View className = "seatWrap"
-                      key = {
-                        index
-                      } > {
-                        item == '0' ? < Image src = {
-                          seatMap.can
-                        }
-                        onClick = {
-                          this.selectSeat.bind(this, key, index, item)
-                        } > <
-                        /Image>:(item == '2'?<Image src={seatMap.select}  onClick={this.selectSeat.bind(this,key,index,item)}></Image >
-                        :
-                          <
-                          Text > < /Text>)} < /
-                        View >
+                    return (
+                    <View className = "seatWrap" key = {index} > {item == '0' ?
+                    < Image src = {seatMap.can}
+                        onClick = {this.selectSeat.bind(this, key, index, item)} >
+                         </Image>:(item == '2'?<Image src={seatMap.select}  onClick={this.selectSeat.bind(this,key,index,item)}></Image >
+                        :<Text > < /Text>)}
+                        < /View >
                       )
                     })
                 } <

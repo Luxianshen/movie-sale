@@ -233,16 +233,16 @@ export default class Toptab extends Component{
                     <View className="itemContent">
                       <View className="title">
                         <Text>{item.showName}</Text>
-                        <View className="icon">
-                          {item.showMark.includes('3D')?<Image src={ico2Png}></Image>:<Image src={ico1Png}></Image>}
-                        </View>
                       </View>
-                      {item.globalReleased?<View className="comment smallFont">观众评 <Text className="yellow">{item.remark}</Text></View>:<View className="comment smallFont"><Text className="yellow">{item.wish}</Text>人想看</View>}
+                      <View className="icon">
+                        {item.showMark.includes('3D')?<Image src={ico2Png}></Image>:<Image src={ico1Png}></Image>}
+                      </View>
+                      {item.globalReleased?<View className="comment smallFont">观众评 <Text className="yellow">{item.remark}</Text></View>:<View className="comment smallFont"><Text className="yellow">{item.wish}</Text></View>}
                       <View className="person smallFont">主演: {item.leadingRole}</View>
                       <View className="showInfo smallFont">{item.showInfo}</View>
                     </View>
                     <View className="operate">
-                      {item.showst === 4?<view className="preBuy">预售</view>:<view className="buyTicket">购票</view>}
+                      <view className="buyTicket">购票</view>
                     </View>
                   </View>
                 </View>
@@ -267,32 +267,6 @@ export default class Toptab extends Component{
                 })}
               </ScrollView>
               <View className="line"></View>
-              <View className="movieContainer">
-              {this.state.onList.map((item,index)=>{
-                return (
-                  <View className="dataItem" key={index} onClick={this.navigateDetail.bind(this,'../content/content',item,)}>
-                    <View className="leftItem">
-                      <Image src={item.poster}></Image>
-                    </View>
-                    <View className="rightItem">
-                      <View className="itemContent">
-                        <View className="title">
-                          <Text>{item.showName}</Text>
-                          <View className="icon">
-                            {item.showMark.includes('3D')?<Image src={ico2Png}></Image>:<Image src={ico1Png}></Image>}
-                          </View>
-                        </View>
-                        <View className="person smallFont">主演: {item.leadingRole}</View>
-                        <View className="showInfo smallFont">{item.showInfo}</View>
-                      </View>
-                      <View className="operate">
-                        {item.showst === 4?<view className="preBuy">预售</view>:<view className="buyTicket">购票</view>}
-                      </View>
-                    </View>
-                  </View>
-                )
-              })}
-              </View>
           </View>
         </ScrollView>
       </View>

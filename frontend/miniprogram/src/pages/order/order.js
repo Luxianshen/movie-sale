@@ -103,13 +103,23 @@ export default class Map extends Component {
           请在15分钟内完成支付
           <View className="restTime"></View>
         </View>
-        <View className="movieInfo">
-          <View className="movieName">{showData.filmName}</View>
-          <View className="movieTime">{showData.showTime}</View>
-          <View className="cinemas">{cinemaName} </View>
-          <View className="station">{showData.hallName}</View>
-          <View className="station">{seatInfo}</View>
-        </View>
+
+       <View className="detailBox">
+         <View className ="bg">
+           <view className="blurBg"></view>
+           <View className="detailContent">
+             <Image className="poster" src={showData.bg}></Image>
+             <View className="detailInfo">
+             <View className="title">影院: {cinemaName}</View>
+               <View className="title">电影: {showData.filmName}</View>
+               <View className="title">时间: {showData.hallName}</View>
+               <View className="title">座位: {seatInfo}</View>
+               <View className="time">时间: {showData.showTime}</View>
+             </View>
+           </View>
+         </View>
+       </View>
+
         <View className="discountInfo">
           <View className="card">
             <View className="name">活动与抵用券</View>
