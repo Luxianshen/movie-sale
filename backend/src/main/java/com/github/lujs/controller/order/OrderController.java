@@ -1,11 +1,7 @@
 package com.github.lujs.controller.order;
 
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
@@ -26,6 +22,7 @@ import com.github.lujs.model.pojo.Order;
 import com.github.lujs.model.pojo.OrderDetail;
 import com.github.lujs.service.IOrderDetailService;
 import com.github.lujs.service.IOrderService;
+import com.github.lujs.service.IOssService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -60,11 +57,8 @@ public class OrderController {
     @Value("${domain}")
     private String domain;
 
-    @Value("${fileSavePath}")
-    private String fileSavePath;
-
-    @Value("${fileVisitPath}")
-    private String fileVisitPath;
+    @Resource
+    private IOssService ossService;
 
     /**
      * 创建订单
@@ -163,6 +157,23 @@ public class OrderController {
     }
 
     /**
+     * 关闭订单
+     */
+    @DeleteMapping("closeOrder/{orderId}")
+    public Result<Void> closeOrder(@Token CzToken token, @PathVariable("orderId") Long orderId) {
+
+        Order byId = orderService.getById(orderId);
+        if (ObjectUtil.isNotNull(byId) && token.getId().equals(byId.getUserId())) {
+            byId.setUpdateTime(new Date());
+            byId.setOrderState(OrderState.CANCEL);
+            orderService.updateById(byId);
+            return Result.succeed();
+        }
+        return Result.failed(null);
+    }
+
+
+    /**
      * 上传订单 取票二维码
      *
      * @return
@@ -172,21 +183,14 @@ public class OrderController {
 
         OrderDetail byId = orderDetailService.getByOrderId(request.getOrderId());
         if (ObjectUtil.isNotNull(byId)) {
-            String filePosition = fileSavePath + DateUtil.now() + RandomUtil.randomString(10) + ".jpg";
-            String visitUrl = domain + fileVisitPath + filePosition;
-            QrCodeUtil.generate(request.getTicketCode(), 300, 300, FileUtil.file(filePosition));
             byId.setUpdateTime(new Date());
             byId.setUploadTime(new Date());
             byId.setTicketCode(request.getTicketCode());
-            byId.setTicketPic(visitUrl);
+            byId.setTicketPic(ossService.uploadQrcode(request.getTicketCode()));
             orderService.updateOrderFinish(byId);
             return Result.succeed();
         }
         return Result.failed(null);
-    }
-
-    public static void main(String[] args) {
-        QrCodeUtil.generate("2056454434345040", 300, 300, FileUtil.file("/Users/lulu/Downloads/qrcode.jpg"));
     }
 
 }

@@ -127,12 +127,10 @@ export default class OrderList extends Component {
   }
 
   navigateToOrderDetail(url,item){
-
     Taro.navigateTo({
       url:url
     });
   }
-
 
   warnOrder(){
     Taro.showToast({
@@ -141,12 +139,13 @@ export default class OrderList extends Component {
       duration: 2000
     });
   }
+
   closeOrder(orderId){
     let self = this;
     let token = Taro.getStorageInfoSync('token');
     Taro.request({
       url: `baseUrl/order/closeOrder/${orderId}`,
-      method: 'GET',
+      method: 'DELETE',
       header: { 'token': token.token }
     }).then(res => {
          if(res.statusCode == '200'){
@@ -200,7 +199,7 @@ export default class OrderList extends Component {
               <View className="money">总价：{item.actualAmount}元</View>
               <View>
                <View className="waitCode" hidden={item.orderState == 2?false:true}  onClick={this.warnOrder.bind(this)} >出票中</View>
-                <View className="closeOrder" hidden={item.orderState < 2?false:true} onClick={this.closeOrder.bind(this,item.id)} >关闭订单</View>
+                <View className="closeOrder" hidden={item.orderState >=0 && item.orderState < 2?false:true} onClick={this.closeOrder.bind(this,item.id)} >关闭订单</View>
                 <View className="buyTicket" hidden={item.orderState == 1?false:true} onClick={this.payOrder.bind(this,item.id)} >支付订单</View>
                 <View className="preBuy" hidden={item.orderState == 3 ? false : true} onClick={this.showQrCode.bind(this,item.id)}>兑票码</View>
               </View>
