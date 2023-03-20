@@ -1,11 +1,5 @@
-import Taro, {
-  Component
-} from '@tarojs/taro'
-import {
-  View,
-  Text
-} from '@tarojs/components'
-
+import Taro, {Component} from '@tarojs/taro'
+import {View,Text,MovableView} from '@tarojs/components'
 import './seat.scss'
 export default class Seat extends Component {
   config = {
@@ -17,7 +11,7 @@ export default class Seat extends Component {
       cinemaName:'',
       seatData: [],
       seatRow:[],
-      seatRunTime: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+      seatRunTime: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,16,17,18,19,20],
       statusMap: {
         can: "https://p1.meituan.net/movie/9dfff6fd525a7119d44e5734ab0e9fb41244.png",
         No: "https://p1.meituan.net/movie/bdb0531259ae1188b9398520f9692cbd1249.png",
@@ -62,6 +56,7 @@ export default class Seat extends Component {
         this.state.seatRow = [];
         this.state.seatRunTime.map(i => {
           let runData = seatData[i] ? seatData[i] : [];
+
           if (runData.length > 0) {
             let arr = [];
             let dealEmpty = true;
@@ -214,26 +209,24 @@ export default class Seat extends Component {
         show.language
       } < /Text><Text className="dim">{show.dim}</Text > < /Text> < /
       View > <
-      /View> <
-      View className = "seatCon" >
+      /View>
+      <View className = "seatCon" >
       <
       View className = "hallCon" >
       <
       View className = "hallName" > {
         hall.hallName
       } < /View> < /
-      View > <
-      View className = "seatMore" >
-      <View className = "rowList" > {
-        seatRow.map((item, index) => {
+      View >
+      <View className = "seatMore" >
+      
+      <View className = "rowList" > {seatRow.map((item, index) => {
           return (
           <View className = "numberId" key = {key} > {index + 1} < /View>
-          )
-        })
-      } <
-      /View> <
-      View className = "Container" > {
-        Object.keys(seatArray).map(key => {
+          )})
+      } </View>
+      <View className = "Container" >
+      {Object.keys(seatArray).map(key => {
             return (
             <View className = "rowWrap" key = {key} > {
                 seatArray[key].map((item, index) => {
@@ -246,29 +239,24 @@ export default class Seat extends Component {
                         < /View >
                       )
                     })
-                } <
-                /View>
+                } </View>
               )
             })
-        } <
-        /View> < /
-        View > <
-        /View> <
-        View className = "type" > {
+        }
+        </View>
+       
+
+        < /View >
+        </View>
+        <View className = "type" > {
           seatTypeList.map((item, index) => {
-            return ( <
-              View className = "item"
-              key = {
-                index
-              } >
-              <
-              Image src = {
-                item.icon
-              } > < /Image> <
-              Text className = "word" > {
+            return (
+            <View className = "item" key = {index} >
+              <Image src = {item.icon} > < /Image>
+              <Text className = "word" > {
                 item.name
-              } < /Text> < /
-              View >
+              } < /Text>
+              < /View >
             )
           })
         } <

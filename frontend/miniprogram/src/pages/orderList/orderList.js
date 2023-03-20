@@ -83,19 +83,8 @@ export default class OrderList extends Component {
   componentDidMount () {
     this.getStorageData();
   }
-  navigate(url){
-    Taro.downloadFile({
-      url: 'https://res.wx.qq.com/wxdoc/dist/assets/img/demo.ef5c5bef.jpg',
-      success: (res) => {
-        wx.showShareImageMenu({
-          path: res.tempFilePath
-        })
-      }
-    })
-    //Taro.navigateTo({url:url});
-  }
   payOrder(orderId){
-    let token = Taro.getStorageInfoSync('token');
+    let token = Taro.getStorageSync('token');
     Taro.request({
       url: `baseUrl/order/payOrder/${orderId}`,
       method: 'POST',
@@ -133,16 +122,15 @@ export default class OrderList extends Component {
   }
 
   warnOrder(){
-    Taro.showToast({
-      title: '订单出票需10-50分，请耐心等待',
-      icon: 'success',
-      duration: 2000
+    Taro.showModal({
+      content: '订单出票需10-50分，请耐心等待',
+      showCancel: false
     });
   }
 
   closeOrder(orderId){
     let self = this;
-    let token = Taro.getStorageInfoSync('token');
+    let token = Taro.getStorageSync('token');
     Taro.request({
       url: `baseUrl/order/closeOrder/${orderId}`,
       method: 'DELETE',
@@ -154,7 +142,7 @@ export default class OrderList extends Component {
              icon: 'success',
              duration: 2000
            });
-           self.forceUpdate();
+           this.forceUpdate();
          }
     });
   }
@@ -201,7 +189,7 @@ export default class OrderList extends Component {
                <View className="waitCode" hidden={item.orderState == 2?false:true}  onClick={this.warnOrder.bind(this)} >出票中</View>
                 <View className="closeOrder" hidden={item.orderState >=0 && item.orderState < 2?false:true} onClick={this.closeOrder.bind(this,item.id)} >关闭订单</View>
                 <View className="buyTicket" hidden={item.orderState == 1?false:true} onClick={this.payOrder.bind(this,item.id)} >支付订单</View>
-                <View className="preBuy" hidden={item.orderState == 3 ? false : true} onClick={this.showQrCode.bind(this,item.id)}>兑票码</View>
+                <View className="preBuy" hidden={item.orderState == 3 ? false : true} onClick={this.showQrCode.bind(this,item.ticketPic)}>兑票码</View>
               </View>
               </View>
           </View>

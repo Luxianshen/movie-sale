@@ -8,6 +8,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.github.lujs.model.pojo.WxLocation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -16,6 +17,8 @@ import java.nio.charset.Charset;
 @Slf4j
 public class LocationUtil {
 
+    @Value("cityJsonFilePath")
+    private String cityJsonFilePath;
 
     public static WxLocation getLocation(HttpServletRequest request) {
 
@@ -72,7 +75,7 @@ public class LocationUtil {
 
     private static Integer getCityId(String adcode){
 
-        JSONArray array = JSONUtil.readJSONArray(new File("city.json"), Charset.defaultCharset());
+        JSONArray array = JSONUtil.readJSONArray(new File("/Users/lulu/IdeaProjects/github/movie-sale/backend/doc/city.json"), Charset.defaultCharset());
         for (Object x : array) {
             JSONObject jsonObject = (JSONObject) x;
             if (jsonObject.getStr("cityCode").equals(adcode)){

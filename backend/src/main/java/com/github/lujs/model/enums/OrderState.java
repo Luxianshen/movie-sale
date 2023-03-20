@@ -9,7 +9,7 @@ public enum OrderState implements ValueEnum {
     CREATE(0, "未支付"),
     TO_PAY(1, "待支付"),
     PIED(2, "已支付"),
-    FINISH(2, "已完成");
+    FINISH(3, "已完成");
 
 
     @EnumValue

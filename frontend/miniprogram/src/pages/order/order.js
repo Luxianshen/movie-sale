@@ -112,7 +112,7 @@ export default class Map extends Component {
              <View className="detailInfo">
              <View className="title">影院: {cinemaName}</View>
                <View className="title">电影: {showData.filmName}</View>
-               <View className="title">时间: {showData.hallName}</View>
+               <View className="title">厅名: {showData.hallName}</View>
                <View className="title">座位: {seatInfo}</View>
                <View className="time">时间: {showData.showTime}</View>
              </View>

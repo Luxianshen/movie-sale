@@ -160,7 +160,7 @@ public class OrderController {
      * 关闭订单
      */
     @DeleteMapping("closeOrder/{orderId}")
-    public Result<Void> closeOrder(@Token CzToken token, @PathVariable("orderId") Long orderId) {
+    public Result<Void> closeOrder(@Token CzToken token, @PathVariable("orderId") String orderId) {
 
         Order byId = orderService.getById(orderId);
         if (ObjectUtil.isNotNull(byId) && token.getId().equals(byId.getUserId())) {
@@ -179,7 +179,7 @@ public class OrderController {
      * @return
      */
     @PostMapping("uploadTicketCode")
-    public Result<Void> uploadTicketCode(@Token CzToken token, @Valid @RequestBody OrderUploadRequest request) {
+    public Result<Void> uploadTicketCode(/*@Token CzToken token,*/ @Valid @RequestBody OrderUploadRequest request) {
 
         OrderDetail byId = orderDetailService.getByOrderId(request.getOrderId());
         if (ObjectUtil.isNotNull(byId)) {
