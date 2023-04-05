@@ -18,14 +18,14 @@ export default class Search extends Component {
     this.searchList();
   }
   searchList(){
-  
+
     let keyWord = this.state.keyWord;
     //let keyWord = '万达';
     let token  = Taro.getStorageSync('token');
     let self = this;
     if(keyWord != ''){
       Taro.request({
-        url:`baseUrl/index/search/${keyWord}`,
+        url:baseUrl + `/index/search/${keyWord}`,
         method:'GET',
         header:{'token':token.token}
       }).then(res=>{
@@ -39,10 +39,10 @@ export default class Search extends Component {
     }
 
   }
-  setKeyWord(e){
+  setKeyWord(value){
     let self = this;
     this.setState({
-      keyWord:e.currentTarget.value
+      keyWord:value
     },()=>{
       self.searchList();
     })
@@ -71,8 +71,8 @@ export default class Search extends Component {
     });
   }
   render () {
-    let movies = this.state.movieList;
-    let cinemas = this.state.cinemasList;
+    const { keyWord,cinemasList}  = this.state;
+
     return (
       <ScrollView className='searchCon' scrollY
         scrollWithAnimation
@@ -81,7 +81,7 @@ export default class Search extends Component {
         lowerThreshold='20'
       >
         <View className="navHeader">
-          <Input className="search" type="text" placeholder="搜影院" onInput={this.setKeyWord.bind(this,e)} value={this.state.keyWord}>
+          <Input className="search" type="text" placeholder="搜影院" onInput={this.setKeyWord.bind(this,this.currentTarget.value)} value={keyWord}>
           </Input>
           <View className="cancel" onClick={this.clear.bind(this)}>
               取消
@@ -89,10 +89,10 @@ export default class Search extends Component {
         </View>
         <View className="history"></View>
         <View className="resultCon">
-          <View className="resultItem" hidden={this.state.cinemasList.length == 0?true:false}>
+          <View className="resultItem" hidden={cinemasList.length == 0?true:false}>
             <View className="title">影院</View>
             {
-              cinemas.map((item,index)=>{
+              cinemasList.map((item,index)=>{
                 return (
                   <View className="cinemasItem" key={item.cinemaId} onClick={this.navigateToCinema.bind(this,'../cinemaDetail/cinemaDetail',item)}>
                     <View className="leftCinemas">

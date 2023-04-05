@@ -40,7 +40,7 @@ export default class Content extends Component {
       title:"加载中"
     });
     Taro.request({
-      url:`baseUrl/index/movieDetail/440100/${this.state.params.id}`
+      url: baseUrl + `/index/movieDetail/440100/${this.state.params.id}`
     }).then(res=>{
       if(res.statusCode == 200){
 		  
@@ -67,9 +67,9 @@ export default class Content extends Component {
       showContent:!self.state.showContent
     })
   }
-  playVideo(e){
+  playVideo(){
     let self = this;
-    e.stopPropagation();
+    this.stopPropagation();
     this.setState({
       playHide:!self.state.playHide
     });

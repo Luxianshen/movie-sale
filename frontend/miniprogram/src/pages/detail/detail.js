@@ -5,8 +5,8 @@ import {
   View,
   Image
 } from '@tarojs/components'
-import Brandbar from "../../components/Brandbar/Brandbar";
-import Specialbar from "../../components/Specialbar/Specialbar";
+import { Brandbar } from "../../components/Brandbar/Brandbar";
+import { Areabar } from "../../components/Areabar/Areabar";
 import './detail.scss'
 
 export default class Detail extends Component {
@@ -16,7 +16,7 @@ export default class Detail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      area:'',
+      nowArea:'',
       brand:'',
       active: 0,
       params: {},
@@ -31,7 +31,7 @@ export default class Detail extends Component {
       cinemas: [],
       areaData: [],
       brandData:[],
-      selectItems:[{nm:'全城',type:'brand'},{nm:'品牌',type:'special'}],
+      selectItems:[{nm:'全城',type:'area'},{nm:'品牌',type:'brand'}],
       scrollLeft: '0',
     }
   }
@@ -57,18 +57,18 @@ export default class Detail extends Component {
   getfilterCinemas() {
     let cityId = this.state.params.cityId;
     let offset = this.state.offset;
-    let area = this.state.area;
+    let nowArea = this.state.nowArea;
     let brand = this.state.brand;
     let token = Taro.getStorageSync("token");
     Taro.showLoading({
       title:"加载中"
     });
     Taro.request({
-      url: `baseUrl/index/schedule/${this.state.params.id}/${this.state.queryDates[this.state.active]}`,
+      url: baseUrl + `/index/schedule/${this.state.params.id}/${this.state.queryDates[this.state.active]}`,
       method: "POST",
       data:{
         offset:offset,
-        area:area,
+        area:nowArea,
         brand:brand
       },
       header: {'token': token.token}
@@ -108,7 +108,7 @@ export default class Detail extends Component {
     });
     Taro.request({
       method:'GET',
-      url:`baseUrl/index/house`,
+      url:baseUrl + `/index/house`,
     }).then(res=>{
       if(res.statusCode == 200){
         Taro.hideLoading();
@@ -127,7 +127,7 @@ export default class Detail extends Component {
 
     let token = Taro.getStorageSync("token");
     Taro.request({
-      url: `baseUrl/index/movieDetail/${this.state.params.id}`,
+      url: baseUrl + `/index/movieDetail/${this.state.params.id}`,
       header: {
           "token": token.token
         },
@@ -173,7 +173,7 @@ export default class Detail extends Component {
     });
     let token = Taro.getStorageSync("token");
     Taro.request({
-      url: `baseUrl/index/query`,
+      url: baseUrl + `/index/query`,
       method: 'GET',
       header:{'token':token.token}
     }).then(res => {
@@ -280,11 +280,11 @@ export default class Detail extends Component {
         type:itemType
       });
     }
-    let area = Taro.getStorageSync('area');
+    let nowArea = Taro.getStorageSync('nowArea');
     let brand = Taro.getStorageSync('brand');
-    if(area != this.state.area || brand != this.state.brand){
-      this.state.area = area;
-      let showAreaName = area == '' ? '全城':area;
+    if(nowArea != this.state.nowArea || brand != this.state.brand){
+      this.state.nowArea = nowArea;
+      let showAreaName = nowArea == '' ? '全城':nowArea;
       this.state.selectItems[0].nm = showAreaName;
       this.state.brand = brand;
       let showBrandName = brand == '' ? '品牌':brand;
@@ -294,11 +294,11 @@ export default class Detail extends Component {
     }
   }
   restAreaAndBrand(){
-    Taro.setStorageSync('area','');
+    Taro.setStorageSync('nowArea','');
     Taro.setStorageSync('brand','');
-    this.state.area = '';
+    this.state.nowArea = '';
     this.state.brand = '';
-	this.selectItem('');
+	  this.selectItem('');
     this.state.selectItems[0].nm ='全城';
     this.state.selectItems[1].nm ='品牌';
     this.state.offset = 1;
@@ -318,8 +318,7 @@ export default class Detail extends Component {
     })
   }
   render() {
-    let itemData = this.state.detailMovie;
-    let cinemas = this.state.cinemas;
+    const {detailMovie,cinemas,type,areaData,brandData} = this.state;
     return ( <
         ScrollView className = "detailContainer"
         scrollY scrollWithAnimation scrollTop = '0'
@@ -340,38 +339,38 @@ export default class Detail extends Component {
         View className = "bg" >
         <
         Image src = {
-          itemData.backgroundPicture
+          detailMovie.backgroundPicture
         } > < /Image> <
         view className = "blurBg" > < /view> <
         View className = "detailContent" >
         <
         Image className = "poster"
         src = {
-          itemData.poster
+          detailMovie.poster
         } > < /Image> <
         View className = "detailInfo" >
         <
         View className = "title" > {
-          itemData.showName
+          detailMovie.showName
         } < /View> <
         View className = "star" > {
-			itemData.leadingRole?
-          itemData.leadingRole.substring(0, 15):''
+			detailMovie.leadingRole?
+          detailMovie.leadingRole.substring(0, 15):''
         } < /View> {
-        itemData.globalReleased ? < View className = "comment" > 观众评 {
-          itemData.remakr
-        } < /View>:<View className="comment">{itemData.wish}人想看</View >
+        detailMovie.globalReleased ? < View className = "comment" > 观众评 {
+          detailMovie.remakr
+        } < /View>:<View className="comment">{detailMovie.wish}人想看</View >
       } <
       View className = "type" > {
-        itemData.cat
+        detailMovie.cat
       } < /View> <
     View className = "hours" > {
-      itemData.country
+      detailMovie.country
     }
-    /{itemData.duration}分钟</View >
+    /{detailMovie.duration}分钟</View >
     <
     View className = "time" > {
-      itemData.pubDesc
+      detailMovie.pubDesc
     } < /View> < /
     View >  <
       /View> < /
@@ -403,45 +402,21 @@ export default class Detail extends Component {
       /ScrollView> <
       View className = "dateSelect" >
 
-      <
-      View className = "line" > | < /View> <View className = {
-        this.state.type == 'brand' ? 'scroll-item itemActive' : 'scroll-item'
-      }
-      onClick = {
-        this.selectItem.bind(this, 'brand')
-      } > {selectItems[0].nm} < View className = "arrow" > < /View></View >
       <View className = "line" > | < /View>
-      <View className = {
-        this.state.type == 'special' ? 'scroll-item itemActive' : 'scroll-item'
-      }
-      onClick = {
-        this.selectItem.bind(this, 'special')
-      } > {selectItems[1].nm} < View className = "arrow" > < /View></View >
+      <View className = {this.state.type == 'area' ? 'scroll-item itemActive' : 'scroll-item'}
+      onClick = {this.selectItem.bind(this, 'area')} > {selectItems[0].nm}
+      < View className = "arrow" > < /View></View >
       <View className = "line" > | < /View>
-      <View className = {
-        this.state.type == 'special' ? 'scroll-item itemActive' : 'scroll-item'
-      }
-      onClick = {
-        this.restAreaAndBrand.bind(this)
-      } > 重置条件 </View >
-      <
-      Specialbar data = {
-        this.state.brandData
-      }
-      type = {
-        this.state.type
-      }
-      /> <
-      Brandbar data = {
-        this.state.areaData
-      }
-      type = {
-        this.state.type
-      }
-      /> < /
-      View > <
-      /View> <
-      View className = "cinemas" > {
+      <View className = {this.state.type == 'brand' ? 'scroll-item itemActive' : 'scroll-item'}
+      onClick = {this.selectItem.bind(this, 'brand')} > {selectItems[1].nm} < View className = "arrow" > < /View></View >
+      <View className = "line" > | < /View>
+      <View className = {this.state.type == 'area' ? 'scroll-item itemActive' : 'scroll-item'}
+      onClick = {this.restAreaAndBrand.bind(this)} > 重置条件 </View >
+      <Areabar data={areaData} showFlag={type == 'area'} onClick={(arg) => this.selectItem(arg)} />
+      <Brandbar data={brandData} showFlag={type =='brand'} onClick={(arg) => this.selectItem(arg)}/>
+      </View>
+      </View>
+      <View className = "cinemas" > {
         cinemas.map(item => {
           return ( <
             View className = "cinemasItem"

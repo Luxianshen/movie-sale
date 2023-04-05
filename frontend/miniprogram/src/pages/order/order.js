@@ -44,7 +44,7 @@ export default class Map extends Component {
 
     let token = Taro.getStorageSync("token");
    Taro.request({
-     url: `baseUrl/order/createOrder`,
+     url: baseUrl + `/order/createOrder`,
      method: 'POST',
      data: {
        cinemaName:this.state.cinemaName,
@@ -63,7 +63,7 @@ export default class Map extends Component {
        Taro.hideLoading();
        const orderId = res.data.data;
        Taro.request({
-         url: `baseUrl/order/payOrder/${orderId}`,
+         url: baseUrl + `/order/payOrder/${orderId}`,
          method: 'POST',
          header: { 'token': token.token }
        }).then(res => {

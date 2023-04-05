@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View,Text} from '@tarojs/components'
-import Brandbar from "../../components/Brandbar/Brandbar";
-import Specialbar from "../../components/Specialbar/Specialbar";
+import { Brandbar } from "../../components/Brandbar/Brandbar";
+import { Areabar } from "../../components/Areabar/Areabar";
 import searchPng from "../../assets/images/search2.png";
 import './cinema.scss'
 
@@ -14,12 +14,12 @@ export default class Cinema extends Component {
     super(props);
     this.state = {
       brand:'',
-      area:'',
+      nowArea:'',
       type:'',
       cityName:'',
       areaData:[],
       brandData:[],
-      selectItems:[{nm:'全城',type:'brand'},{nm:'品牌',type:'special'}],
+      selectItems:[{nm:'全城',type:'area'},{nm:'品牌',type:'brand'}],
       offset:1,
       cinemas:[]
     }
@@ -34,11 +34,11 @@ export default class Cinema extends Component {
         type:itemType
       });
     }
-    let area = Taro.getStorageSync('area');
+    let nowArea = Taro.getStorageSync('nowArea');
     let brand = Taro.getStorageSync('brand');
-    if(area != this.state.area || brand != this.state.brand){
-      this.state.area = area;
-      let showAreaName = area == '' ? '全城':area;
+    if(nowArea != this.state.nowArea || brand != this.state.brand){
+      this.state.nowArea = nowArea;
+      let showAreaName = nowArea == '' ? '全城':nowArea;
       this.state.selectItems[0].nm = showAreaName;
       this.state.brand = brand;
       let showBrandName = brand == '' ? '品牌':brand;
@@ -48,9 +48,9 @@ export default class Cinema extends Component {
     }
   }
   restAreaAndBrand(){
-    Taro.setStorageSync('area','');
+    Taro.setStorageSync('nowArea','');
     Taro.setStorageSync('brand','');
-    this.state.area = '';
+    this.state.nowArea = '';
     this.state.brand = '';
 	this.selectItem('');
     this.state.selectItems[0].nm = '全城';
@@ -70,7 +70,7 @@ export default class Cinema extends Component {
   }
   filterCinemasList(){
     Taro.request({
-      url:`baseUrl/index/house`,
+      url:baseUrl + `/index/house`,
     }).then(res=>{
       if(res.statusCode == 200){
         this.setState({
@@ -93,7 +93,7 @@ export default class Cinema extends Component {
     });
     Taro.request({
       method:'GET',
-      url:`baseUrl/index/house`,
+      url:baseUrl + `/index/house`,
     }).then(res=>{
       if(res.statusCode == 200){
         Taro.hideLoading();
@@ -109,7 +109,7 @@ export default class Cinema extends Component {
   }
   getCinemasList(){
     let offset = this.state.offset;
-    let area = this.state.area;
+    let nowArea = this.state.nowArea;
     let brand = this.state.brand;
     let self = this;
     let token = Taro.getStorageSync("token");
@@ -118,16 +118,16 @@ export default class Cinema extends Component {
     });
     Taro.request({
       method:'POST',
-      url:`baseUrl/index/cinemaList`,
+      url:baseUrl + `/index/cinemaList`,
       data:{
         offset: offset,
-        area: area,
+        area: nowArea,
         brand:brand
       },
       header:{'token':token.token}
     }).then(res=>{
       if(res.statusCode == 200){
-        
+
         let data = res.data.data;
         if(typeof(data.list) != 'undefined'){
           if(typeof(self.state.cinemas) == 'undefined'){
@@ -177,7 +177,8 @@ export default class Cinema extends Component {
     });
   }
   render () {
-    let cinemas = this.state.cinemas;
+    const { cityName,areaData,brandData,cinemas,selectItems,type } = this.state;
+
     return (
       <ScrollView className='cinemas' scrollY
         scrollWithAnimation
@@ -185,10 +186,10 @@ export default class Cinema extends Component {
         style='height: 100vh;'
         onScrolltolower={this.loadMore.bind(this)}
         lowerThreshold='20'
-      >
+      enable-flex>
         <View className="navHeader">
           <View className="location" onClick={this.navigatePostion.bind(this,'../position/position')}>
-            {this.state.cityName}
+            {cityName}
             <View className="tangle"></View>
           </View>
           <View className="search" onClick={this.navigate.bind(this,'../search/search')}>
@@ -197,7 +198,7 @@ export default class Cinema extends Component {
           </View>
         </View>
         <View className="ToolBar">
-          {this.state.selectItems.map((item,index)=>{
+          {selectItems.map((item,index)=>{
             return (
               <View className={this.state.type == item.type?'actived selectItem':'selectItem'} key={index} onClick={this.selectItem.bind(this,item.type)}>
                 {item.nm}
@@ -209,9 +210,9 @@ export default class Cinema extends Component {
             重置条件
           </View>
 
+          <Areabar data={areaData} showFlag={type == 'area'} onClick={(arg) => this.selectItem(arg)} />
+          <Brandbar data={brandData} showFlag={type =='brand'} onClick={(arg) => this.selectItem(arg)} />
 
-          <Specialbar data={this.state.brandData} type={this.state.type}/>
-          <Brandbar data={this.state.areaData} type={this.state.type}/>
         </View>
         <View className="cinemasContainer">
         {cinemas.map(item =>{

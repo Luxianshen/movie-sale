@@ -18,6 +18,7 @@ export default class Toptab extends Component{
           startIndex:0,
           lastIndex:0,
           offset:0,
+          cityId:8
     }
   }
   autoLogin(){
@@ -28,7 +29,7 @@ export default class Toptab extends Component{
         if (res.code) {
           //发起网络请求
          Taro.request({
-            url: 'baseUrl/wx/maLogin/'+res.code,
+            url: baseUrl+'/wx/maLogin/'+res.code,
             method: 'GET'
           }).then(res=>{
             if(res.statusCode =="200"){
@@ -64,7 +65,7 @@ export default class Toptab extends Component{
         title:"加载中"
       });
       Taro.request({
-        url: 'baseUrl/index/movie',
+        url: baseUrl + '/index/movie',
         method:"GET"
       }).then(res=>{
         if(res.statusCode == 200){
@@ -100,7 +101,7 @@ export default class Toptab extends Component{
   getNowCity(){
 
     Taro.request({
-      url: 'baseUrl/index/getNowCity',
+      url: baseUrl + '/index/getNowCity',
       method:"GET"
     }).then(res=>{
       if(res.statusCode == 200){
@@ -127,7 +128,7 @@ export default class Toptab extends Component{
               console.log(res)
               let token = Taro.getStorageSync("token");
               Taro.request({
-                url: 'baseUrl/wx/refresh/'+res.latitude+'/'+res.longitude,
+                url: baseUrl + '/wx/refresh/'+res.latitude+'/'+res.longitude,
                 method:"GET",
                 header:{'token':token.token}
               }).then(res=>{
@@ -172,7 +173,7 @@ export default class Toptab extends Component{
 
                 let token = Taro.getStorageSync("token");
                 Taro.request({
-                  url: 'baseUrl/wx/refresh/'+res.latitude+'/'+res.longitude,
+                  url: baseUrl + '/wx/refresh/'+res.latitude+'/'+res.longitude,
                   method:"GET",
                   header:{'token':token.token}
                 }).then(res=>{
@@ -202,9 +203,7 @@ export default class Toptab extends Component{
                   });
                 }
   render(){
-    let expectData = this.state.expectData?this.state.expectData:[];
-    let cityId = this.state.id;
-    let cityName = Taro.getStorageSync("token").cityName;
+    const { expectData,cityName } = this.state;
     return (
       <View>
         <View className='top-tab flex-wrp flex-tab' >
@@ -219,9 +218,9 @@ export default class Toptab extends Component{
                 </View>)
               })
             }
-
         </View>
-        <ScrollView scroll-y scroll-top="45" lowerThreshold='30' style='height:100vh' onScrolltolower={this.appendToList.bind(this)} scrollWithAnimation>
+        <View style='padding-top: 30px;'></View>
+        <ScrollView scroll-y scroll-top="45" lowerThreshold='30' style='height:100vh;' onScrolltolower={this.appendToList.bind(this)} scrollWithAnimation>
           <View className="tabItemContent" hidden={this.state.currentNavtab === 0?false:true}>
             {this.state.onList.map((item,index)=>{
               return (

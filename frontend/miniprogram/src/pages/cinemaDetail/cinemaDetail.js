@@ -23,7 +23,8 @@ export default class CinemasDetail extends Component {
       activeIndex:0,
       tabIndex:0,
       dates:[],
-      dataList: {},
+      dataList: [],
+      allData: [],
       showDateList:[],
       dealList: [],
       phoneButton: false
@@ -49,23 +50,59 @@ export default class CinemasDetail extends Component {
         this.state.phoneButton = true;
       }
       Taro.request({
-        url:`baseUrl/index/cinemas/${cinemaId}/${movieId}`,
+        url:baseUrl + `/index/cinemas/${cinemaId}/${movieId}`,
         method:'GET',
         header:{'token':token.token}
       }).then(res=>{
         if(res.statusCode == 200){
           Taro.hideLoading();
           let data = res.data.data;
-          this.state.showDateList = [];
-          data.dates.map((item,index)=>{
-            this.state.showDateList.push(this.formatDateString(item));
+          let showDateList = [];
+
+          let movieIds = [];
+          data.movies.map((item,index)=>{
+            if(item.filmId == this.state.reqList.movieId){
+              this.state.activeIndex = index;
+            }
+            movieIds.push(item.filmId);
           });
+
+          let activeIndex = this.state.activeIndex;
+          let dataList  = data.list;
+          let tabIndex = this.state.tabIndex;
+          debugger
+          if(this.state.reqList.movieId == "123"){
+            this.state.reqList.movieId = movieIds[activeIndex];
+          }
+          //日期
+          let selecMovieData = dataList[this.state.reqList.movieId];
+          let dates = [];
+          Object.keys(selecMovieData).map(key => {
+            dates.push(key);
+            showDateList.push(this.formatDateString(key));
+          });
+
+          dataList = selecMovieData[dates[tabIndex]];
+          //去掉超时数据
+            if(dataList.length > 0 && dataList[0].showDate == this.state.dates[0]){
+               let tempList = [];
+               dataList.map(item=>{
+                   let flag = new Date(item.showTime)- Date.now()>1*60*60*1000;
+                    if(flag){
+                      tempList.push(item);
+                    }
+               })
+               dataList = tempList;
+            }
+
           self.setState({
             cinemaData: data.cinema,
             movieData: data.movies,
             bg: data.movies[0].pic,
-            dates: data.dates,
-            dataList: data.list
+            dates: dates,
+            showDateList: showDateList,
+            dataList: dataList,
+            allData: data.list
           },()=>{
             Taro.setNavigationBarTitle({
               title:data.cinema.cinemaName
@@ -80,6 +117,22 @@ export default class CinemasDetail extends Component {
   }
   selected(item,index,viewId){
 
+    let showDate = '';
+    let dates = [];
+    let showDateList = [];
+    let movieId = item.filmId;
+    let selecMovieData = this.state.allData[movieId];
+    Object.keys(selecMovieData).map(key => {
+      if(showDate == ''){
+        showDate = key;
+      }
+      dates.push(key);
+      showDateList.push(this.formatDateString(key));
+    });
+    let dataList = selecMovieData[showDate];
+    if(typeof(dataList) == 'undefined'){
+      dataList = [];
+    }
     const self = this;
     this.setState({
       reqList:{
@@ -87,12 +140,22 @@ export default class CinemasDetail extends Component {
       },
       bg:item.pic,
       activeIndex:index,
-      viewId:viewId
+      viewId:viewId,
+      dataList: dataList,
+      dates: dates,
+      showDateList: showDateList
     });
   }
   chooseItem(index){
+    let movieId = this.state.reqList.movieId;
+    let dates = this.state.dates;
+    let dataList = this.state.allData[movieId][dates[index]];
+    if(typeof(dataList) == 'undefined'){
+      dataList = [];
+    }
     this.setState({
-      tabIndex:index
+      tabIndex:index,
+      dataList: dataList
     });
   }
   navigateToMap(url,cinemaData){
@@ -174,49 +237,7 @@ export default class CinemasDetail extends Component {
   }
 
   render () {
-    let movieIds = [];
-    let cinemaData = this.state.movieData?this.state.cinemaData:{};
-    let showData = this.state.movieData?this.state.movieData:[];
-    showData.map((item,index)=>{
-      if(item.filmId == this.state.reqList.movieId){
-        this.state.activeIndex = index;
-        this.selected(item,index,'view'+item.filmId);
-      }
-      movieIds.push(item.filmId);
-    });
-    let activeIndex = this.state.activeIndex;
-    let dataLists = this.state.movieData?this.state.dataList:[];
-    let dateLists = this.state.dates;
-    let tabIndex = this.state.tabIndex;
-    let dataList = [];
-    if(this.state.reqList.movieId != "123"){
-      dataList = dataLists.length == 0?[]:dataLists[this.state.reqList.movieId][dateLists[tabIndex]];
-    }else{
-      if(movieIds.length > 0){
-        this.state.reqList.movieId = movieIds[activeIndex];
-        dataList = dataLists.length == 0?[]:dataLists[movieIds[activeIndex]][dateLists[tabIndex]];
-      }
-    }
-
-
-    if(typeof(dataList) == 'undefined'){
-      dataList = [];
-    }else{
-      if(dataList.length > 0 && dataList[0].showDate == this.state.dates[0]){
-         let tempList = [];
-         dataList.map(item=>{
-             let flag = new Date(item.showTime)- Date.now()>1*60*60*1000;
-              if(flag){
-                tempList.push(item);
-              }
-         })
-         dataList = tempList;
-      }
-    }
-
-    //小吃
-    let dealList = this.state.movieData? this.state.dealList:{};
-    let reqList = this.state.reqList;
+    const { cinemaData,movieData,activeIndex,tabIndex,dealList,reqList,dataList,dates,phoneButton } = this.state;
 
     return(
       <View className="cinemaDetail">
@@ -238,18 +259,18 @@ export default class CinemasDetail extends Component {
               scrollTop='0'
               style="height:130Px;"
               id="swiper"
-              scrollIntoView={this.state.viewId}
+              scrollIntoView={this.state.viewId} enable-fle
           >
-                        {showData.map((item,index)=>{
+                        {movieData.map((item,index)=>{
                           return (
-                              <Image  src={item.pic} key={item.filmId}  id={'view'+item.filmId} onClick={this.selected.bind(this,item,index,e.currentTarget.id)} className={ item.filmId ==  this.state.reqList.movieId?'active img':'img'}></Image>
+                              <Image  src={item.pic} key={item.filmId}  id={'view'+item.filmId} onClick={this.selected.bind(this,item,index,this.currentTarget.id)} className={ item.filmId ==  this.state.reqList.movieId?'active img':'img'}></Image>
                           );
                         })}
             </ScrollView>
         </View>
         <View className="movieInfo">
           <View className="movieName">
-            {showData[activeIndex].name}<Text className="comment">{showData[activeIndex].grade *1 /10}分</Text>
+            {movieData[activeIndex].name}<Text className="comment">{movieData[activeIndex].grade *1 /10}分</Text>
           </View>
           <View className="movieDesc"></View>
         </View>
@@ -260,7 +281,7 @@ export default class CinemasDetail extends Component {
           style="height:50Px;">
           {showDateList.map((item,index)=>{
             return (
-              <View key={index} className={this.state.tabIndex == index?'selected dateItem':'dateItem'} onClick={this.chooseItem.bind(this,index)}>{item}</View>
+              <View key={index} className={tabIndex == index?'selected dateItem':'dateItem'} onClick={this.chooseItem.bind(this,index)}>{item}</View>
             )
           })}
         </ScrollView>
@@ -283,10 +304,10 @@ export default class CinemasDetail extends Component {
                       <View className="price"><Text className="mark">￥{item.settlePrice > 40? Math.floor(item.settlePrice*100-600)/100:Math.floor(item.settlePrice*100-500)/100}</Text> {item.settlePrice}</View>
                       <View className="discount">已减￥{item.settlePrice >40 ? 6:5}</View>
                   </View>
-                  <View className="button" hidden={!this.state.phoneButton} onClick={this.navigateSeat.bind(this,'../seat/seat',item)}>
+                  <View className="button" hidden={!phoneButton} onClick={this.navigateSeat.bind(this,'../seat/seat',item)}>
                     购票
                   </View>
-                  <Button className="button" hidden={this.state.phoneButton} openType = 'getPhoneNumber' onGetPhoneNumber = {this.getTel}>
+                  <Button className="button" hidden={phoneButton} openType = 'getPhoneNumber' onGetPhoneNumber = {this.getTel}>
                     登陆
                   </Button>
                 </View>

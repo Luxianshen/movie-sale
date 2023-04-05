@@ -8,28 +8,27 @@ export default class Specialbar extends Component {
 
     }
   }
-  setBrand(brand){
-    Taro.setStorageSync('brand',brand);
-    this.$root.selectItem('special');
+
+  setArea(area){
+    debugger
+    Taro.setStorageSync('area',area);
+    //this.$root.selectItem('special');
   };
 
 
   render() {
-    let data = this.props.data;
+    const { data,showFlag }  = this.props;
+
     return (
-      <View className={this.props.type =='special'?'specialBar':'specialBar hide'}>
-        <ScrollView
-        scrollY
-        style='height: 250Px;'
-        scrollWithAnimation
-        >
-          {
-            data.map((item,index)=>{
-              return (
-                <View className="brandItem" onClick={this.setBrand.bind(this,item)} key={index}>{item}<Text className="count"></Text></View>
-              )
-            })
-          }
+      <View className='specialBar' hidden = {!showFlag} >
+        <ScrollView scrollY style='height: 250Px;'  scrollWithAnimation  >
+        {
+                  data.map((item,index)=>{
+                    return (
+                      <View className="brandItem" onClick={this.setArea.bind(this,item.areaName)}  key={item.id}>{item.areaName}<Text className="count"></Text></View>
+                    )
+                  })
+                }
         </ScrollView>
       </View>
     )

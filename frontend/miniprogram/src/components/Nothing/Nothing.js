@@ -12,8 +12,7 @@ export default class Nothing extends Component {
 
 
   render() {
-    let data = this.props.data;
-    let hideFlag = this.props.hideFlag;
+    const { data ,hideFlag} = this.props;
     return (
       <View class='nothing' hidden={hideFlag}>
         <Image src={nothing} class='nothing-img'></Image>

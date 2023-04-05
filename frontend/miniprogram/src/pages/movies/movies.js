@@ -1,6 +1,6 @@
 import Taro, { Component } from "@tarojs/taro";
 import { View } from "@tarojs/components";
-import Toptab from "../../components/Toptab/Toptab.js";
+import { Toptab } from "../../components/Toptab/Toptab.js";
 import "./movies.scss";
 export default class Movies extends Component {
   config = {

@@ -1,5 +1,5 @@
 import Taro, {Component} from '@tarojs/taro'
-import {View,Text,MovableView} from '@tarojs/components'
+import {View,Text,MovableView,MovableArea} from '@tarojs/components'
 import './seat.scss'
 export default class Seat extends Component {
   config = {
@@ -45,7 +45,7 @@ export default class Seat extends Component {
       title: "加载中..."
     });
     Taro.request({
-      url: `baseUrl/index/seat/${cinemaName}/${showId}`,
+      url: baseUrl + `/index/seat/${cinemaName}/${showId}`,
       method: 'get'
     }).then(res => {
       if (res.statusCode == 200) {
@@ -59,24 +59,25 @@ export default class Seat extends Component {
 
           if (runData.length > 0) {
             let arr = [];
-            let dealEmpty = true;
+            let runNo = 0;
             runData.map((seat, seatTemp) => {
 
               let columnNo = seat["columnNo"] *1;
-              if(dealEmpty && columnNo > seatTemp+1){
-                //补不可选
-                let run = columnNo- seatTemp-1;
+              if(columnNo > runNo+1){
+                let run = columnNo- runNo-1;
                 for(let i=0; i< run; i++){
                 		arr.push('E')
                 	}
-                  dealEmpty = false;
+                  runNo = columnNo;
+
+              }else{
+                runNo = runNo+1;
               }
                 if (seat["status"] == "N") {
                   arr.push('0');
                 } else {
                   arr.push('E')
                 }
-
 
             })
             seatArray.push(arr);
@@ -218,8 +219,9 @@ export default class Seat extends Component {
         hall.hallName
       } < /View> < /
       View >
+
       <View className = "seatMore" >
-      
+
       <View className = "rowList" > {seatRow.map((item, index) => {
           return (
           <View className = "numberId" key = {key} > {index + 1} < /View>
@@ -244,9 +246,8 @@ export default class Seat extends Component {
             })
         }
         </View>
-       
-
         < /View >
+
         </View>
         <View className = "type" > {
           seatTypeList.map((item, index) => {

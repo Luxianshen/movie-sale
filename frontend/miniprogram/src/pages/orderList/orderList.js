@@ -1,7 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View,Text, Button} from '@tarojs/components'
 import './orderList.scss'
-import Nothing from "../../components/Nothing/Nothing";
+import {Nothing} from "../../components/Nothing/Nothing";
 
 export default class OrderList extends Component {
   config = {
@@ -9,19 +9,11 @@ export default class OrderList extends Component {
   }
   constructor(props){
     super(props);
-    let token = Taro.getStorageSync("token");
     this.state = {
-      token:token,
-      brand:'',
-      area:'',
-      type:'',
-      cityName:'',
-      areaData:[],
-      brandData:[],
-      selectItems:[{nm:'全城',type:'brand'},{nm:'品牌',type:'special'}],
       offset:1,
       orders:[],
-      loadFlag: true
+      loadFlag: true,
+      hideFlag: true
     }
   }
 
@@ -37,7 +29,7 @@ export default class OrderList extends Component {
     });
     Taro.request({
       method:'GET',
-      url:`baseUrl/cz/order/myOrderPage/`+offset,
+      url: baseUrl + `/cz/order/myOrderPage/`+offset,
       header:{'token':token.token}
     }).then(res=>{
       if(res.statusCode == 200){
@@ -63,8 +55,11 @@ export default class OrderList extends Component {
             self.state.orders = [];
             this.forceUpdate();
           }
+          let orders = self.state.orders.concat(data);
+          let hideFlag = orders.length == 0;
           self.setState({
-            orders:self.state.orders.concat(data)
+            orders: orders,
+            hideFlag: hideFlag
           });
         }
       }
@@ -86,7 +81,7 @@ export default class OrderList extends Component {
   payOrder(orderId){
     let token = Taro.getStorageSync('token');
     Taro.request({
-      url: `baseUrl/order/payOrder/${orderId}`,
+      url: baseUrl + `/order/payOrder/${orderId}`,
       method: 'POST',
       header: { 'token': token.token }
     }).then(res => {
@@ -132,7 +127,7 @@ export default class OrderList extends Component {
     let self = this;
     let token = Taro.getStorageSync('token');
     Taro.request({
-      url: `baseUrl/order/closeOrder/${orderId}`,
+      url: baseUrl + `/order/closeOrder/${orderId}`,
       method: 'DELETE',
       header: { 'token': token.token }
     }).then(res => {
@@ -149,7 +144,8 @@ export default class OrderList extends Component {
 
   render () {
 
-    let orders = this.state.orders ? this.state.orders :[];
+    const { orders,hideFlag } = this.state;
+
     return (
 
       <ScrollView className='orders' scrollY
@@ -157,13 +153,12 @@ export default class OrderList extends Component {
         scrollTop='0'
         style='height: 100vh;'
         onScrolltolower={this.loadMore.bind(this)}
-        lowerThreshold='20'
-      >
+        lowerThreshold='20' enable-flex >
      <View className="things">
       <View className="title">订单列表</View>
      </View>
 
-        <View class='container order-list-page' hidden={orders.length==0?true:false}>
+        <View class='container order-list-page' hidden={hideFlag}>
         {orders.map(item =>{
           return(
           <View class='order-item'>
@@ -198,7 +193,7 @@ export default class OrderList extends Component {
           }
         </View>
 
-      <Nothing data = '暂无记录呢' hideFlag = {orders.length == 0? false:true} />
+      <Nothing data = '暂无记录呢' hideFlag = {!hideFlag} />
       </ScrollView>
     )
   }
