@@ -21,6 +21,8 @@ export default class Person extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      avatarPng: avatarPng,
+      phone: '阿刘',
       currentTab: 0,
       listItems: ["微信一键登录"]
     }
@@ -28,14 +30,22 @@ export default class Person extends Component {
   componentDidShow() {
      let token = Taro.getStorageSync("token");
      if (typeof(token.phone) != 'undefined') {
-       this.state.currentTab ==1;
+       this.setState({
+         currentTab: 1,
+         phone: token.phone,
+         avatarPng: token.avatar
+       })
        this.switchTab(1);
      }
   }
   componentDidMount() {
     let token = Taro.getStorageSync("token");
     if (typeof(token.phone) != 'undefined') {
-      this.state.currentTab ==1;
+      this.setState({
+        currentTab: 1,
+        phone: token.phone,
+        avatarPng: token.avatar
+      })
       this.switchTab(1);
     }
   }
@@ -85,7 +95,11 @@ export default class Person extends Component {
         if (res.statusCode == '200') {
           Taro.setStorageSync("token", res.data.data.token);
           console.log(token);
-          this.state.currentTab = 1;
+          this.setState({
+            currentTab: 1,
+            phone: res.data.data.token.phone,
+            avatarPng: res.data.data.token.avatar
+          })
           this.switchTab(1);
         }
       })
@@ -116,6 +130,7 @@ export default class Person extends Component {
   }
 
   render() {
+    const {avatarPng,phone} = this.state;
     return (
     <view>
     <View className="userCenter" hidden = {
@@ -125,7 +140,7 @@ export default class Person extends Component {
         <View className="avatar">
           <Image src={avatarPng}></Image>
         </View>
-        <View className="name">阿刘</View>
+        <View className="name">{phone}</View>
       </View>
       <View className="order">
         <View className="myOrder">
