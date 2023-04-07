@@ -10,6 +10,7 @@ import com.github.lujs.commmon.annotation.Token;
 import com.github.lujs.model.Response;
 import com.github.lujs.model.pojo.Seat;
 import com.github.lujs.model.pojo.SeatData;
+import com.github.lujs.model.pojo.SeatNew;
 import com.github.lujs.model.pojo.WxLocation;
 import com.github.lujs.model.query.NormalQuery;
 import com.github.lujs.util.LocationUtil;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -125,7 +127,7 @@ public class IndexController {
     /**
      * 电影院 详
      */
-    @GetMapping("/seat/{cinemaName}/{showId}")
+    /*@GetMapping("/seat/{cinemaName}/{showId}")
     public String seat(@PathVariable("cinemaName") String cinemaName, @PathVariable("showId") String showId) {
 
         String seat = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/seat-plan/from-qmm", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=&longitude=&cityId=&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&cinemaName=" + cinemaName + "&showId=" + showId);
@@ -136,7 +138,28 @@ public class IndexController {
         String result = JSONUtil.toJsonStr(response);
 
         return result;
+    }*/
+
+    /**
+     * 电影院 详
+     */
+    @GetMapping("/seat/{cinemaName}/{showId}")
+    public String seat1(@PathVariable("cinemaName") String cinemaName, @PathVariable("showId") String showId) {
+
+        String seat = HttpUtil.post("https://yp-api.taototo.cn/yp-api/movie/seat-plan/from-qmm", "lat=&lng=&mode=qmm&app_key=&domainName=https%3A%2F%2Fgw.taototo.cn%2F&token=&platformUUID=123&latitude=&longitude=&cityId=&evnType=h5&envType=h5&userUUID=123&v=&isCouponPop=&ci=8&cinemaName=" + cinemaName + "&showId=" + showId);
+        Response response = JSONUtil.toBean(seat, Response.class);
+        SeatData seatData = JSONUtil.toBean(((JSONObject) response.getData()).getStr("seatData"), SeatData.class);
+        Map<String, List<Seat>> collect = seatData.getSeats().stream().collect(Collectors.groupingBy(Seat::getRowNo));
+        List<SeatNew> dataList = new ArrayList<>();
+        collect.forEach((key, value) -> value.forEach(item -> {
+            String type = "N".equals(item.getStatus()) ? "0" : "0-2";
+            String flag = 0 == item.getLovestatus() ? "0" : "1";
+            dataList.add(new SeatNew(item.getSeatId(), item.getSeatNo(), item.getRowNo(), item.getColumnNo(), type, flag));
+        }));
+
+        return JSONUtil.toJsonStr(dataList);
     }
+
 
     @GetMapping("/house")
     public String house(HttpServletRequest request) {

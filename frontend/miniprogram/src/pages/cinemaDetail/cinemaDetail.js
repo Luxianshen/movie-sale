@@ -22,6 +22,7 @@ export default class CinemasDetail extends Component {
       viewId:'',
       activeIndex:0,
       tabIndex:0,
+      today:'',
       dates:[],
       dataList: [],
       allData: [],
@@ -70,7 +71,6 @@ export default class CinemasDetail extends Component {
           let activeIndex = this.state.activeIndex;
           let dataList  = data.list;
           let tabIndex = this.state.tabIndex;
-          
           if(this.state.reqList.movieId == "123"){
             this.state.reqList.movieId = movieIds[activeIndex];
           }
@@ -84,7 +84,7 @@ export default class CinemasDetail extends Component {
 
           dataList = selecMovieData[dates[tabIndex]];
           //去掉超时数据
-            if(dataList.length > 0 && dataList[0].showDate == this.state.dates[0]){
+            if(dataList.length > 0 && dataList[0].showDate == data.dates[0]){
                let tempList = [];
                dataList.map(item=>{
                    let flag = new Date(item.showTime)- Date.now()>1*60*60*1000;
@@ -102,7 +102,8 @@ export default class CinemasDetail extends Component {
             dates: dates,
             showDateList: showDateList,
             dataList: dataList,
-            allData: data.list
+            allData: data.list,
+            today: data.dates[0]
           },()=>{
             Taro.setNavigationBarTitle({
               title:data.cinema.cinemaName
@@ -115,6 +116,7 @@ export default class CinemasDetail extends Component {
     })
 
   }
+
   selected(item,index,viewId){
 
     let showDate = '';
@@ -133,6 +135,18 @@ export default class CinemasDetail extends Component {
     if(typeof(dataList) == 'undefined'){
       dataList = [];
     }
+    //去掉超时数据
+      if(dataList.length > 0 && dataList[0].showDate == this.state.today){
+         let tempList = [];
+         dataList.map(item=>{
+             let flag = new Date(item.showTime)- Date.now()>1*60*60*1000;
+              if(flag){
+                tempList.push(item);
+              }
+         })
+         dataList = tempList;
+      }
+
     const self = this;
     this.setState({
       reqList:{
@@ -153,6 +167,17 @@ export default class CinemasDetail extends Component {
     if(typeof(dataList) == 'undefined'){
       dataList = [];
     }
+    //去掉超时数据
+      if(dataList.length > 0 && dataList[0].showDate == this.state.today){
+         let tempList = [];
+         dataList.map(item=>{
+             let flag = new Date(item.showTime)- Date.now()>1*60*60*1000;
+              if(flag){
+                tempList.push(item);
+              }
+         })
+         dataList = tempList;
+      }
     this.setState({
       tabIndex:index,
       dataList: dataList

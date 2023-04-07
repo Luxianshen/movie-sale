@@ -10,11 +10,14 @@ export default class Seat extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      cinemaName:'',
+      showId:'',
       movieName: undefined,
       planDetail: undefined,
       seatList: [],
       seatMap:{},
       selectedSeat: [],
+      selectedIndex: [],
       hallName: undefined,
       scaleValue: 1,
       hidden: "hidden",
@@ -25,7 +28,8 @@ export default class Seat extends Component {
       seatArea: 0,
       rpxToPx: 0,
       maxX:0,
-      maxY:0
+      maxY:0,
+      settlePrice:0
     }
 
   }
@@ -35,6 +39,12 @@ export default class Seat extends Component {
   }
 
   componentDidShow(){
+
+    const params = this.$router.params;
+    this.state.cinemaName = params.cinemaName;
+    this.state.showId = params.showId;
+    let item = JSON.parse(decodeURIComponent(params.item));
+
     const res = Taro.getSystemInfoSync();
     console.log(res.screenHeight);
     let seatArea = res.screenHeight - res.statusBarHeight - (500 * res.screenWidth / 750);
@@ -47,45 +57,60 @@ export default class Seat extends Component {
       title: '加载中',
     })
 
+    Taro.showLoading({
+      title: "加载中..."
+    });
+    Taro.request({
+      url: "http://127.0.0.1:8080" + `/index/seat1/${this.state.cinemaName}/${this.state.showId}`,
+      method: 'get'
+    }).then(res => {
+      if (res.statusCode == 200) {
+        Taro.hideLoading();
+        let result = jsonData.dataList;
+        let data  = res.data;
+        let seatList = this.prosessSeatList(data,result.seatTypeList);
+        this.setState({
+          movieName: item.filmName,
+          planDetail: item.showTime,
+          hallName: item.hallName,
+          seatList: seatList,
+          seatTypeList: result.seatTypeList,
+          selectedSeat: [],
+          totalPrice: 0,
+          hidden: "hidden",
+          settlePrice: item.settlePrice
+        });
+        setTimeout(function() {
+          wx.hideLoading()
+        }, 1000)
+        //计算X和Y坐标最大值
+        this.prosessMaxSeat(seatList);
+        //计算左侧座位栏的数组
+        this.seatToolArr();
+        //按每排生成座位数组对象
+        this.creatSeatMap(seatList);
+        //确认最佳坐标座位
+        this.creatBestSeat(this.state.maxX,this.state.maxY);
+
+
+        }else{
+          wx.hideLoading()
+          wx.showToast({
+            title: '获取座位图失败',
+            icon: 'none',
+            duration: 2000
+          })
+          setTimeout(function() {
+            wx.navigateBack({
+              delta: 1, // 回退前 delta(默认为1) 页面
+            })
+          }, 1000)
+        }
+    });
+
     //---这此替换成自己的接口请求成功后--start--
-    let result = jsonData.dataList;
-    Taro.hideLoading();
-    if (result.errorCode == 0) {
-      let seatList = this.prosessSeatList(result);
-      this.setState({
-        movieName: result.movieName,
-        planDetail: result.showTime,
-        hallName: result.name,
-        seatList: seatList,
-        seatTypeList: result.seatTypeList,
-        selectedSeat: [],
-        totalPrice: 0,
-        hidden: "hidden"
-      });
-      setTimeout(function() {
-        wx.hideLoading()
-      }, 1000)
-      //计算X和Y坐标最大值
-      this.prosessMaxSeat(seatList);
-      //计算左侧座位栏的数组
-      this.seatToolArr();
-      //按每排生成座位数组对象
-      this.creatSeatMap(seatList);
-      //确认最佳坐标座位
-      this.creatBestSeat(this.state.maxX,this.state.maxY);
-    } else {
-      wx.hideLoading()
-      wx.showToast({
-        title: '获取座位图失败',
-        icon: 'none',
-        duration: 2000
-      })
-      setTimeout(function() {
-        wx.navigateBack({
-          delta: 1, // 回退前 delta(默认为1) 页面
-        })
-      }, 1000)
-    }
+
+
     //---这此替换成自己的接口请求成功后--end-
 
   }
@@ -105,8 +130,8 @@ export default class Seat extends Component {
   /**
    * 顶级顶部返回按钮时候
    */
-  prosessSeatList(response) {
-    let resSeatList = response.seatList
+  prosessSeatList(resSeatList,seatTypeList) {
+
     resSeatList.forEach(element => {
 
       let firstNumber = element.type.substr(0, 1);
@@ -134,7 +159,7 @@ export default class Seat extends Component {
         }
       }
       // 加载座位的图标
-      let seatType = response.seatTypeList;
+      let seatType = seatTypeList;
       for (const key in seatType) {
         // 加载每个座位的初始图标defautIcon 和 当前图标 nowIcon
         if (element.type === seatType[key].type) {
@@ -229,9 +254,9 @@ export default class Seat extends Component {
 
     if (this.state.seatList[index].canClick) {
       if (this.state.seatList[index].nowIcon === this.state.seatList[index].selectedIcon) {
-        this.processSelected(index)
+        this.processSelected(index);
       } else {
-        this.processUnSelected(index)
+        this.processUnSelected(index);
       }
     }
     if (this.state.selectedSeat.length == 0) {
@@ -243,7 +268,7 @@ export default class Seat extends Component {
     let _selectedSeatList = this.state.selectedSeat
     let totalPrice = 0
     for (const key in _selectedSeatList) {
-      let price = parseInt(_selectedSeatList[key].price);
+      let price = parseInt(this.state.settlePrice);
       totalPrice += price;
     }
     this.setState({
@@ -498,7 +523,6 @@ export default class Seat extends Component {
   }
   //生成最佳座位
   creatBestSeat(maxX,maxY) {
-    debugger
     // 优先左侧
     var bestX = parseInt(maxX / 2) + 1
     // 四舍五入  0.618为黄金分割比例
@@ -605,7 +629,7 @@ export default class Seat extends Component {
     let _selectedSeatList = _self.selectedSeat
     let totalPrice = 0
     for (const key in _selectedSeatList) {
-      let price = parseInt(_selectedSeatList[key].price);
+      let price = parseInt(this.state.settlePrice);
       totalPrice += price;
     }
     this.setState({
@@ -830,12 +854,12 @@ export default class Seat extends Component {
 
    {selectedSeat.map((item, index) => {
        return (
-       <View className="scrollItem" >
+       <View className="scrollItem" onClick={this.clickSeat.bind(this,index)} >
       <View className='scrollTextTop'>
-        {item.row}排{item.col}座
+        {item.seatNo}
       </View>
       <View className='scrollTextBottom'>
-        ￥{item.price}
+        ￥5
       </View>
       <Image src='/images/close.png'></Image>
    </View>)})}
@@ -846,16 +870,16 @@ export default class Seat extends Component {
 
 <View className='selectSeatInfo' hidden={!hidden}>
   <ScrollView className="scrollSeat" scroll-x style="width: 100%">
-    <View className='quickItem' onClick={this.quickSeat.bind(this,1)}>
+    <View className='quickItem' >
       1人座
     </View>
-    <View className='quickItem' onClick={this.quickSeat.bind(this,2)}>
+    <View className='quickItem' >
       2人座
     </View>
-    <View className='quickItem' onClick={this.quickSeat.bind(this,3)}>
+    <View className='quickItem' >
       3人座
     </View>
-    <View className='quickItem' onClick={this.quickSeat.bind(this,4)}>
+    <View className='quickItem' >
       4人座
     </View>
   </ScrollView>
