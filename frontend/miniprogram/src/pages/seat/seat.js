@@ -220,8 +220,36 @@ export default class Seat extends Component {
       } < /View> < /
       View >
 
-      <View className = "seatMore" >
 
+  <MovableArea className = "seatMore">
+     <View className = "rowList" > {seatRow.map((item, index) => {
+          return (<View className = "numberId" key = {key} > {index + 1} < /View>)})} </View>
+          
+        <MovableView className = "Container" direction='all'>
+
+        {Object.keys(seatArray).map(key => {
+              return (
+              <View className = "rowWrap" key = {key} > {
+                  seatArray[key].map((item, index) => {
+                      return (
+                      <View className = "seatWrap" key = {index} > {item == '0' ?
+                      < Image src = {seatMap.can}
+                          onClick = {this.selectSeat.bind(this, key, index, item)} >
+                           </Image>:(item == '2'?<Image src={seatMap.select}  onClick={this.selectSeat.bind(this,key,index,item)}></Image >
+                          :<Text > < /Text>)}
+                          < /View >
+                        )
+                      })
+                  } </View>
+                )
+              })
+          }
+        </MovableView>
+      </MovableArea>
+
+
+      <View className = "seatMore" >
+      <View class='alignLine'></View>
       <View className = "rowList" > {seatRow.map((item, index) => {
           return (
           <View className = "numberId" key = {key} > {index + 1} < /View>

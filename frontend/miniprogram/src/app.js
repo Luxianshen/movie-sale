@@ -13,7 +13,7 @@ class App extends Component {
       "pages/content/content",
       "pages/cinemaDetail/cinemaDetail",
       "pages/map/map",
-      "pages/seat/seat",
+      "pages/seat1/seat",
       "pages/user/user",
       "pages/order/order",
       "pages/orderList/orderList"

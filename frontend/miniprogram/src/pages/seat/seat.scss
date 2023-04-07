@@ -178,3 +178,26 @@
  height: 0;
  color: transparent;
 }
+
+.alignLine {
+  position: absolute;
+  left: 50%;
+  height: 50%;
+  border-left: 1px dashed #aaa;
+  transform: translateX(-100%);
+}
+
+.seatArea {
+  margin: 0 auto;
+  font-size: 10rpx;
+  position: relative;
+}
+.seatTap {
+  position: absolute;
+}
+
+.movableOne {
+  box-sizing: border-box;
+  padding: 100rpx 60rpx;
+  color: #fff;
+}
