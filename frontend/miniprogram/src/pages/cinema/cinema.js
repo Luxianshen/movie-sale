@@ -88,12 +88,14 @@ export default class Cinema extends Component {
     return year+month+day;
   }
   getSelectData(){
+    let token = Taro.getStorageSync("token");
     Taro.showLoading({
       title:"加载中"
     });
     Taro.request({
       method:'GET',
       url:baseUrl + `/index/house`,
+      header: { 'token': token.token }
     }).then(res=>{
       if(res.statusCode == 200){
         Taro.hideLoading();

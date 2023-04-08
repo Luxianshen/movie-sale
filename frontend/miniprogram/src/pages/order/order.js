@@ -32,6 +32,7 @@ export default class Map extends Component {
 
     const params = this.$router.params;
     let item = JSON.parse(decodeURIComponent(params.item));
+    debugger
     this.setState({
       cinemaName:params.cinemaName,
       item:item,
@@ -92,11 +93,10 @@ export default class Map extends Component {
     this.initParams();
   }
   render () {
-    let showData = this.state.item? this.state.item:{};
-    let money = this.state.price * this.state.buyNum;
-    let cinemaName = this.state.cinemaName;
-    let seatInfo = this.state.seatInfo;
+    const {item,price,buyNum,cinemaName,seatInfo} = this.state;
+
     let token = Taro.getStorageSync("token");
+
     return (
       <View className="order">
         <View className="timeDown">
@@ -106,15 +106,15 @@ export default class Map extends Component {
 
        <View className="detailBox">
          <View className ="bg">
-           <view className="blurBg"></view>
+           <View className="blurBg"></View>
            <View className="detailContent">
-             <Image className="poster" src={showData.bg}></Image>
+             <Image className="poster" src={item.bg}></Image>
              <View className="detailInfo">
              <View className="title">影院: {cinemaName}</View>
-               <View className="title">电影: {showData.filmName}</View>
-               <View className="title">厅名: {showData.hallName}</View>
+               <View className="title">电影: {item.filmName}</View>
+               <View className="title">厅名: {item.hallName}</View>
                <View className="title">座位: {seatInfo}</View>
-               <View className="time">时间: {showData.showTime}</View>
+               <View className="time">时间: {item.showTime}</View>
              </View>
            </View>
          </View>
@@ -137,7 +137,7 @@ export default class Map extends Component {
           <View className="totalMoney">
             <View className="name">小计</View>
             <View className="total">
-              ￥{money}
+              ￥{price*buyNum}
             </View>
           </View>
         </View>
@@ -145,9 +145,12 @@ export default class Map extends Component {
         <View className="afford">
           <View className="tickerInfo">
             <View className="info">不支持退票、改签</View>
-            <View className="moneyAll">￥{money}</View>
+            <View className="moneyAll">￥{price*buyNum}</View>
           </View>
-          <View className="affordBtn" onClick={this.createOrder.bind(this)}>确认支付</View>
+
+        </View>
+        <View className='orderComfirm' style="flex-direction:row;">
+           <View className="affordBtn" onClick={this.createOrder.bind(this)}>确认支付</View>
         </View>
       </View>
     )

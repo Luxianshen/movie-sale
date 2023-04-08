@@ -135,6 +135,8 @@ export default class Toptab extends Component{
                 if(res.statusCode == 200){
                  _this.state.name = res.data.data.cityName;
                  Taro.setStorageSync("token",res.data.data);
+                 Taro.setStorageSync("cityName",res.data.data.cityName);
+                 _this.forceUpdate();
                 }
               })
 
@@ -178,6 +180,7 @@ export default class Toptab extends Component{
                   header:{'token':token.token}
                 }).then(res=>{
                   if(res.statusCode == 200){
+                    debugger
                    _this.state.name = res.data.data.cityName;
                    Taro.setStorageSync("token",res.data.data);
                    wx.showToast({
@@ -203,12 +206,12 @@ export default class Toptab extends Component{
                   });
                 }
   render(){
-    const { expectData,cityName } = this.state;
+    const { name,expectData,cityName } = this.state;
     return (
       <View>
         <View className='top-tab flex-wrp flex-tab' >
             <View className="location"  onClick={this.toPosition.bind()} >
-              {this.state.name}
+              {name}
               <View className="cityArrow"></View>
             </View>
             {

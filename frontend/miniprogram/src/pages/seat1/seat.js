@@ -1,7 +1,12 @@
 import Taro, {Component} from '@tarojs/taro'
-import {View,Text,MovableView,MovableArea, ScrollView} from '@tarojs/components'
-import './seat.scss'
+import {View,Text,MovableView,MovableArea, ScrollView,Image} from '@tarojs/components'
+import './seat.scss';
 import jsonData  from './data/json.js';
+import ableIcon from "../../assets/images/ableIcon.png";
+import disableIcon from "../../assets/images/disableIcon.png";
+import saleIcon from "../../assets/images/saleIcon.png";
+import repairIcon from "../../assets/images/repairIcon.png";
+
 
 export default class Seat extends Component {
   config = {
@@ -10,6 +15,7 @@ export default class Seat extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      item:{},
       cinemaName:'',
       showId:'',
       movieName: undefined,
@@ -44,6 +50,7 @@ export default class Seat extends Component {
     this.state.cinemaName = params.cinemaName;
     this.state.showId = params.showId;
     let item = JSON.parse(decodeURIComponent(params.item));
+    this.state.item = item;
 
     const res = Taro.getSystemInfoSync();
     console.log(res.screenHeight);
@@ -52,6 +59,8 @@ export default class Seat extends Component {
 
     this.state.seatArea =  seatArea;
     this.state.rpxToPx = rpxToPx;
+    
+    let token = Taro.getStorageSync("token");
 
     Taro.showLoading({
       title: '加载中',
@@ -61,8 +70,9 @@ export default class Seat extends Component {
       title: "加载中..."
     });
     Taro.request({
-      url: "http://127.0.0.1:8080" + `/index/seat1/${this.state.cinemaName}/${this.state.showId}`,
-      method: 'get'
+      url: baseUrl + `/index/seat/${this.state.cinemaName}/${this.state.showId}`,
+      method: 'get',
+      header: { 'token': token.token }
     }).then(res => {
       if (res.statusCode == 200) {
         Taro.hideLoading();
@@ -504,22 +514,25 @@ export default class Seat extends Component {
   /**
    * 点击确认选择开始生成订单
    */
-  createOrder() {
+  createOrder(url) {
+
     let _this = this.state
-    var seatIds = [];
     let selectSeatInfo = _this.selectedSeat;
+    let seatInfo = '';
     if (selectSeatInfo) {
       for (var i = 0; i < selectSeatInfo.length; i++) {
-        seatIds.push(selectSeatInfo[i].id);
+        seatInfo = seatInfo +selectSeatInfo[i].seatNo+";";
       }
     }
-    //这里编写开始创建订单逻辑
-    wx.showToast({
-      title: '这里编写开始创建订单逻辑~',
-      icon: 'none',
-      duration: 2000
-    })
-    return
+
+    let item = this.state.item;
+    let price = this.state.settlePrice;
+    let buyNum = selectSeatInfo.length;
+    let cinemaName = this.state.cinemaName;
+    url = url+`?cinemaName=${cinemaName}&buyNum=${buyNum}&price=${price}&seatInfo=${seatInfo}&item=${encodeURIComponent(JSON.stringify(item))}`
+    Taro.navigateTo({
+      url: url
+    });
   }
   //生成最佳座位
   creatBestSeat(maxX,maxY) {
@@ -854,12 +867,12 @@ export default class Seat extends Component {
 
    {selectedSeat.map((item, index) => {
        return (
-       <View className="scrollItem" onClick={this.clickSeat.bind(this,index)} >
+       <View className="scrollItem"  >
       <View className='scrollTextTop'>
         {item.seatNo}
       </View>
       <View className='scrollTextBottom'>
-        ￥5
+        ￥{this.state.settlePrice}
       </View>
       <Image src='/images/close.png'></Image>
    </View>)})}
@@ -870,16 +883,16 @@ export default class Seat extends Component {
 
 <View className='selectSeatInfo' hidden={!hidden}>
   <ScrollView className="scrollSeat" scroll-x style="width: 100%">
-    <View className='quickItem' >
+    <View className='quickItem' onClick ={this.quickSeat.bind(this,1)}>
       1人座
     </View>
-    <View className='quickItem' >
+    <View className='quickItem' onClick ={this.quickSeat.bind(this,2)}>
       2人座
     </View>
-    <View className='quickItem' >
+    <View className='quickItem' onClick ={this.quickSeat.bind(this,3)} >
       3人座
     </View>
-    <View className='quickItem' >
+    <View className='quickItem' onClick ={this.quickSeat.bind(this,4)}>
       4人座
     </View>
   </ScrollView>
@@ -887,7 +900,7 @@ export default class Seat extends Component {
 
 
 <View className='orderComfirm' style="flex-direction:row;">
-  <View className='comfirm' bindtap='confirmHandle'>￥
+  <View className='comfirm' onClick={this.createOrder.bind(this, '../order/order')}>￥
     <Text>{totalPrice}</Text> 元 确认选座</View>
 </View>
 

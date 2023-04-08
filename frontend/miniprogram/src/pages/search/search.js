@@ -10,7 +10,8 @@ export default class Search extends Component {
     super(props);
     this.state={
       keyWord:'',
-      cinemasList:[]
+      cinemasList:[],
+      hidden: true
 
     }
   }
@@ -18,6 +19,7 @@ export default class Search extends Component {
     this.searchList();
   }
   searchList(){
+
 
     let keyWord = this.state.keyWord;
     //let keyWord = '万达';
@@ -31,18 +33,18 @@ export default class Search extends Component {
       }).then(res=>{
         if(res.statusCode == 200){
             let data = res.data.data;
-            self.setState({
-                cinemasList:data.list
-            });
+            self.state.cinemasList =data.list;
+            self.state.hidden = data.list.length == 0;
         }
       })
     }
 
   }
   setKeyWord(value){
+
     let self = this;
     this.setState({
-      keyWord:value
+      keyWord:value.detail.value
     },()=>{
       self.searchList();
     })
@@ -71,7 +73,7 @@ export default class Search extends Component {
     });
   }
   render () {
-    const { keyWord,cinemasList}  = this.state;
+    const { keyWord,cinemasList,hidden}  = this.state;
 
     return (
       <ScrollView className='searchCon' scrollY
@@ -89,7 +91,7 @@ export default class Search extends Component {
         </View>
         <View className="history"></View>
         <View className="resultCon">
-          <View className="resultItem" hidden={cinemasList.length == 0?true:false}>
+          <View className="resultItem" >
             <View className="title">影院</View>
             {
               cinemasList.map((item,index)=>{

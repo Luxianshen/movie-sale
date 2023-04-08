@@ -103,12 +103,14 @@ export default class Detail extends Component {
     })
   }
   getSelectData(){
+    let token = Taro.getStorageSync("token");
     Taro.showLoading({
       title:"加载中"
     });
     Taro.request({
       method:'GET',
       url:baseUrl + `/index/house`,
+      header: { 'token': token.token }
     }).then(res=>{
       if(res.statusCode == 200){
         Taro.hideLoading();

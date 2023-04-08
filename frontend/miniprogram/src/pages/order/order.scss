@@ -88,17 +88,28 @@
         font-weight: 700;
       }
     }
-    .affordBtn{
-      width: 100%;
-      height: 40Px;
-      line-height: 40Px;
-      background-color: #ff9e05;
-      color: #fff;
-      text-align: center;
-      border-radius: 10px;
-    }
+    
   }
 }
+
+.orderComfirm {
+  background: #fff;
+  position: fixed;
+  display: flex;
+  bottom: 0rpx;
+  width: 100%;
+  line-height: 100rpx;
+  z-index: 3;
+}
+
+.affordBtn{
+      font-weight: 900;
+      text-align: center;
+      color: white;
+      width: 100%;
+      background: linear-gradient(to right, #C26DFE, #6F50F5);
+      height: 100rpx;
+    }
 
   .detailBox {
     position: relative;

@@ -36,13 +36,15 @@ public class CzTokenService implements ITokenService {
         String tokenKey = "CZ-" + IdUtil.getSnowflake(1L, 3L).nextIdStr();
 
         //base
-        CzToken token = BeanUtil.toBean(userDto, CzToken.class);
-        token.setToken(tokenKey);
+
         userDto.setLat(location.getLat());
         userDto.setLon(location.getLon());
         userDto.setCityId(location.getCityId());
         userDto.setCityName(location.getCityName());
         userDto.setCityCode(location.getCityCode());
+
+        CzToken token = BeanUtil.toBean(userDto, CzToken.class);
+        token.setToken(tokenKey);
         //缓存token 后端userId
         redisTemplate.opsForValue().set(tokenKey, userDto, 120, TimeUnit.MINUTES);
         return token;

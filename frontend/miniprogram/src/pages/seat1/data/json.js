@@ -1,12 +1,12 @@
 // 本地模拟json数据
 var json = {
-  
+
   "seatTypeList": [
     {
       "name": "可选",
       "type": "0",
       "seats": 1,
-      "icon": "https://i.postimg.cc/BbbWyY5D/image.png",
+      "icon": "../../assets/images/ableIcon.png",
       "isShow": "1",
       "position": "up"
     },
@@ -14,7 +14,7 @@ var json = {
       "name": "已选",
       "type": "0-1",
       "seats": 1,
-      "icon": "https://i.postimg.cc/1X2dd93h/image.png",
+      "icon": "../../assets/images/disableIcon.png",
       "isShow": "1",
       "position": "up"
     },
@@ -22,7 +22,7 @@ var json = {
       "name": "已售",
       "type": "0-2",
       "seats": 1,
-      "icon": "https://i.postimg.cc/LXywzkds/image.png",
+      "icon": "../../assets/images/saleIcon.png",
       "isShow": "1",
       "position": "up"
     },
@@ -30,7 +30,7 @@ var json = {
       "name": "维修",
       "type": "0-3",
       "seats": 1,
-      "icon": "https://i.postimg.cc/BZVRbCcY/image.png",
+      "icon": "../../assets/images/repairIcon.png",
       "isShow": "1",
       "position": "up"
     }
