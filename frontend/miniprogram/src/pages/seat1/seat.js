@@ -35,7 +35,8 @@ export default class Seat extends Component {
       rpxToPx: 0,
       maxX:0,
       maxY:0,
-      settlePrice:0
+      settlePrice:0,
+      rowList:[]
     }
 
   }
@@ -59,7 +60,7 @@ export default class Seat extends Component {
 
     this.state.seatArea =  seatArea;
     this.state.rpxToPx = rpxToPx;
-    
+
     let token = Taro.getStorageSync("token");
 
     Taro.showLoading({
@@ -201,27 +202,59 @@ export default class Seat extends Component {
   //计算最大座位数,生成影厅图大小
   prosessMaxSeat(seatList) {
 
+    let rowList = [];
+    let minX = seatList[0].gCol;
+    let maxX = 0;
     let maxY = 0;
     for (let i = 0; i < seatList.length; i++) {
       let tempY = seatList[i].gRow;
       if (parseInt(tempY) > parseInt(maxY)) {
         maxY = tempY;
       }
-    }
-    let maxX = 0;
-    for (var i = 0; i < seatList.length; i++) {
       var tempX = seatList[i].gCol;
       if (parseInt(tempX) > parseInt(maxX)) {
         maxX = tempX;
       }
+      if (parseInt(tempX) < parseInt(minX)) {
+        minX = tempX;
+      }
+      rowList.push(tempY);
     }
-    let seatRealWidth = parseInt(maxX) * 70 * this.state.rpxToPx;
-    let seatRealheight = parseInt(maxY) * 70 * this.state.rpxToPx;
+    if(minX > 0){
+      for (let i = 0; i < seatList.length; i++) {
+        seatList[i].gCol = seatList[i].gCol -minX +1;
+      }
+    }
+
+    maxX = maxX-minX;
+
+    let factor = 60;
+    let factorHeight = 1;
+
+    if(maxX < 11){
+      maxX = maxX +1;
+    }
+    if(maxX >= 11){
+      factor = 70;
+      factorHeight = 0.9;
+    }
+    if(maxX >= 17){
+      factor = 80;
+      factorHeight = 1;
+    }
+    if(maxX > 20){
+      factor = 100;
+      factorHeight = 1.5;
+    }
+
+    let seatRealWidth = parseInt(maxX) * factor * this.state.rpxToPx;
+    let seatRealheight = parseInt(maxY) * factor * this.state.rpxToPx;
     let seatScale = 1;
     let seatScaleX = 1;
     let seatScaleY = 1;
-    let seatAreaWidth = 630 * this.state.rpxToPx
-    let seatAreaHeight = this.state.seatArea - 200 * this.state.rpxToPx
+
+    let seatAreaWidth = 630 * this.state.rpxToPx * factorHeight;
+    let seatAreaHeight = (this.state.seatArea - 200 * this.state.rpxToPx) * factorHeight;
     if (seatRealWidth > seatAreaWidth) {
       seatScaleX = seatAreaWidth / seatRealWidth;
     }
@@ -234,8 +267,9 @@ export default class Seat extends Component {
 
     this.state.maxX = maxX;
     this.state.maxY = maxY;
+    this.state.rowList = rowList;
     this.state.seatScale = seatScale;
-    this.state.seatScaleHeight = seatScale * 70 * this.state.rpxToPx;
+    this.state.seatScaleHeight = seatScale * factor * this.state.rpxToPx;
 
   }
   // 座位左边栏的数组

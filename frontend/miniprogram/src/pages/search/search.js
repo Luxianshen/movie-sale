@@ -16,15 +16,14 @@ export default class Search extends Component {
     }
   }
   componentDidMount () {
-    this.searchList();
+    this.searchList(this);
   }
   searchList(){
-
 
     let keyWord = this.state.keyWord;
     //let keyWord = '万达';
     let token  = Taro.getStorageSync('token');
-    let self = this;
+
     if(keyWord != ''){
       Taro.request({
         url:baseUrl + `/index/search/${keyWord}`,
@@ -33,22 +32,23 @@ export default class Search extends Component {
       }).then(res=>{
         if(res.statusCode == 200){
             let data = res.data.data;
-            self.state.cinemasList =data.list;
-            self.state.hidden = data.list.length == 0;
+            this.state.cinemasList =data.list;
+            this.state.hidden = data.list.length == 0;
+            this.forceUpdate();
         }
       })
     }
 
   }
-  setKeyWord(value){
 
-    let self = this;
-    this.setState({
-      keyWord:value.detail.value
-    },()=>{
-      self.searchList();
+  handleInputChange(event) {
+      this.setState({
+        keyWord: event.target.value,
+      },()=>{
+      this.searchList();
     })
   }
+
   clear(){
     this.setState({
       keyWord:''
@@ -83,7 +83,7 @@ export default class Search extends Component {
         lowerThreshold='20'
       >
         <View className="navHeader">
-          <Input className="search" type="text" placeholder="搜影院" onInput={this.setKeyWord.bind(this,this.currentTarget.value)} value={keyWord}>
+          <Input className="search" type="text" placeholder="搜影院" onInput={this.handleInputChange.bind(this)} value={keyWord}>
           </Input>
           <View className="cancel" onClick={this.clear.bind(this)}>
               取消
