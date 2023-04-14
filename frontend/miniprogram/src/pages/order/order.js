@@ -4,7 +4,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import './order.scss'
-export default class Map extends Component {
+export default class Order extends Component {
   constructor(props){
     super(props);
     this.state = {

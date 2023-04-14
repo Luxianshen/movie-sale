@@ -1,8 +1,8 @@
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import iconPath from '../../assets/images/location.png'
-import './map.scss'
-export default class Map extends Component {
+import './showMap.scss'
+export default class ShowMap extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -48,8 +48,7 @@ export default class Map extends Component {
     this.getParams()
   }
   render () {
-    const mapData = this.state.mapData;
-    const markers = this.state.markers?this.state.markers:[];
+    const {mapData,markers} = this.state;
     return (
      <Map onCLick={this.onTap.bind(this)} scale="14" longitude={mapData.lng} latitude={mapData.lat} markers={markers} className="map" />
     )

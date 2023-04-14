@@ -329,7 +329,7 @@ export default class CinemasDetail extends Component {
                       <View className="price"><Text className="mark">￥{item.settlePrice > 40? Math.floor(item.settlePrice*100-600)/100:Math.floor(item.settlePrice*100-500)/100}</Text> {item.settlePrice}</View>
                       <View className="discount">已减￥{item.settlePrice >40 ? 6:5}</View>
                   </View>
-                  <View className="button" hidden={!phoneButton} onClick={this.navigateSeat.bind(this,'../seat1/seat',item)}>
+                  <View className="button" hidden={!phoneButton} onClick={this.navigateSeat.bind(this,'../seat/seat',item)}>
                     购票
                   </View>
                   <Button className="button" hidden={phoneButton} openType = 'getPhoneNumber' onGetPhoneNumber = {this.getTel}>

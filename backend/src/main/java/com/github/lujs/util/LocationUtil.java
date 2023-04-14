@@ -75,7 +75,7 @@ public class LocationUtil {
 
     private static Integer getCityId(String adcode){
 
-        JSONArray array = JSONUtil.readJSONArray(new File("/Users/lulu/IdeaProjects/github/movie-sale/backend/doc/city.json"), Charset.defaultCharset());
+        JSONArray array = JSONUtil.readJSONArray(new File("city.json"), Charset.defaultCharset());
         for (Object x : array) {
             JSONObject jsonObject = (JSONObject) x;
             if (jsonObject.getStr("cityCode").equals(adcode)){

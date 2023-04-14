@@ -1,11 +1,13 @@
 import Taro, {Component} from '@tarojs/taro'
 import {View,Text,MovableView,MovableArea, ScrollView,Image} from '@tarojs/components'
+
+import ableIcon from '../../assets/images/ableIcon.png';
+import disableIcon from '../../assets/images/disableIcon.png';
+import saleIcon from '../../assets/images/saleIcon.png';
+import repairIcon from '../../assets/images/repairIcon.png';
+import close from '../../assets/images/close.png';
+import jsonData  from '../../assets/data/json.js';
 import './seat.scss';
-import jsonData  from './data/json.js';
-import ableIcon from "../../assets/images/ableIcon.png";
-import disableIcon from "../../assets/images/disableIcon.png";
-import saleIcon from "../../assets/images/saleIcon.png";
-import repairIcon from "../../assets/images/repairIcon.png";
 
 
 export default class Seat extends Component {
@@ -226,35 +228,18 @@ export default class Seat extends Component {
       }
     }
 
-    maxX = maxX-minX;
+    maxX = maxX-minX +1;
 
-    let factor = 60;
-    let factorHeight = 1;
+    let factor = 17/maxX;
 
-    if(maxX < 11){
-      maxX = maxX +1;
-    }
-    if(maxX >= 11){
-      factor = 70;
-      factorHeight = 0.9;
-    }
-    if(maxX >= 17){
-      factor = 80;
-      factorHeight = 1;
-    }
-    if(maxX > 20){
-      factor = 100;
-      factorHeight = 1.5;
-    }
-
-    let seatRealWidth = parseInt(maxX) * factor * this.state.rpxToPx;
-    let seatRealheight = parseInt(maxY) * factor * this.state.rpxToPx;
+    let seatRealWidth = parseInt(maxX) * 70 * this.state.rpxToPx * factor;
+    let seatRealheight = parseInt(maxY) * 70 * this.state.rpxToPx * factor;
     let seatScale = 1;
     let seatScaleX = 1;
     let seatScaleY = 1;
 
-    let seatAreaWidth = 630 * this.state.rpxToPx * factorHeight;
-    let seatAreaHeight = (this.state.seatArea - 200 * this.state.rpxToPx) * factorHeight;
+    let seatAreaWidth = 630 * this.state.rpxToPx * factor;
+    let seatAreaHeight = (this.state.seatArea - 200 * this.state.rpxToPx) * factor;
     if (seatRealWidth > seatAreaWidth) {
       seatScaleX = seatAreaWidth / seatRealWidth;
     }
@@ -267,9 +252,8 @@ export default class Seat extends Component {
 
     this.state.maxX = maxX;
     this.state.maxY = maxY;
-    this.state.rowList = rowList;
     this.state.seatScale = seatScale;
-    this.state.seatScaleHeight = seatScale * factor * this.state.rpxToPx;
+    this.state.seatScaleHeight = seatScale * 70 * this.state.rpxToPx * factor;
 
   }
   // 座位左边栏的数组
@@ -880,7 +864,7 @@ export default class Seat extends Component {
     </View>
    </View>
 
-<MovableArea scale-area="true" className="defaultArea" style={{ height: `${seatArea}px`, width: '750rpx' }}>
+<MovableArea scale-area="true" className="defaultArea" style={{ height: `${seatArea}px`, width: '750rpx' , margin: '20rpx' }}>
   <MovableView className='movableOne' bindscale="handleScale" style={{ height: `${seatArea}px`, width: '750rpx' }} scale="true" direction="all" scale-max="2" scale-min="1" out-of-bounds="true">
     <View className='seatArea' style = {{ width:`${seatScaleHeight * maxX}px`,height:`${seatScaleHeight * maxY}px` }}>
       <View className='alignLine'></View>
@@ -901,14 +885,14 @@ export default class Seat extends Component {
 
    {selectedSeat.map((item, index) => {
        return (
-       <View className="scrollItem"  >
+       <View className="scrollItem" onClick ={this.checkSeat.bind(this,index)} >
       <View className='scrollTextTop'>
         {item.seatNo}
       </View>
       <View className='scrollTextBottom'>
         ￥{this.state.settlePrice}
       </View>
-      <Image src='/images/close.png'></Image>
+      <Image src={close}></Image>
    </View>)})}
 
   </ScrollView>
