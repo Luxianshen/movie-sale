@@ -153,9 +153,9 @@ page {
 .hallName {
   width: 200rpx;
   height: 0;
-  border-top: 40rpx solid #ccc;
-  border-right: 20rpx solid transparent;
-  border-left: 20rpx solid transparent;
+  border-top: 60rpx solid #ccc;
+  border-right: 30rpx solid transparent;
+  border-left: 30rpx solid transparent;
   line-height: 30rpx;
   color: white;
   position: absolute;
@@ -341,7 +341,7 @@ movable-area {
   text-align: center;
   color: white;
   width: 100%;
-  background: linear-gradient(to right, #C26DFE, #6F50F5);
+  background-color: #f03d37;
   height: 100rpx;
 }
 

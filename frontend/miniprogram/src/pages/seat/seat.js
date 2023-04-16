@@ -55,6 +55,10 @@ export default class Seat extends Component {
     let item = JSON.parse(decodeURIComponent(params.item));
     this.state.item = item;
 
+    Taro.setNavigationBarTitle({
+      title:params.cinemaName
+    })
+
     const res = Taro.getSystemInfoSync();
     console.log(res.screenHeight);
     let seatArea = res.screenHeight - res.statusBarHeight - (500 * res.screenWidth / 750);
@@ -230,7 +234,8 @@ export default class Seat extends Component {
 
     maxX = maxX-minX +1;
 
-    let factor = 17/maxX;
+    // 17* 10
+    let factor = 170/maxX/maxY;
 
     let seatRealWidth = parseInt(maxX) * 70 * this.state.rpxToPx * factor;
     let seatRealheight = parseInt(maxY) * 70 * this.state.rpxToPx * factor;
@@ -253,7 +258,7 @@ export default class Seat extends Component {
     this.state.maxX = maxX;
     this.state.maxY = maxY;
     this.state.seatScale = seatScale;
-    this.state.seatScaleHeight = seatScale * 70 * this.state.rpxToPx * factor;
+    this.state.seatScaleHeight = seatScale * 70 * this.state.rpxToPx;
 
   }
   // 座位左边栏的数组
@@ -885,7 +890,7 @@ export default class Seat extends Component {
 
    {selectedSeat.map((item, index) => {
        return (
-       <View className="scrollItem" onClick ={this.checkSeat.bind(this,index)} >
+      <View className="scrollItem" onClick ={this.clickSeat.bind(this,item.orgIndex)} >
       <View className='scrollTextTop'>
         {item.seatNo}
       </View>

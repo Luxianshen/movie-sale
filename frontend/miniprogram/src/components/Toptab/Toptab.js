@@ -244,7 +244,7 @@ export default class Toptab extends Component{
                       <View className="showInfo smallFont">{item.showInfo}</View>
                     </View>
                     <View className="operate">
-                      <view className="buyTicket">购票</view>
+                      <View className="buyTicket">购票</View>
                     </View>
                   </View>
                 </View>

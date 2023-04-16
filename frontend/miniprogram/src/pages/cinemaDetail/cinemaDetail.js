@@ -131,21 +131,6 @@ export default class CinemasDetail extends Component {
       dates.push(key);
       showDateList.push(this.formatDateString(key));
     });
-    let dataList = selecMovieData[showDate];
-    if(typeof(dataList) == 'undefined'){
-      dataList = [];
-    }
-    //去掉超时数据
-      if(dataList.length > 0 && dataList[0].showDate == this.state.today){
-         let tempList = [];
-         dataList.map(item=>{
-             let flag = new Date(item.showTime)- Date.now()>1*60*60*1000;
-              if(flag){
-                tempList.push(item);
-              }
-         })
-         dataList = tempList;
-      }
 
     const self = this;
     this.setState({
@@ -155,10 +140,12 @@ export default class CinemasDetail extends Component {
       bg:item.pic,
       activeIndex:index,
       viewId:viewId,
-      dataList: dataList,
       dates: dates,
       showDateList: showDateList
+    },()=>{
+      self.chooseItem(0);
     });
+
   }
   chooseItem(index){
     let movieId = this.state.reqList.movieId;
@@ -182,6 +169,7 @@ export default class CinemasDetail extends Component {
       tabIndex:index,
       dataList: dataList
     });
+    this.forceUpdate();
   }
   navigateToMap(url,cinemaData){
     url = url+`?lng=${cinemaData.longitude}&lat=${cinemaData.latitude}&title=${this.state.cinemaData.cinemaName}`;
