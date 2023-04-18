@@ -1,13 +1,12 @@
 import Taro, {Component} from '@tarojs/taro'
 import {View,Text,MovableView,MovableArea, ScrollView,Image} from '@tarojs/components'
-
-import ableIcon from '../../assets/images/ableIcon.png';
-import disableIcon from '../../assets/images/disableIcon.png';
-import saleIcon from '../../assets/images/saleIcon.png';
-import repairIcon from '../../assets/images/repairIcon.png';
-import close from '../../assets/images/close.png';
-import jsonData  from '../../assets/data/json.js';
-import './seat.scss';
+import ableIcon from '../../assets/images/ableIcon.png'
+import disableIcon from '../../assets/images/disableIcon.png'
+import saleIcon from '../../assets/images/saleIcon.png'
+import repairIcon from "../../assets/images/repairIcon.png"
+import close from '../../assets/images/close.png'
+import jsonData  from '../../assets/data/json.js'
+import './seat.scss'
 
 
 export default class Seat extends Component {
@@ -54,6 +53,7 @@ export default class Seat extends Component {
     this.state.showId = params.showId;
     let item = JSON.parse(decodeURIComponent(params.item));
     this.state.item = item;
+    this.state.settlePrice = params.price;
 
     Taro.setNavigationBarTitle({
       title:params.cinemaName
@@ -94,8 +94,7 @@ export default class Seat extends Component {
           seatTypeList: result.seatTypeList,
           selectedSeat: [],
           totalPrice: 0,
-          hidden: "hidden",
-          settlePrice: item.settlePrice
+          hidden: "hidden"
         });
         setTimeout(function() {
           wx.hideLoading()
@@ -299,11 +298,8 @@ export default class Seat extends Component {
     }
 
     let _selectedSeatList = this.state.selectedSeat
-    let totalPrice = 0
-    for (const key in _selectedSeatList) {
-      let price = parseInt(this.state.settlePrice);
-      totalPrice += price;
-    }
+    let totalPrice = this.state.settlePrice *_selectedSeatList.length;
+
     this.setState({
       totalPrice: totalPrice
     })
@@ -663,11 +659,7 @@ export default class Seat extends Component {
       that.processUnSelected(iterator.orgIndex)
     }
     let _selectedSeatList = _self.selectedSeat
-    let totalPrice = 0
-    for (const key in _selectedSeatList) {
-      let price = parseInt(this.state.settlePrice);
-      totalPrice += price;
-    }
+    let totalPrice = this.state.settlePrice *_selectedSeatList.length;
     this.setState({
       totalPrice: totalPrice
     })
@@ -927,6 +919,12 @@ export default class Seat extends Component {
     <Text>{totalPrice}</Text> 元 确认选座</View>
 </View>
 
+<View hidden>
+ <Image src= {ableIcon}/>
+ <Image src= {repairIcon}/>
+ <Image src= {saleIcon}/>
+ <Image src= {disableIcon}/>
+</View>
 
 
 </View>

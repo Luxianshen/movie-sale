@@ -15,7 +15,7 @@ import minePng from "../../assets/images/mine.png"
 
 export default class Person extends Component {
   config = {
-    navigationBarTitleText: '阿刘电影',
+    navigationBarTitleText: '满减电影',
     enablePullDownRefresh: false,
   }
   constructor(props) {
@@ -207,7 +207,7 @@ export default class Person extends Component {
        <
       View className = "copyright" >
       <
-      View className = "company" > ©阿刘电影 客服电话： 12345 < /View> < /
+      View className = "company" > ©满减电影 客服电话： 12345 < /View> < /
       View > <
       /View>
  </view>

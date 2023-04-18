@@ -32,12 +32,12 @@ export default class Order extends Component {
 
     const params = this.$router.params;
     let item = JSON.parse(decodeURIComponent(params.item));
-    debugger
+    // 20-4 30-5 40-6 50-7
     this.setState({
       cinemaName:params.cinemaName,
       item:item,
       seatInfo: params.seatInfo,
-      price:params.price,
+      price: params.price,
       buyNum:params.buyNum
     })
   }

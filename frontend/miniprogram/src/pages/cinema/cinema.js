@@ -7,7 +7,7 @@ import './cinema.scss'
 
 export default class Cinema extends Component {
   config = {
-    navigationBarTitleText: "影院",
+    navigationBarTitleText: "满减电影",
     enablePullDownRefresh:false,
   }
   constructor(props){

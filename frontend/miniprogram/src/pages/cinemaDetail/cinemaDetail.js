@@ -85,14 +85,10 @@ export default class CinemasDetail extends Component {
           dataList = selecMovieData[dates[tabIndex]];
           //去掉超时数据
             if(dataList.length > 0 && dataList[0].showDate == data.dates[0]){
-               let tempList = [];
-               dataList.map(item=>{
-                   let flag = new Date(item.showTime)- Date.now()>1*60*60*1000;
-                    if(flag){
-                      tempList.push(item);
-                    }
-               })
-               dataList = tempList;
+               dataList = dataList.filter(item => {
+                 const timeDiff = new Date(item.showTime) - Date.now();
+                 return timeDiff <= 1 * 60 * 60 * 1000; // Keep items with showTime within 1 hour from now
+               });
             }
 
           self.setState({
@@ -180,7 +176,10 @@ export default class CinemasDetail extends Component {
   navigateSeat(url,item){
     const cinemaName = this.state.cinemaData.cinemaName;
     const showId =  item.showId;
-    const price = item.settlePrice>40? item.settlePrice-6:item.settlePrice-5;
+    let price = item.settlePrice;
+    if (price > 20) {
+      price = price - price/10 -1;
+    }
     item.bg =this.state.bg;
     const reqList = this.state.reqList;
     url = url+`?cinemaName=${cinemaName}&showId=${showId}&price=${price}&item=${encodeURIComponent(JSON.stringify(item))}`;
@@ -259,7 +258,7 @@ export default class CinemasDetail extends Component {
             <View className="name">{cinemaData.cinemaName}</View>
             <View className="addr">{cinemaData.address}</View>
           </View>
-          <View className="locateIcon" onClick={this.navigateToMap.bind(this,"../map/map",cinemaData)}>
+          <View className="locateIcon" onClick={this.navigateToMap.bind(this,"../map/showMap",cinemaData)}>
             <Image src={locationPng}></Image>
           </View>
         </View>
@@ -314,8 +313,8 @@ export default class CinemasDetail extends Component {
                     <View className="hall">{item.hallName.substring(0,5)}</View>
                   </View>
                   <View className="sellPrice">
-                      <View className="price"><Text className="mark">￥{item.settlePrice > 40? Math.floor(item.settlePrice*100-600)/100:Math.floor(item.settlePrice*100-500)/100}</Text> {item.settlePrice}</View>
-                      <View className="discount">已减￥{item.settlePrice >40 ? 6:5}</View>
+                      <View className="price"><Text className="mark">￥{item.settlePrice -item.settlePrice/10-1}</Text> {item.settlePrice}</View>
+                      <View className="discount">已减￥{item.settlePrice/10+1}</View>
                   </View>
                   <View className="button" hidden={!phoneButton} onClick={this.navigateSeat.bind(this,'../seat/seat',item)}>
                     购票

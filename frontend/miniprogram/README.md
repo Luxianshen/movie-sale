@@ -1,4 +1,4 @@
-### 基于京东凹凸实验室(aotu.io)Taro框架的微信小程序--阿刘电影
+### 基于京东凹凸实验室(aotu.io)Taro框架的微信小程序--满减电影
 ### （已停止维护）
 [![Build Status](https://travis-ci.com/Harhao/miniProgram.svg?branch=master)](https://travis-ci.com/Harhao/miniProgram)
 [![](https://img.shields.io/badge/version-v1.0.0-brightgreen)](https://img.shields.io/badge/version-v1.0.0-brightgreen)
@@ -11,7 +11,7 @@
     Node版本：v8.11.1
   ```
 ### 二、现阶段运行效果
-- ![阿刘电影运行效果](https://github.com/Harhao/miniProgram/blob/master/screenshot/demo1.gif)![阿刘电影运行效果](https://github.com/Harhao/miniProgram/blob/master/screenshot/demo2.gif)
+- ![满减电影运行效果](https://github.com/Harhao/miniProgram/blob/master/screenshot/demo1.gif)![满减电影运行效果](https://github.com/Harhao/miniProgram/blob/master/screenshot/demo2.gif)
 ### 三、安装依赖并运行小程序
   - 安装依赖:尽量使用cnpm安装项目依赖，npm安装比较慢，而且容易出现安装失败情况
     ```bash
@@ -57,6 +57,6 @@
     module "npm/@tarojs/taro-weapp/index.js" is not defined  // 把dist/npm/@tarojs拷贝一次重新黏贴一下就可以避免这种情况
     ```
 
-> taro版本现在已经是1.3，即将运用正式版本改写阿刘电影微信小程序
+> taro版本现在已经是1.3，即将运用正式版本改写满减电影微信小程序
 ## License
 [MIT](http://opensource.org/licenses/MIT)

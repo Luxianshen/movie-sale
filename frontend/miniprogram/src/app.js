@@ -27,7 +27,7 @@ class App extends Component {
     window: {
       backgroundTextStyle: "light",
       navigationBarBackgroundColor: "#e54847",
-      navigationBarTitleText: "阿刘电影",
+      navigationBarTitleText: "满减电影",
       navigationBarTextStyle: "white",
       enablePullDownRefresh: true
     },
