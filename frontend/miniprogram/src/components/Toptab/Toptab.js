@@ -73,8 +73,13 @@ export default class Toptab extends Component{
           res.data.data.list.forEach((value)=>{
             this.state.movieIds.push(value["showId"]);
           });
+          
+          const onList = res.data.data.list.filter(
+            (item, index, self) => index === self.findIndex(other => other.showName === item.showName)
+          );
+          
           this.setState({
-            onList:res.data.data.list,
+            onList:onList,
             startIndex:0,
             lastIndex:30
           });

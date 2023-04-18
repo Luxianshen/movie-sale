@@ -301,7 +301,7 @@ export default class Seat extends Component {
     let totalPrice = this.state.settlePrice *_selectedSeatList.length;
 
     this.setState({
-      totalPrice: totalPrice
+      totalPrice: totalPrice.toFixed(2)
     })
   }
   // 处理已选的座位
@@ -661,7 +661,7 @@ export default class Seat extends Component {
     let _selectedSeatList = _self.selectedSeat
     let totalPrice = this.state.settlePrice *_selectedSeatList.length;
     this.setState({
-      totalPrice: totalPrice
+      totalPrice: totalPrice.toFixed(2)
     })
   }
   // 找寻每排的最佳座位数组

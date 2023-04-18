@@ -85,10 +85,14 @@ export default class CinemasDetail extends Component {
           dataList = selecMovieData[dates[tabIndex]];
           //去掉超时数据
             if(dataList.length > 0 && dataList[0].showDate == data.dates[0]){
-               dataList = dataList.filter(item => {
-                 const timeDiff = new Date(item.showTime) - Date.now();
-                 return timeDiff <= 1 * 60 * 60 * 1000; // Keep items with showTime within 1 hour from now
-               });
+               let tempList = [];
+               dataList.map(item=>{
+                   let flag = new Date(item.showTime)- Date.now()>1*60*60*1000;
+                    if(flag){
+                      tempList.push(item);
+                    }
+               })
+               dataList = tempList;
             }
 
           self.setState({
