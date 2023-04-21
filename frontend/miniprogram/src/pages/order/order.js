@@ -3,6 +3,7 @@
  */
 import Taro, { Component } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
+import CountdownTimer from '../../components/CountdownTimer/CountdownTimer.js';
 import './order.scss'
 export default class Order extends Component {
   constructor(props){
@@ -100,7 +101,7 @@ export default class Order extends Component {
     return (
       <View className="order">
         <View className="timeDown">
-          请在15分钟内完成支付
+          请在<CountdownTimer />分钟内完成支付
           <View className="restTime"></View>
         </View>
 

@@ -333,48 +333,20 @@ export default class Detail extends Component {
         onScroll = {
           this.scroll
         } >
-        <
-        View className = {
-          this.state.hide ? 'hide detailBox' : 'detailBox'
-        } >
-        <
-        View className = "bg" >
-        <
-        Image src = {
-          detailMovie.backgroundPicture
-        } > < /Image> <
-        view className = "blurBg" > < /view> <
+        <View className = {this.state.hide ? 'hide detailBox' : 'detailBox'} >
+        <View className = "bg" >
+        <Image src = {detailMovie.backgroundPicture} > < /Image>
+        <view className = "blurBg" > < /view> <
         View className = "detailContent" >
-        <
-        Image className = "poster"
-        src = {
-          detailMovie.poster
-        } > < /Image> <
-        View className = "detailInfo" >
-        <
-        View className = "title" > {
-          detailMovie.showName
-        } < /View> <
-        View className = "star" > {
-			detailMovie.leadingRole?
-          detailMovie.leadingRole.substring(0, 15):''
-        } < /View> {
-        detailMovie.globalReleased ? < View className = "comment" > 观众评 {
-          detailMovie.remakr
-        } < /View>:<View className="comment">{detailMovie.wish}人想看</View >
-      } <
-      View className = "type" > {
-        detailMovie.cat
-      } < /View> <
-    View className = "hours" > {
-      detailMovie.country
-    }
-    /{detailMovie.duration}分钟</View >
-    <
-    View className = "time" > {
-      detailMovie.pubDesc
-    } < /View> < /
-    View >  <
+        <Image className = "poster" src = {detailMovie.poster} > < /Image>
+        <View className = "detailInfo" >
+        <View className = "title" > {detailMovie.showName} < /View>
+        <View className = "star" > {detailMovie.leadingRole?detailMovie.leadingRole.substring(0, 18):''} </View>
+        <View className="comment">评分: {detailMovie.remark}</View >
+        <View className = "type" >{detailMovie.showMark}  {detailMovie.type} < /View>
+        <View className = "hours" > {detailMovie.country}/{detailMovie.duration}分钟</View >
+    <View className = "time" > {detailMovie.openTime} < /View>
+    </View >  <
       /View> < /
     View > <
       /View> <

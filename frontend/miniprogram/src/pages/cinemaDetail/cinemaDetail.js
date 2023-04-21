@@ -269,14 +269,8 @@ export default class CinemasDetail extends Component {
         <View className="showCon">
           <Image src={this.state.bg} className="bg"></Image>
           <View className="blur"></View>
-          <ScrollView className='scrollview'
-              scrollX
-              scrollWithAnimation
-              scrollTop='0'
-              style="height:130Px;"
-              id="swiper"
-              scrollIntoView={this.state.viewId} enable-fle
-          >
+          <ScrollView className='scrollview'scrollX scrollWithAnimation
+              scrollTop='0' style="height:130Px;" id="swiper" scrollIntoView={this.state.viewId} enable-fle>
                         {movieData.map((item,index)=>{
                           return (
                               <Image  src={item.pic} key={item.filmId}  id={'view'+item.filmId} onClick={this.selected.bind(this,item,index,this.currentTarget.id)} className={ item.filmId ==  this.state.reqList.movieId?'active img':'img'}></Image>
@@ -286,15 +280,13 @@ export default class CinemasDetail extends Component {
         </View>
         <View className="movieInfo">
           <View className="movieName">
-            {movieData[activeIndex].name}<Text className="comment">{movieData[activeIndex].grade *1 /10}分</Text>
+            {movieData[activeIndex].name} {movieData[activeIndex].filmTypes}
           </View>
-          <View className="movieDesc"></View>
+          <View className="movieName">
+             评分 {movieData[activeIndex].grade == 0? <Text className="comment">暂无</Text>:<Text className="comment"> {movieData[activeIndex].grade *1 /10}分 </Text>}
+          </View>
         </View>
-        <ScrollView className="dateSelect"
-          scrollX
-          scrollWithAnimation
-          scrollTop='0'
-          style="height:50Px;">
+        <ScrollView className="dateSelect" scrollX scrollWithAnimation scrollTop='0' style="height:50Px;">
           {showDateList.map((item,index)=>{
             return (
               <View key={index} className={tabIndex == index?'selected dateItem':'dateItem'} onClick={this.chooseItem.bind(this,index)}>{item}</View>
@@ -317,8 +309,8 @@ export default class CinemasDetail extends Component {
                     <View className="hall">{item.hallName.substring(0,5)}</View>
                   </View>
                   <View className="sellPrice">
-                      <View className="price"><Text className="mark">￥{item.settlePrice -item.settlePrice/10-1}</Text> {item.settlePrice}</View>
-                      <View className="discount">已减￥{item.settlePrice/10+1}</View>
+                      <View className="price"><Text className="mark">￥{(item.settlePrice -item.settlePrice/10-1).toFixed(2)}</Text> {item.settlePrice}</View>
+                      <View className="discount">已减￥{(item.settlePrice/10+1).toFixed(2)}</View>
                   </View>
                   <View className="button" hidden={!phoneButton} onClick={this.navigateSeat.bind(this,'../seat/seat',item)}>
                     购票

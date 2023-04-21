@@ -246,7 +246,7 @@ export default class Toptab extends Component{
                       </View>
                       {item.globalReleased?<View className="comment smallFont">观众评 <Text className="yellow">{item.remark}</Text></View>:<View className="comment smallFont"><Text className="yellow">{item.wish}</Text></View>}
                       <View className="person smallFont">主演: {item.leadingRole}</View>
-                      <View className="showInfo smallFont">{item.showInfo}</View>
+                      <View className="showInfo smallFont">国家: {item.country} 语言: {item.language}</View>
                     </View>
                     <View className="operate">
                       <View className="buyTicket">购票</View>
