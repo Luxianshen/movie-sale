@@ -93,7 +93,7 @@ public class WxMaUserController extends BaseController {
     public Result<CzToken> refresh(@Token CzToken czToken, @PathVariable("lat") String lat,
                                    @PathVariable("lon") String lon) {
         UserDto userDto = BeanUtil.toBean(czToken, UserDto.class);
-        return Result.succeed(tokenService.createToken(userDto, LocationUtil.getLocation(lat, lon)));
+        return Result.succeed(tokenService.createToken(userDto, LocationUtil.getWxLocation(lat, lon)));
     }
 
     /**
@@ -169,7 +169,7 @@ public class WxMaUserController extends BaseController {
         //后置头像 防止授权信息的时候 没有了
         userDto.setBizUserId(userThird.getOpenId());
 
-        return Result.succeed(tokenService.createToken(userDto, LocationUtil.getLocation(token.getLat(), token.getLon())));
+        return Result.succeed(tokenService.createToken(userDto, LocationUtil.getWxLocation(token.getLat(), token.getLon())));
     }
 
 

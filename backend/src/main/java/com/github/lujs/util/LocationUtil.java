@@ -49,6 +49,30 @@ public class LocationUtil {
         return wxLocation;
     }
 
+    public static WxLocation getWxLocation(String lat, String lon) {
+
+        String rep = HttpUtil.get("https://apis.map.qq.com/ws/geocoder/v1/?location="+ lon + "," + lat+"&key=5EPBZ-Y6563-EEG3O-3GBDE-G3XZO-AZBCI&get_poi=1");
+        JSONObject result = JSONUtil.parseObj(rep);
+        WxLocation wxLocation = new WxLocation();
+        wxLocation.setLon("113.34123");
+        wxLocation.setLat("23.01234");
+        wxLocation.setCityName("广州市");
+        wxLocation.setCityCode("440100");
+        if ("0".equals(result.getStr("status"))) {
+
+            String province = result.getJSONObject("result").getJSONObject("ad_info").getStr("province");
+            String city = result.getJSONObject("result").getJSONObject("ad_info").getStr("city");
+            String adcode = result.getJSONObject("result").getJSONObject("ad_info").getStr("adcode");
+            adcode = adcode.substring(0,4) +"00";
+            wxLocation.setLat(lat);
+            wxLocation.setLon(lon);
+            wxLocation.setCityName(ObjectUtil.isEmpty(city) ? province : city);
+            wxLocation.setCityCode(adcode);
+            wxLocation.setCityId(getCityId(adcode));
+        }
+        return wxLocation;
+    }
+
     public static WxLocation getLocation(String lat, String lon) {
 
         String rep = HttpUtil.get("https://restapi.amap.com/v3/geocode/regeo?location=" + lon + "," + lat + "&poitype=&radius=100&extensions=base&batch=false&roadlevel=1&key=1b85b506f2995558684577af0ac1a273");

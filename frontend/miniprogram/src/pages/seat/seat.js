@@ -209,12 +209,16 @@ export default class Seat extends Component {
 
     let rowList = [];
     let minX = seatList[0].gCol;
+    let minY = seatList[0].gRow;
     let maxX = 0;
     let maxY = 0;
     for (let i = 0; i < seatList.length; i++) {
       let tempY = seatList[i].gRow;
       if (parseInt(tempY) > parseInt(maxY)) {
         maxY = tempY;
+      }
+      if (parseInt(tempY) < parseInt(minY)) {
+        minY = tempY;
       }
       var tempX = seatList[i].gCol;
       if (parseInt(tempX) > parseInt(maxX)) {
@@ -230,8 +234,14 @@ export default class Seat extends Component {
         seatList[i].gCol = seatList[i].gCol -minX +1;
       }
     }
+    if(minY > 0){
+      for (let i = 0; i < seatList.length; i++) {
+        seatList[i].gRow = seatList[i].gRow -minY +1;
+      }
+    }
 
     maxX = maxX-minX +1;
+    maxY = maxY-minY +1;
 
     // 17* 10
     let factor = 170/maxX/maxY;
